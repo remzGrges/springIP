@@ -1,4 +1,4 @@
-package groep2.ip2.security;
+package be.kdg.integratieproject2.Container.Security;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static groep2.ip2.security.SecurityConstants.HEADER_STRING;
-import static groep2.ip2.security.SecurityConstants.SECRET;
-import static groep2.ip2.security.SecurityConstants.TOKEN_PREFIX;
+import static be.kdg.integratieproject2.Container.Security.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

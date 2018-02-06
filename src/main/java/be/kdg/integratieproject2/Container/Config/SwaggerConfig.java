@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.Container;
+package be.kdg.integratieproject2.Container.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

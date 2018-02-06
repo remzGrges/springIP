@@ -1,9 +1,8 @@
-package groep2.ip2.security;
+package be.kdg.integratieproject2.Container.Security;
 
 
+import be.kdg.integratieproject2.User.Domain.ApplicationUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.util.JSON;
-import groep2.ip2.persistence.model.ApplicationUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static groep2.ip2.security.SecurityConstants.*;
+import static be.kdg.integratieproject2.Container.Security.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
