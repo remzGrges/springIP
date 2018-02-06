@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.Container.Config;
+package be.kdg.integratieproject2.API.Config;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

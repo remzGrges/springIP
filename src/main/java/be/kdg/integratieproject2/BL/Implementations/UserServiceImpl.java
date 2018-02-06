@@ -1,7 +1,8 @@
-package be.kdg.integratieproject2.User.Service;
+package be.kdg.integratieproject2.BL.Implementations;
 
-import be.kdg.integratieproject2.User.Dao.UserRepository;
-import be.kdg.integratieproject2.User.Domain.ApplicationUser;
+import be.kdg.integratieproject2.BL.Interfaces.UserService;
+import be.kdg.integratieproject2.DAL.Implementations.UserRepository;
+import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

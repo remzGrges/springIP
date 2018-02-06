@@ -1,8 +1,8 @@
-package be.kdg.integratieproject2.User.Rest;
+package be.kdg.integratieproject2.API.Controllers;
 
-import be.kdg.integratieproject2.User.Domain.ApplicationUser;
-import be.kdg.integratieproject2.User.Domain.ApplicationUserDto;
-import be.kdg.integratieproject2.User.Service.UserService;
+import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
+import be.kdg.integratieproject2.API.Dto.ApplicationUserDto;
+import be.kdg.integratieproject2.BL.Interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;

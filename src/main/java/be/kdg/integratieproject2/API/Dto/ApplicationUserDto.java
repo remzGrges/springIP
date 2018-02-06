@@ -1,22 +1,17 @@
-package be.kdg.integratieproject2.User.Domain;
+package be.kdg.integratieproject2.API.Dto;
 
-import org.springframework.data.annotation.Id;
+public class ApplicationUserDto {
 
-public class ApplicationUser {
-
-    @Id
     private String id;
-
     private String username;
     private String password;
 
+    public String getId() {
+        return id;
+    }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getUsername() {

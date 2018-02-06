@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.Container.Security;
+package be.kdg.integratieproject2.API.Security;
 
 public class SecurityConstants {
     public static final String SECRET = "SecretKeyToGenJWTs";

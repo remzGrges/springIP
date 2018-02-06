@@ -1,7 +1,7 @@
-package be.kdg.integratieproject2.Container.Security;
+package be.kdg.integratieproject2.API.Security;
 
 
-import be.kdg.integratieproject2.User.Domain.ApplicationUser;
+import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static be.kdg.integratieproject2.Container.Security.SecurityConstants.*;
+import static be.kdg.integratieproject2.API.Security.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;

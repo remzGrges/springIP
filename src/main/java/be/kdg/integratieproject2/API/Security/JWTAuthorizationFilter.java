@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.Container.Security;
+package be.kdg.integratieproject2.API.Security;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static be.kdg.integratieproject2.Container.Security.SecurityConstants.*;
+import static be.kdg.integratieproject2.API.Security.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

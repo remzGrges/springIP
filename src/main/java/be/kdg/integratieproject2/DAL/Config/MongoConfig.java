@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.Container.Config;
+package be.kdg.integratieproject2.DAL.Config;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@EnableMongoRepositories(value = "be.kdg.integratieproject2.*.Dao")
+@EnableMongoRepositories(value = "be.kdg.integratieproject2.DAL.Implementations")
 public class MongoConfig {
 
     private static final String URI = "mongodb://teamcrypto:integratieproject@kandoe-shard-00-00-wr8ld.mongodb.net:27017,kandoe-shard-00-01-wr8ld.mongodb.net:27017,kandoe-shard-00-02-wr8ld.mongodb.net:27017/Test?ssl=true&replicaSet=Kandoe-shard-0&authSource=admin";

@@ -1,7 +1,6 @@
-package be.kdg.integratieproject2.Container.Security;
+package be.kdg.integratieproject2.API.Security;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +13,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static be.kdg.integratieproject2.Container.Security.SecurityConstants.SIGN_UP_URL;
+import static be.kdg.integratieproject2.API.Security.SecurityConstants.SIGN_UP_URL;
 
 
 @EnableWebSecurity
