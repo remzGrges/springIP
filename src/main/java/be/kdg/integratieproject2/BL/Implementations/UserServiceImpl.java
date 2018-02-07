@@ -1,6 +1,8 @@
 package be.kdg.integratieproject2.BL.Implementations;
 
 import be.kdg.integratieproject2.BL.Interfaces.UserService;
+import be.kdg.integratieproject2.DAL.Domain.Verification.VerificationToken;
+import be.kdg.integratieproject2.DAL.Implementations.TokenRepository;
 import be.kdg.integratieproject2.DAL.Implementations.UserRepository;
 import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
 import org.springframework.security.core.userdetails.User;
@@ -15,8 +17,11 @@ import java.util.Collections;
 public class UserServiceImpl implements UserDetailsService, UserService {
     private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    private TokenRepository tokenRepository;
+
+    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -29,8 +34,23 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void createVerificationToken(ApplicationUser user, String token) {
+    public void updateRegisteredUser(ApplicationUser applicationUser) {
+        userRepository.save(applicationUser);
+    }
 
+    @Override
+    public void deleteToken(VerificationToken verificationToken) {
+        tokenRepository.delete(verificationToken);
+    }
+
+    @Override
+    public void createVerificationToken(ApplicationUser user, String token) {
+        tokenRepository.save(new VerificationToken(user, token));
+    }
+
+    @Override
+    public VerificationToken getVerificationToken(String token) {
+        return tokenRepository.findByToken(token);
     }
 
     @Override

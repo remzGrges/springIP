@@ -17,14 +17,17 @@ public class VerificationToken {
     private ApplicationUser applicationUser;
     private Date expiryDate;
 
+    public VerificationToken(ApplicationUser applicationUser, String token) {
+        this.applicationUser = applicationUser;
+        this.token = token;
+        this.expiryDate = calculateExpiryDate(EXPIRATION);
+    }
+
     private Date calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Timestamp(cal.getTime().getTime()));
         cal.add(Calendar.MINUTE, expiryTimeInMinutes);
         return new Date(cal.getTime().getTime());
-    }
-
-    public VerificationToken() {
     }
 
     public String getId() {

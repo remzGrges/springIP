@@ -4,18 +4,17 @@ import be.kdg.integratieproject2.API.Verification.OnRegistrationCompleteEvent;
 import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
 import be.kdg.integratieproject2.API.Dto.UserRegistrationDto;
 import be.kdg.integratieproject2.BL.Interfaces.UserService;
+import be.kdg.integratieproject2.DAL.Domain.Verification.VerificationToken;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
+import java.util.Calendar;
 
 @RestController
 @RequestMapping("/users")
@@ -55,5 +54,25 @@ public class UserController {
             return ex.getMessage();
         }
         return "Succes";
+    }
+
+    @GetMapping("/registrationConfirm")
+    public String confirmRegistration(@RequestParam("token") String token) {
+
+        VerificationToken verificationToken = userService.getVerificationToken(token);
+        if (verificationToken == null) {
+            return "No Such Token";
+        }
+
+        ApplicationUser applicationUser = verificationToken.getApplicationUser();
+        Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return "Token expired";
+        }
+
+        applicationUser.setEnabled(true);
+        userService.updateRegisteredUser(applicationUser);
+        userService.deleteToken(verificationToken);
+        return "User verified";
     }
 }
