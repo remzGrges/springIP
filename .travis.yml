@@ -1,11 +1,11 @@
 language: java
 jdk:
- - oraclejdk8
+- oraclejdk8
 notifications:
   email: false
 deploy:
   provider: heroku
   api_key:
-    secure: ac74e987-4655-4196-8f9c-f9c4e8ca6183
-  app: springIP
+    secure: gmT6V119McHYicyNxg9kSyOjQVMKLb3kFKEO0ju9Q1YvuLrlKpoqyso+uGHXCFS8ixGGESD3Emc3ozO351gePqWwijyyV+CV0YpmsxQbLjv1x3lAZ92nqKMMAKL2jn1XrmTVeuPjQ2PqS5DZ3VOKVYffwa4fI8LP+vjQxuaGVf/ne/wJc1V0U7iJUCP/s5DqhZIE07gAG7QW9WIF2EdvgKSPD+rFKqsGwhQOjTijg1r4NkTUbAhM4RP39Rl0ROaK0Dcf/QL+urJEkgAWrtF4EepSPi9gpduLZnzSNjRNevTNX3sdjTnC3gxYjvPRnc9TcuXNsrZ9yqXUpUMcEhY80Q+c2v2SMKL2LeuQXJunGbncVJvHKa9z0m7qeGVpbXS72euxW2Vj6+SnHnr7rfNeFit5+qdOgFkrQBXWieAifUdUoKr5uBIBMEAOCGC83U97HU96efVdl28MkuLzU/KVnH2MRGG4K4Aj9R9sfAXRnKiNXlsQkLeJ6urd4KJUJqxwoCvisQ5wqppGLkf/DJz/cO7fCQhF+gNLD4vV4WMo5SVlJmRNNwZ/H0bBJ1oeJHbOKQjN+AaAnKf1RsBW7Z3DGJueLdDvSQNW7y0Y/En56pRUB8rv4dFQMPIhXuVoyiV1urYB+38qbHo4B5zRW1YlHissQdKvI2VqoYrFqVH+euc=
+  app: springip
   strategy: git
