@@ -21,15 +21,30 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public ApplicationUser registerUser(ApplicationUser applicationUser) {
+        ApplicationUser result = userRepository.findByEmail(applicationUser.getEmail());
+        if (result != null) {
+            return null;
+        }
         return userRepository.save(applicationUser);
     }
 
     @Override
+    public void createVerificationToken(ApplicationUser user, String token) {
+
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        ApplicationUser applicationUser = userRepository.findByUsername(s);
+        ApplicationUser applicationUser = userRepository.findByEmail(s);
         if (applicationUser == null)
             throw new UsernameNotFoundException(s);
 
-        return new User(applicationUser.getUsername(), applicationUser.getPassword(), Collections.emptyList());
+        return new User(applicationUser.getEmail(),
+                applicationUser.getPassword(),
+                true,
+                true,
+                true,
+                true,
+                Collections.emptyList());
     }
 }

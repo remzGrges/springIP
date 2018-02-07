@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.API.Security;
+package be.kdg.integratieproject2.API.Security.Filters;
 
 
 import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static be.kdg.integratieproject2.API.Security.SecurityConstants.*;
+import static be.kdg.integratieproject2.API.Security.Util.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
@@ -37,7 +37,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            creds.getUsername(),
+                            creds.getEmail(),
                             creds.getPassword(),
                             new ArrayList<>()
                     )

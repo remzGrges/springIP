@@ -1,5 +1,7 @@
-package be.kdg.integratieproject2.API.Security;
+package be.kdg.integratieproject2.API.Security.Config;
 
+import be.kdg.integratieproject2.API.Security.Filters.JWTAuthenticationFilter;
+import be.kdg.integratieproject2.API.Security.Filters.JWTAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,7 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static be.kdg.integratieproject2.API.Security.SecurityConstants.SIGN_UP_URL;
+import static be.kdg.integratieproject2.API.Security.Util.SecurityConstants.SIGN_UP_URL;
 
 
 @EnableWebSecurity

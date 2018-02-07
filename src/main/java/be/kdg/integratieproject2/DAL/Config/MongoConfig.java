@@ -13,13 +13,13 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(value = "be.kdg.integratieproject2.DAL.Implementations")
 public class MongoConfig {
 
-    private static final String URI = "mongodb://teamcrypto:integratieproject@kandoe-shard-00-00-wr8ld.mongodb.net:27017,kandoe-shard-00-01-wr8ld.mongodb.net:27017,kandoe-shard-00-02-wr8ld.mongodb.net:27017/Test?ssl=true&replicaSet=Kandoe-shard-0&authSource=admin";
+    private static final String URI = "mongodb://teamcrypto:integratieproject@kandoe-shard-00-00-wr8ld.mongodb.net:27017,kandoe-shard-00-01-wr8ld.mongodb.net:27017,kandoe-shard-00-02-wr8ld.mongodb.net:27017/Kandoe?ssl=true&replicaSet=Kandoe-shard-0&authSource=admin";
 
     @Bean
     public MongoDbFactory mongoDbFactory() {
         MongoClientURI mongoClientURI = new MongoClientURI(URI);
         MongoClient mongoClient = new MongoClient(mongoClientURI);
-        return new SimpleMongoDbFactory(mongoClient, "Test");
+        return new SimpleMongoDbFactory(mongoClient, "Kandoe");
     }
 
     @Bean

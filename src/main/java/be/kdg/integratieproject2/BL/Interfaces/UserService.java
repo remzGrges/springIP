@@ -4,4 +4,6 @@ import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
 
 public interface UserService {
     public ApplicationUser registerUser(ApplicationUser applicationUser);
+
+    void createVerificationToken(ApplicationUser user, String token);
 }
