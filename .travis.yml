@@ -1,4 +1,11 @@
 language: java
 jdk:
  - oraclejdk8
- 
+notifications:
+  email: false
+deploy:
+  provider: heroku
+  api_key:
+    secure: ac74e987-4655-4196-8f9c-f9c4e8ca6183
+  app: springIP
+  strategy: git
