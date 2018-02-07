@@ -1,6 +1,10 @@
 language: java
 jdk:
 - oraclejdk8
+install:
+  - mvm install - DskipTests-true -Dmaven.javadoc.skip=true -B -V
+script:
+  - mvm test -B
 notifications:
   email: false
 deploy:
