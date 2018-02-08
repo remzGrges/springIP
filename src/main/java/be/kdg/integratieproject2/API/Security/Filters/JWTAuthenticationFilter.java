@@ -1,7 +1,7 @@
 package be.kdg.integratieproject2.API.Security.Filters;
 
 
-import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
