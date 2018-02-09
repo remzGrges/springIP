@@ -23,6 +23,7 @@ public class ApplicationTests {
 	@Test
 	public void simpleTest() {
 		assertThat("lol" , is("lol"));
+
 	}
 
 }

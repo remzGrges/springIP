@@ -39,5 +39,8 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         verificationEmail.setSubject(subject);
         verificationEmail.setText("http://localhost:8080" + confirmationUrl);
         mailSender.send(verificationEmail);
+
     }
 }
+
+
