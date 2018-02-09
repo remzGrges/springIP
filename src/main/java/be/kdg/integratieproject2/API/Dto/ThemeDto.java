@@ -1,23 +1,25 @@
-package be.kdg.integratieproject2.Domain;
+package be.kdg.integratieproject2.API.Dto;
 
+import be.kdg.integratieproject2.Domain.ApplicationUser;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import org.springframework.data.annotation.Id;
-
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * Created by Tim on 08/02/2018.
+ * Created by Tim on 09/02/2018.
  */
-public class Theme {
-    @Id
-    private String id;
+public class ThemeDto {
+    @NotNull
+    @NotEmpty
     private String name;
+    @NotNull
+    @NotEmpty
     private String description;
     private List<String> tags;
+    @NotNull
+    @NotEmpty
     private List<ApplicationUser> organisers;
-
-    public Theme() {
-    }
 
     public String getName() {
         return name;
@@ -49,13 +51,5 @@ public class Theme {
 
     public void setOrganisers(List<ApplicationUser> organisers) {
         this.organisers = organisers;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }
