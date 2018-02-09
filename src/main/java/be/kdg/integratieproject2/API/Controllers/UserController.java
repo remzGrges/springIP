@@ -1,15 +1,14 @@
 package be.kdg.integratieproject2.API.Controllers;
 
 import be.kdg.integratieproject2.API.Verification.OnRegistrationCompleteEvent;
-import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.API.Dto.UserRegistrationDto;
 import be.kdg.integratieproject2.BL.Interfaces.UserService;
-import be.kdg.integratieproject2.DAL.Domain.Verification.VerificationToken;
+import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 

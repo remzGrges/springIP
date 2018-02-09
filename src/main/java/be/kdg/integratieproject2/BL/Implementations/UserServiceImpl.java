@@ -1,10 +1,10 @@
 package be.kdg.integratieproject2.BL.Implementations;
 
 import be.kdg.integratieproject2.BL.Interfaces.UserService;
-import be.kdg.integratieproject2.DAL.Domain.Verification.VerificationToken;
+import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
 import be.kdg.integratieproject2.DAL.Implementations.TokenRepository;
 import be.kdg.integratieproject2.DAL.Implementations.UserRepository;
-import be.kdg.integratieproject2.DAL.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
