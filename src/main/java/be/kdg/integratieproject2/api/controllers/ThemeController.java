@@ -5,6 +5,7 @@ import be.kdg.integratieproject2.api.dto.ThemeDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.domain.Theme;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -23,10 +24,11 @@ public class ThemeController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String createTheme(@RequestBody ThemeDto dto) throws BadRequestException
+    public String createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
     {
         Theme theme = modelMapper.map(dto, Theme.class);
-        return themeService.addTheme(theme).getId();
+        //return themeService.addTheme(theme).getId();
+        return authentication.getName();
     }
     @RequestMapping(value="/gettheme/{themeId}", method = RequestMethod.GET, produces = "application/json")
     public ThemeDto getTheme(@PathVariable String themeId)
