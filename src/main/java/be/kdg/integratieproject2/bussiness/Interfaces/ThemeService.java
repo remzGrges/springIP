@@ -1,6 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
-import be.kdg.integratieproject2.domain.Theme;
+import be.kdg.integratieproject2.Domain.Theme;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface ThemeService {
-    Theme addTheme(Theme theme);
+    void addTheme(Theme theme, String userId);
+
     Theme getTheme(String id);
 }

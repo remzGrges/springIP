@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.domain;
+package be.kdg.integratieproject2.Domain;
 
 
 import org.springframework.data.annotation.Id;

@@ -1,10 +1,10 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.domain.verification.VerificationToken;
+import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;
-import be.kdg.integratieproject2.domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -66,5 +66,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 true,
                 true,
                 Collections.emptyList());
+    }
+
+    @Override
+    public ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException
+    {
+        ApplicationUser applicationUser = userRepository.findByEmail(s);
+        if (applicationUser == null)
+            throw new UsernameNotFoundException(s);
+
+        return applicationUser;
     }
 }

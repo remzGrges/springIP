@@ -1,6 +1,6 @@
 package be.kdg.integratieproject2.api.dto;
 
-import be.kdg.integratieproject2.domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
