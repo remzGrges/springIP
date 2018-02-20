@@ -73,6 +73,7 @@ public class TestThemeServices {
                 .andExpect(status().isOk())
                 .andReturn();
        String id = result.getResponse().getContentAsString();
+       this.theme.setId(id);
        Assert.assertTrue(this.theme.getName().equals(themeService.getTheme(id).getName()));
     }
 
@@ -98,7 +99,4 @@ public class TestThemeServices {
         mvc.perform(get("/themes/gettheme/5a7db94efb9531365458e135"))
                 .andExpect(jsonPath("$.name", is("testTheme2")));
     }
-
-
-
 }
