@@ -74,4 +74,8 @@ public class UserController {
         userService.deleteToken(verificationToken);
         return "User verified";
     }
+
+
+
+
 }

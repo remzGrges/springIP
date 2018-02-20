@@ -13,6 +13,7 @@ public class ApplicationUser {
     private String password;
     private Boolean enabled;
 
+
     public ApplicationUser() {
         this.enabled = false;
     }
@@ -20,6 +21,7 @@ public class ApplicationUser {
     public String getId() {
         return id;
     }
+
 
 
     public String getEmail() {

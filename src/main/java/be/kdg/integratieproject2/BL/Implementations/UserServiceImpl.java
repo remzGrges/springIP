@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+
     }
 
     @Override
