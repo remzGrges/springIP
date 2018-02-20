@@ -1,7 +1,11 @@
 package be.kdg.integratieproject2;
 
 import be.kdg.integratieproject2.API.Controllers.UserController;
+import be.kdg.integratieproject2.BL.Interfaces.UserService;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
+import com.google.gson.Gson;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.ui.context.Theme;
 import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
+
 @ContextConfiguration(locations = {"classpath*:testcontext.xml"})
 public class UserTest {
     @Autowired
@@ -21,21 +26,29 @@ public class UserTest {
     @Autowired
     private WebApplicationContext wac;
 
- /*   private MockMvc mvc;
+    private MockMvc mvc;
     private Gson gson;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private ThemeService themeService;*/
+    private UserService userService;
 
-    private Theme theme;
+    private ApplicationUser user;
     private Object o;
- /*   @Before
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         this.mvc = MockMvcBuilders.webAppContextSetup(wac).build();
-        this.theme.setName("postedTheme");
+        this.user = new ApplicationUser();
+        this.user.setFirstName("Admin");
         this.gson = new Gson();
         this.o = new StringBuilder();
-    }*/
+    }
+
+    @Test
+    public void testChangeName() {
+
+    }
+
+
 }
