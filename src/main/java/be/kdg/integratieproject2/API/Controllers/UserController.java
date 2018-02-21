@@ -5,12 +5,16 @@ import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.API.Dto.UserRegistrationDto;
 import be.kdg.integratieproject2.BL.Interfaces.UserService;
 import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
+import com.fasterxml.jackson.core.JsonParser;
+import com.mongodb.util.JSON;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -75,6 +79,14 @@ public class UserController {
         return "User verified";
     }
 
+    @PostMapping("/update")
+    public String changeName(Authentication authentication, @Valid @RequestBody String newName ) {
+        String username = authentication.getName();
+
+
+        userService.updateRegisteredUserName(userService.getUserByUsername(username), newName);
+        return "changed name succesfully";
+    }
 
 
 
