@@ -66,19 +66,21 @@ public class UserTest {
 
     @Test
     public void testChangeName() throws Exception {
-        /*MvcResult result = mvc.perform(post("/user/change")
-                            .content(gson.toJson(user))
-                            .contentType(MediaType.APPLICATION_JSON))
-                            .andExpect(status().isOk()).andReturn();*/
-        this.details = userDetailsService.loadUserByUsername("tim.vanaelst@student.kdg.be");
 
-        this.user.setEnabled(details.isEnabled());
-        this.user.setEmail(details.getUsername());
-        this.user.setFirstName("superAdmin");
-        this.userService.updateRegisteredUser(user);
-       //Assert.assertTrue(this.userService.ge);
+        user= this.userService.getUserByUsername("tim.vanaelst@student.kdg.be");
+
+        this.userService.updateRegisteredUserName(user, "superAdmin");
+
+        Assert.assertTrue(this.userService.getUserByUsername("tim.vanaelst@student.kdg.be").getFirstName().equals("superAdmin"));
 
     }
+
+    @Test
+    public void testChangeNameController() {
+
+    }
+
+
 
 
 }

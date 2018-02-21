@@ -68,4 +68,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 true,
                 Collections.emptyList());
     }
+    @Override
+    public ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException
+    {
+        ApplicationUser applicationUser = userRepository.findByEmail(s);
+        if (applicationUser == null)
+            throw new UsernameNotFoundException(s);
+
+        return applicationUser;
+    }
+
+    @Override
+    public void updateRegisteredUserName(ApplicationUser user, String voornaam) {
+         user.setFirstName(voornaam);
+         userRepository.save(user);
+    }
+
 }
