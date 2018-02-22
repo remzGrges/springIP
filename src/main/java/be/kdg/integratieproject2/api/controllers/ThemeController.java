@@ -1,12 +1,17 @@
 package be.kdg.integratieproject2.api.controllers;
 
+import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
-import be.kdg.integratieproject2.Domain.Theme;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Tim on 08/02/2018.
@@ -24,15 +29,32 @@ public class ThemeController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public void createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
+    public ResponseEntity<ThemeDto> createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
     {
         Theme theme = modelMapper.map(dto, Theme.class);
-        themeService.addTheme(theme, authentication.getName());
+        ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);
+        return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.CREATED);
     }
-    @RequestMapping(value="/gettheme/{themeId}", method = RequestMethod.GET, produces = "application/json")
-    public ThemeDto getTheme(@PathVariable String themeId)
+    @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication)
     {
-        Theme theme = themeService.getTheme(themeId);
-        return modelMapper.map(theme, ThemeDto.class);
+        List<Theme> themes = themeService.getThemesByUser(authentication.getName());
+        List<ThemeDto> themeDTOs = new LinkedList<>();
+        for(Theme theme : themes)
+        {
+            themeDTOs.add(modelMapper.map(theme, ThemeDto.class));
+        }
+        return new ResponseEntity<List<ThemeDto>>(themeDTOs, HttpStatus.FOUND);
+    }
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
+    public ResponseEntity deleteTheme(Authentication authentication, @PathVariable String id)
+    {
+        try {
+            themeService.deleteTheme(id);
+        }
+        catch (Exception e){
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+    return new ResponseEntity(HttpStatus.OK);
     }
 }

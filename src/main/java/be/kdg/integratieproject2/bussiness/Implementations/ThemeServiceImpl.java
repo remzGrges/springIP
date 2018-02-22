@@ -25,14 +25,21 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public void addTheme(Theme theme, String userName) {
-        String id = themeRepository.save(theme).getId();
+    public Theme addTheme(Theme theme, String userName) {
         ApplicationUser user = userService.getUserByUsername(userName);
+        if(theme.getOrganisers() == null || theme.getOrganisers().size() == 0)
+        {
+            LinkedList<String> organisers =  new LinkedList<>();
+            organisers.add(userName);
+            theme.setOrganisers(organisers);
+        }
+        Theme savedTheme = themeRepository.save(theme);
         List<String> themes = user.getThemes();
         if (themes == null) themes = new LinkedList<>();
-        themes.add(id);
+        themes.add(savedTheme.getId());
         user.setThemes(themes);
         userService.updateRegisteredUser(user);
+        return savedTheme;
     }
 
     @Override
@@ -43,7 +50,24 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     public List<Theme> getThemesByUser(String userName)
     {
+        LinkedList<Theme> themes = new LinkedList<>();
         ApplicationUser user = userService.getUserByUsername(userName);
-        themeRepository.
+        for (String id: user.getThemes()
+             ) {
+            themes.add(themeRepository.findOne(id));
+        }
+        return themes;
+    }
+
+    @Override
+    public void deleteTheme(String id){
+        Theme theme = getTheme(id);
+        for(String organiser : theme.getOrganisers())
+        {
+            ApplicationUser user = userService.getUserByUsername(organiser);
+            List<String> themes = user.getThemes();
+            themes.removeIf(x -> x.equals(id));
+        }
+        themeRepository.delete(id);
     }
 }

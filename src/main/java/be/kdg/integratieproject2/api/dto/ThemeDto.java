@@ -1,6 +1,5 @@
 package be.kdg.integratieproject2.api.dto;
 
-import be.kdg.integratieproject2.Domain.ApplicationUser;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -12,6 +11,9 @@ import java.util.List;
 public class ThemeDto {
     @NotNull
     @NotEmpty
+    private String Id;
+    @NotNull
+    @NotEmpty
     private String name;
     @NotNull
     @NotEmpty
@@ -19,9 +21,17 @@ public class ThemeDto {
     private List<String> tags;
     @NotNull
     @NotEmpty
-    private List<ApplicationUser> organisers;
+    private List<String> organisers;
 
     public ThemeDto() {
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
     }
 
     public String getName() {
@@ -48,11 +58,11 @@ public class ThemeDto {
         this.tags = tags;
     }
 
-    public List<ApplicationUser> getOrganisers() {
+    public List<String> getOrganisers() {
         return organisers;
     }
 
-    public void setOrganisers(List<ApplicationUser> organisers) {
+    public void setOrganisers(List<String> organisers) {
         this.organisers = organisers;
     }
 }
