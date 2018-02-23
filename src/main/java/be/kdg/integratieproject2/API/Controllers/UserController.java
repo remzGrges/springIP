@@ -1,5 +1,6 @@
 package be.kdg.integratieproject2.API.Controllers;
 
+import be.kdg.integratieproject2.API.Dto.UserInfoDto;
 import be.kdg.integratieproject2.API.Verification.OnRegistrationCompleteEvent;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.API.Dto.UserRegistrationDto;
@@ -15,6 +16,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
@@ -95,15 +98,15 @@ public class UserController {
         return "changed name succesfully";
     }
 
-/*    @GetMapping(value = "/currentUser")
-    public ApplicationUser getCurrentUserName(Authentication authentication) {
-        String username = authentication.getName();
+   @RequestMapping(value = "/currentuser", method = RequestMethod.GET)
+    public ResponseEntity<UserInfoDto> getCurrentUserName(Authentication authentication) {
+        String userName = authentication.getName();
+        ApplicationUser user2 = userService.getUserByUsername(userName);
+        UserInfoDto userDto = modelMapper.map(user2, UserInfoDto.class);
 
-        ApplicationUser user = userService.getUserByUsername(username);
-        Gson gson = new Gson();
-        String jsonStrong = gson.toJson(user);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
 
-    }*/
+    }
 
 
 
