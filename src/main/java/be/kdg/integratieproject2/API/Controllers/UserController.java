@@ -6,7 +6,13 @@ import be.kdg.integratieproject2.API.Dto.UserRegistrationDto;
 import be.kdg.integratieproject2.BL.Interfaces.UserService;
 import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
 import com.mongodb.util.JSON;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
@@ -79,16 +85,25 @@ public class UserController {
         return "User verified";
     }
 
-    @PostMapping("/update")
-    public String changeName(Authentication authentication, @Valid @RequestBody String newName ) {
+    @PostMapping(value = "/update")
+    public String changeName(Authentication authentication, @Valid @RequestBody String newName ) throws JSONException {
         String username = authentication.getName();
 
+        final JSONObject obj = new JSONObject(newName);
+        userService.updateRegisteredUserName(userService.getUserByUsername(username), obj.getString("newName"));
 
-        userService.updateRegisteredUserName(userService.getUserByUsername(username), newName);
         return "changed name succesfully";
     }
 
+/*    @GetMapping(value = "/currentUser")
+    public ApplicationUser getCurrentUserName(Authentication authentication) {
+        String username = authentication.getName();
 
+        ApplicationUser user = userService.getUserByUsername(username);
+        Gson gson = new Gson();
+        String jsonStrong = gson.toJson(user);
+
+    }*/
 
 
 
