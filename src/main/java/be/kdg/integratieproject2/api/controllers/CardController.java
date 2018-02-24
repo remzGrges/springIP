@@ -1,6 +1,6 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.domain.Card;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.CardDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;

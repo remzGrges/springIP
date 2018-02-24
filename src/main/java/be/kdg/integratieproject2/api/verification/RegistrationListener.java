@@ -1,7 +1,7 @@
 package be.kdg.integratieproject2.api.verification;
 
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.domain.ApplicationUser;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

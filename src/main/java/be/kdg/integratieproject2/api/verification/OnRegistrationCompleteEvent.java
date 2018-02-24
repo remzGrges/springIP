@@ -1,6 +1,6 @@
 package be.kdg.integratieproject2.api.verification;
 
-import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.domain.ApplicationUser;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Locale;

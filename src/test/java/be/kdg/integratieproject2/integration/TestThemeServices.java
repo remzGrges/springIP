@@ -1,6 +1,6 @@
 package be.kdg.integratieproject2.integration;
 
-import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.domain.Theme;
 import be.kdg.integratieproject2.api.controllers.ThemeController;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import org.junit.After;

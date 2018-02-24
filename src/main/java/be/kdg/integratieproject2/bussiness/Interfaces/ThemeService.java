@@ -1,7 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.domain.Theme;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

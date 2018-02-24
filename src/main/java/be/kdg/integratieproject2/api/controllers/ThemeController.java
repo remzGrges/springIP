@@ -1,6 +1,6 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.domain.Theme;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
