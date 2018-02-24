@@ -1,7 +1,9 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
@@ -70,4 +72,11 @@ public class ThemeServiceImpl implements ThemeService {
         }
         themeRepository.delete(id);
     }
+
+    @Override
+    public void updateTheme(Theme theme) {
+        themeRepository.save(theme);
+    }
+
+
 }

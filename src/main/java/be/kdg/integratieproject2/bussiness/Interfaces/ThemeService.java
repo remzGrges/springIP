@@ -1,5 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,6 @@ public interface ThemeService {
     List<Theme> getThemesByUser(String userName);
 
     void deleteTheme(String id);
+
+    void updateTheme(Theme theme);
 }

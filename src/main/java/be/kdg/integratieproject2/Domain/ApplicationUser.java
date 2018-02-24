@@ -14,8 +14,8 @@ public class ApplicationUser {
     private String lastName;
     private String password;
     private Boolean enabled;
-
     private List<String> themes;
+
 
     public ApplicationUser() {
         this.enabled = false;
