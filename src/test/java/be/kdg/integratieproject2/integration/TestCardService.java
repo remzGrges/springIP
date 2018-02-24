@@ -1,8 +1,8 @@
 package be.kdg.integratieproject2.integration;
 
 
-import be.kdg.integratieproject2.domain.Card;
-import be.kdg.integratieproject2.domain.Theme;
+import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import org.junit.After;

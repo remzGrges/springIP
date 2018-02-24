@@ -1,7 +1,7 @@
-package be.kdg.integratieproject2.bussiness.implementations;
+package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.domain.ApplicationUser;
-import be.kdg.integratieproject2.domain.Card;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.data.implementations.CardRepository;

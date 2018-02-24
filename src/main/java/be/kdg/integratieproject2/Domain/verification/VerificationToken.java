@@ -1,6 +1,6 @@
-package be.kdg.integratieproject2.domain.verification;
+package be.kdg.integratieproject2.Domain.verification;
 
-import be.kdg.integratieproject2.domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import org.springframework.data.annotation.Id;
 
 import java.sql.Timestamp;
