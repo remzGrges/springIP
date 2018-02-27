@@ -58,12 +58,8 @@ public class UserTest {
         MockitoAnnotations.initMocks(this);
         this.mvc = MockMvcBuilders.webAppContextSetup(wac).build();
 
-        this.user= this.userService.getUserByUsername("tim.vanaelst@student.kdg.be");
-        mvc.perform(post("/login")
-                .content(gson.toJson(user.getEmail()))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+        this.user= this.userService.getUserByUsername("indy.dewacker@student.kdg.be");
+
         this.gson = new Gson();
         this.o = new StringBuilder();
     }
@@ -74,34 +70,15 @@ public class UserTest {
 
         this.userService.updateRegisteredUserName(user, "superAdmin");
 
-        Assert.assertTrue(this.userService.getUserByUsername("tim.vanaelst@student.kdg.be").getFirstName().equals("superAdmin"));
+        Assert.assertTrue(this.userService.getUserByUsername("indy.dewacker@student.kdg.be").getFirstName().equals("superAdmin"));
 
     }
 
-    @Test
-    public void testRouting() throws Exception {
-        MvcResult result = mvc.perform(post("/users/update")
-                .content(gson.toJson(user))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
 
 
-    }
 
-    @Test
-    public void testUpdate() throws Exception {
-        MvcResult result = mvc.perform(post("/users/update")
-                .content(gson.toJson(user))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
 
-        Assert.assertTrue(this.userService.getUserByUsername("tim.vanaelst@student.kdg.be").getFirstName().equals("superAdmin"));
-
-    }
-
-    @Test
+ /*   @Test
     public void testUpdateName() throws Exception {
         MvcResult result = mvc.perform(post("/users/update")
                 .content(gson.toJson(user))
@@ -109,12 +86,12 @@ public class UserTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-/*
+*//*
         Assert.assertTrue(this.userService.getUserByUsername("tim.vanaelst@student.kdg.be").getFirstName().equals("superAdmin"));
-*/
+*//*
 
 
-    }
+    }*/
 
 
 
