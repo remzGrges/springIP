@@ -2,6 +2,8 @@ package be.kdg.integratieproject2.Domain;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.List;
+
 public class ApplicationUser {
 
     @Id
@@ -12,6 +14,8 @@ public class ApplicationUser {
     private String lastName;
     private String password;
     private Boolean enabled;
+    private List<String> themes;
+
 
 
     public ApplicationUser() {
@@ -63,5 +67,13 @@ public class ApplicationUser {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<String> getThemes() {
+        return themes;
+    }
+
+    public void setThemes(List<String> themes) {
+        this.themes = themes;
     }
 }
