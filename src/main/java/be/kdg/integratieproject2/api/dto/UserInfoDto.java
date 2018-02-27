@@ -1,6 +1,4 @@
-package be.kdg.integratieproject2.API.Dto;
-
-import org.springframework.data.annotation.Id;
+package be.kdg.integratieproject2.api.dto;
 
 public class UserInfoDto {
 

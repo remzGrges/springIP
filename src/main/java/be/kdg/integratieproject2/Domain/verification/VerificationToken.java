@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.Domain.verification;
+package be.kdg.integratieproject2.Domain.Verification;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import org.springframework.data.annotation.Id;

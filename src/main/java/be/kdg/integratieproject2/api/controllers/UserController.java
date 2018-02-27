@@ -1,14 +1,15 @@
-package be.kdg.integratieproject2.API.Controllers;
+package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.API.Dto.UserInfoDto;
-import be.kdg.integratieproject2.API.Verification.OnRegistrationCompleteEvent;
+
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.API.Dto.UserRegistrationDto;
-import be.kdg.integratieproject2.BL.Interfaces.UserService;
-import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
+import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
+import be.kdg.integratieproject2.Domain.Verification.*;
+import be.kdg.integratieproject2.api.dto.UserInfoDto;
+import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
+import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
+import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.gson.Gson;
 import com.mongodb.util.JSON;
 import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
@@ -71,7 +72,7 @@ public class UserController {
     @GetMapping("/registrationConfirm")
     public String confirmRegistration(@RequestParam("token") String token) {
 
-        VerificationToken verificationToken = userService.getVerificationToken(token);
+      VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
             return "No Such Token";
         }

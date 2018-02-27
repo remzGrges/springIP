@@ -19,4 +19,6 @@ public interface ThemeService {
     void deleteTheme(String id);
 
     void updateTheme(Theme theme);
+
+
 }
