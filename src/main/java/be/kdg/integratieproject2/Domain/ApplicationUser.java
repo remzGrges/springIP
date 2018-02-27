@@ -14,8 +14,9 @@ public class ApplicationUser {
     private String lastName;
     private String password;
     private Boolean enabled;
-
     private List<String> themes;
+
+
 
     public ApplicationUser() {
         this.enabled = false;
@@ -24,6 +25,7 @@ public class ApplicationUser {
     public String getId() {
         return id;
     }
+
 
 
     public String getEmail() {

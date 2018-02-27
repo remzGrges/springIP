@@ -1,16 +1,29 @@
-package be.kdg.integratieproject2.api.controllers;
+package be.kdg.integratieproject2.API.Controllers;
 
-import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
+import be.kdg.integratieproject2.API.Dto.UserInfoDto;
+import be.kdg.integratieproject2.API.Verification.OnRegistrationCompleteEvent;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
-import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.Domain.verification.VerificationToken;
+import be.kdg.integratieproject2.API.Dto.UserRegistrationDto;
+import be.kdg.integratieproject2.BL.Interfaces.UserService;
+import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
+import com.mongodb.util.JSON;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -74,4 +87,27 @@ public class UserController {
         userService.deleteToken(verificationToken);
         return "User verified";
     }
+
+    @PostMapping(value = "/update")
+    public String changeName(Authentication authentication, @Valid @RequestBody String newName ) throws JSONException {
+        String username = authentication.getName();
+
+        final JSONObject obj = new JSONObject(newName);
+        userService.updateRegisteredUserName(userService.getUserByUsername(username), obj.getString("newName"));
+
+        return "changed name succesfully";
+    }
+
+   @RequestMapping(value = "/currentuser", method = RequestMethod.GET)
+    public ResponseEntity<UserInfoDto> getCurrentUserName(Authentication authentication) {
+        String userName = authentication.getName();
+        ApplicationUser user2 = userService.getUserByUsername(userName);
+        UserInfoDto userDto = modelMapper.map(user2, UserInfoDto.class);
+
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+
+    }
+
+
+
 }

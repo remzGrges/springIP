@@ -17,4 +17,6 @@ public interface ThemeService {
     List<Theme> getThemesByUser(String userName);
 
     void deleteTheme(String id);
+
+    void updateTheme(Theme theme);
 }

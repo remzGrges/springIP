@@ -27,6 +27,9 @@ public class UserRegistrationDto {
     private String password;
     private String matchingPassword;
 
+
+
+
     public String getEmail() {
         return email;
     }

@@ -1,9 +1,9 @@
-package be.kdg.integratieproject2.bussiness.Implementations;
+package be.kdg.integratieproject2.BL.Implementations;
 
-import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.Domain.verification.VerificationToken;
-import be.kdg.integratieproject2.data.implementations.TokenRepository;
-import be.kdg.integratieproject2.data.implementations.UserRepository;
+import be.kdg.integratieproject2.BL.Interfaces.UserService;
+import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
+import be.kdg.integratieproject2.DAL.Implementations.TokenRepository;
+import be.kdg.integratieproject2.DAL.Implementations.UserRepository;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+
     }
 
     @Override
@@ -67,7 +68,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 true,
                 Collections.emptyList());
     }
-
     @Override
     public ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException
     {
@@ -77,4 +77,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         return applicationUser;
     }
+
+    @Override
+    public void updateRegisteredUserName(ApplicationUser user, String voornaam) {
+         user.setFirstName(voornaam);
+         userRepository.save(user);
+    }
+
 }
