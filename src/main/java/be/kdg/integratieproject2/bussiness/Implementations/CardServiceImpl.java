@@ -32,25 +32,20 @@ public class CardServiceImpl implements CardService {
     @Override
     public Card addCard(Card card, String userId, String themeId) {
         ApplicationUser user = userService.getUserByUsername(userId);
-        if (user.getThemes() != null) {
-            if (user.getThemes().contains(themeId)) {
-                card.setUserId(userId);
-                cardRepository.save(card);
-                Theme theme = themeService.getTheme(themeId);
-                List<Card> cards = theme.getCards();
-                if (cards == null) {
-                    cards = new LinkedList<>();
-                }
-                cards.add(card);
-                theme.setCards(cards);
-                themeService.updateTheme(theme);
-            } else {
-                throw new BadRequestException();
+        if (user.getThemes().contains(themeId)) {
+            card.setUserId(userId);
+            cardRepository.save(card);
+            Theme theme = themeService.getTheme(themeId);
+            List<Card> cards = theme.getCards();
+            if (cards == null) {
+                cards = new LinkedList<>();
             }
+            cards.add(card);
+            theme.setCards(cards);
+            themeService.updateTheme(theme);
         } else {
             throw new BadRequestException();
         }
-
         return card;
     }
 
@@ -72,10 +67,8 @@ public class CardServiceImpl implements CardService {
                 } else {
                     return themeService.getTheme(themeId).getCards();
                 }
-        }else{
-            throw new BadRequestException();
         }
-        return new LinkedList<>();
+        throw new BadRequestException();
     }
 
     @Override
@@ -88,9 +81,7 @@ public class CardServiceImpl implements CardService {
     public void deleteCard(String id, String userId) {
         Card card = getCard(id);
         ApplicationUser user = userService.getUserByUsername(userId);
-        if (!user.getEmail().equals(userId)) {
-            throw new BadRequestException();
-        }
+
         List<Theme> themes = themeService.getThemesByUser(userId);
         if (themes == null || themes.size() == 0) {
             throw new BadRequestException();

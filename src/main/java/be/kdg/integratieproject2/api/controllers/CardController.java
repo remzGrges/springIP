@@ -27,7 +27,7 @@ public class CardController {
     }
 
     @RequestMapping(value = "/create/{themeId}", method = RequestMethod.POST)
-    public ResponseEntity<CardDto> createTheme(@RequestBody CardDto dto, Authentication authentication, @PathVariable String themeId) throws BadRequestException
+    public ResponseEntity<CardDto> createCard(@RequestBody CardDto dto, Authentication authentication, @PathVariable String themeId) throws BadRequestException
     {
         Card card = modelMapper.map(dto, Card.class);
         CardDto mappedCard = modelMapper.map(cardService.addCard(card, authentication.getName(), themeId ), CardDto.class);
@@ -60,7 +60,7 @@ public class CardController {
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CardDto>> GetAll(Authentication authentication)
     {
-                List<Card> cards = cardService.getAll();
+        List<Card> cards = cardService.getAll();
         List<CardDto> cardDtos = new LinkedList<>();
         for (Card card : cards) {
             cardDtos.add(modelMapper.map(card, CardDto.class));

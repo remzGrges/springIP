@@ -45,7 +45,6 @@ public class ApplicationUser {
     }
 
     public Boolean getEnabled() {
-
         return enabled;
     }
 

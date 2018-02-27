@@ -1,7 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;

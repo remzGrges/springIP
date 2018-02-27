@@ -55,8 +55,10 @@ public class ThemeServiceImpl implements ThemeService {
     public List<Theme> getThemesByUser(String userName) {
         LinkedList<Theme> themes = new LinkedList<>();
         ApplicationUser user = userService.getUserByUsername(userName);
-        for (String id : user.getThemes()
-                ) {
+        if (user.getThemes()==null){
+            return new LinkedList<>();
+        }
+        for (String id : user.getThemes()) {
             themes.add(themeRepository.findOne(id));
         }
         return themes;

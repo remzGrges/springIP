@@ -8,5 +8,9 @@ public interface SubThemeService {
 
     SubTheme addSubTheme(SubTheme subTheme, String userId, String themeId);
 
+    void deleteSubTheme(String subThemeid, String userName);
 
+    SubTheme updateSubTheme(SubTheme subThemePosted, String userName);
+
+    SubTheme getSubTheme(String subThemeId, String userName);
 }

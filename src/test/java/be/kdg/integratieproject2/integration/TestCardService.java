@@ -3,6 +3,7 @@ package be.kdg.integratieproject2.integration;
 
 import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import org.junit.After;
@@ -104,6 +105,16 @@ public class TestCardService {
         this.cardService.deleteCard(postedCard2.getId(),"tim.vanaelst@student.kdg.be");
     }
 
+    @Test (expected = BadRequestException.class)
+    public void testCreateCardWrongNoThema(){
+        Card postedCard = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be","wrong");
+    }
+
+    @Test (expected = UsernameNotFoundException.class)
+    public void testCreateCardWrongUser(){
+        Card postedCard = this.cardService.addCard(testCard2, "false@student.kdg.be",postedTheme1.getId());
+    }
+
     @Test(expected = UsernameNotFoundException.class)
     public void testCreateWrongCredentials() {
         this.cardService.addCard(testCard1, "false@student.kdg.be",postedTheme1.getId());
@@ -123,9 +134,24 @@ public class TestCardService {
         Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 0);
     }
 
+    @Test (expected = BadRequestException.class)
+    public void testGetCardsByThemeWrongTheme(){
+      cardService.getCardsByTheme("wrong","tim.vanaelst@student.kdg.be");
+    }
+
     @Test
     public void testGetAllCardsThemaNoCards() {
         Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 0);
     }
 
+    @Test
+    public void testGetAllCards() {
+        Assert.assertTrue(cardService.getAll().size() >= 0);
+    }
+
+    @Test (expected = BadRequestException.class)
+    public void testDeleteCardBadUser(){
+        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        cardService.deleteCard(postedCard.getId(), "leander-coevoet@hotmail.com");
+    }
 }

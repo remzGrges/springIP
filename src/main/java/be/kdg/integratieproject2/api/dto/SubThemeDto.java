@@ -6,19 +6,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class SubThemeDto {
-    @NotNull
-    @NotEmpty
-    private String subThemeId;
     private List<String> tags;
     private List<String> cards;
-
-    public String getSubThemeId() {
-        return subThemeId;
-    }
-
-    public void setSubThemeId(String subThemeId) {
-        this.subThemeId = subThemeId;
-    }
 
     public List<String> getTags() {
         return tags;

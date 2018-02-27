@@ -3,7 +3,7 @@ package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
-import be.kdg.integratieproject2.Domain.Verification.*;
+import be.kdg.integratieproject2.Domain.verification.*;
 import be.kdg.integratieproject2.api.dto.UserInfoDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
 import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
