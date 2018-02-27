@@ -36,7 +36,9 @@ public class ThemeServiceImpl implements ThemeService {
         Theme savedTheme = themeRepository.save(theme);
         List<String> themes = user.getThemes();
         if (themes == null) themes = new LinkedList<>();
-        themes.add(savedTheme.getId());
+        if(!themes.contains(savedTheme.getId())) {
+            themes.add(savedTheme.getId());
+        }
         user.setThemes(themes);
         userService.updateRegisteredUser(user);
         return savedTheme;
@@ -66,7 +68,9 @@ public class ThemeServiceImpl implements ThemeService {
         {
             ApplicationUser user = userService.getUserByUsername(organiser);
             List<String> themes = user.getThemes();
-            themes.removeIf(x -> x.equals(id));
+            if(themes != null) themes.removeIf(x -> x.equals(id));
+            user.setThemes(themes);
+            userService.updateRegisteredUser(user);
         }
         themeRepository.delete(id);
     }
