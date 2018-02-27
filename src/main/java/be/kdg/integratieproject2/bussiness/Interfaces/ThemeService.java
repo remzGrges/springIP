@@ -1,5 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
+import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Theme;
 import org.springframework.stereotype.Service;
 

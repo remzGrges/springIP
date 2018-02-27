@@ -15,8 +15,17 @@ public class Theme {
     private String description;
     private List<String> tags;
     private List<String> organisers;
+    private List<Card> cards;
 
     public Theme() {
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 
     public String getName() {
