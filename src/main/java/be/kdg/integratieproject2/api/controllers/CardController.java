@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -25,11 +26,11 @@ public class CardController {
         this.cardService = cardService;
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<CardDto> createTheme(@RequestBody CardDto dto, Authentication authentication) throws BadRequestException
+    @RequestMapping(value = "/create/{themeId}", method = RequestMethod.POST)
+    public ResponseEntity<CardDto> createTheme(@RequestBody CardDto dto, Authentication authentication, @PathVariable String themeId) throws BadRequestException
     {
         Card card = modelMapper.map(dto, Card.class);
-        CardDto mappedCard = modelMapper.map(cardService.addCard(card, authentication.getName()), CardDto.class);
+        CardDto mappedCard = modelMapper.map(cardService.addCard(card, authentication.getName(), themeId ), CardDto.class);
         return new ResponseEntity<CardDto>(mappedCard, HttpStatus.CREATED);
     }
 
@@ -37,7 +38,7 @@ public class CardController {
     public ResponseEntity deleteCard(Authentication authentication, @PathVariable String id)
     {
         try {
-            cardService.deleteCard(id);
+            cardService.deleteCard(id, authentication.getName());
         }
         catch (Exception e){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -48,7 +49,7 @@ public class CardController {
     @RequestMapping(value="/getAllCardsTheme/{themeId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CardDto>> getAllCardsTheme(Authentication authentication, @PathVariable String themeId)
     {
-        List<Card> cards = cardService.getCardsByTheme(themeId);
+        List<Card> cards = cardService.getCardsByTheme(themeId,authentication.getName());
         List<CardDto> cardDtos = new LinkedList<>();
         for (Card card : cards) {
             cardDtos.add(modelMapper.map(card, CardDto.class));
@@ -59,7 +60,7 @@ public class CardController {
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CardDto>> GetAll(Authentication authentication)
     {
-        List<Card> cards = cardService.getAll();
+                List<Card> cards = cardService.getAll();
         List<CardDto> cardDtos = new LinkedList<>();
         for (Card card : cards) {
             cardDtos.add(modelMapper.map(card, CardDto.class));

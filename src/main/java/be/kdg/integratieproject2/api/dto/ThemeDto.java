@@ -1,5 +1,6 @@
 package be.kdg.integratieproject2.api.dto;
 
+import be.kdg.integratieproject2.Domain.Card;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -22,8 +23,17 @@ public class ThemeDto {
     @NotNull
     @NotEmpty
     private List<String> organisers;
+    private List<Card> cards;
 
     public ThemeDto() {
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 
     public String getId() {

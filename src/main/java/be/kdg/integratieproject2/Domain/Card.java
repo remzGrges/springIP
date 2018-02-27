@@ -9,17 +9,8 @@ public class Card {
     private String id;
     private String text;
     private String userId;
-    private List<String> themes;
 
     public Card() {
-    }
-
-    public List<String> getThemes() {
-        return themes;
-    }
-
-    public void setThemes(List<String> themes) {
-        this.themes = themes;
     }
 
     public String getUserId() {

@@ -58,90 +58,74 @@ public class TestCardService {
 
         this.testCard1 = new Card();
         this.testCard1.setText("Hallo");
-        this.testCard1.setThemes(themes);
 
         this.testCard2 = new Card();
         this.testCard2.setText("Persoon");
-        this.testCard2.setThemes(themes);
 
         this.testCard3 = new Card();
         this.testCard3.setText("Iemand");
-        this.testCard3.setThemes(themes);
 
     }
 
     @Test
     public void testDeleteCard() {
-        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be");
-        Card postedCard1 = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be");
-        Card postedCard2 = this.cardService.addCard(testCard3, "tim.vanaelst@student.kdg.be");
-        Assert.assertTrue(cardService.getAll().size() == 3);
-        cardService.deleteCard(postedCard.getId());
-        Assert.assertTrue(cardService.getAll().size() == 2);
-        cardService.deleteCard(postedCard1.getId());
-        Assert.assertTrue(cardService.getAll().size() == 1);
-        cardService.deleteCard(postedCard2.getId());
-        Assert.assertTrue(cardService.getAll().size() == 0);
+        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        Card postedCard1 = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        Card postedCard2 = this.cardService.addCard(testCard3, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(),"tim.vanaelst@student.kdg.be" ).size() == 3);
+        cardService.deleteCard(postedCard.getId(),"tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 2);
+        cardService.deleteCard(postedCard1.getId(),"tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 1);
+        cardService.deleteCard(postedCard2.getId(),"tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 0);
     }
 
     @Test
     public void testCreateCard() {
-        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be");
+        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
         Assert.assertTrue(postedCard.getText().equals(testCard1.getText()));
         Assert.assertTrue(postedCard.getId().equals(testCard1.getId()));
         Assert.assertTrue(postedCard.getUserId().equals("tim.vanaelst@student.kdg.be"));
-        this.cardService.deleteCard(postedCard.getId());
+        this.cardService.deleteCard(postedCard.getId(),"tim.vanaelst@student.kdg.be");
     }
 
     @Test
     public void testCreate2Cards() {
-        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be");
-        Card postedCard2 = this.cardService.addCard(testCard2, "belcrowbar@gmail.com");
+        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        Card postedCard2 = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
         Assert.assertTrue(postedCard.getText().equals(testCard1.getText()));
         Assert.assertTrue(postedCard.getId().equals(testCard1.getId()));
         Assert.assertTrue(postedCard.getUserId().equals("tim.vanaelst@student.kdg.be"));
         Assert.assertTrue(postedCard2.getText().equals(testCard2.getText()));
         Assert.assertTrue(postedCard2.getId().equals(testCard2.getId()));
-        Assert.assertTrue(postedCard2.getUserId().equals("belcrowbar@gmail.com"));
-        this.cardService.deleteCard(postedCard.getId());
-        this.cardService.deleteCard(postedCard2.getId());
+        Assert.assertTrue(postedCard2.getUserId().equals("tim.vanaelst@student.kdg.be"));
+        this.cardService.deleteCard(postedCard.getId(), "tim.vanaelst@student.kdg.be");
+        this.cardService.deleteCard(postedCard2.getId(),"tim.vanaelst@student.kdg.be");
     }
 
     @Test(expected = UsernameNotFoundException.class)
     public void testCreateWrongCredentials() {
-        this.cardService.addCard(testCard1, "false@student.kdg.be");
+        this.cardService.addCard(testCard1, "false@student.kdg.be",postedTheme1.getId());
     }
 
     @Test
     public void testGetAllCardsThema() {
-        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be");
-        Card postedCard2 = this.cardService.addCard(testCard2, "belcrowbar@gmail.com");
-        Card postedCard3 = this.cardService.addCard(testCard3, "tim.vanaelst@student.kdg.be");
+        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        Card postedCard2 = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        Card postedCard3 = this.cardService.addCard(testCard3, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
 
-        Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId()).size() == 3);
-        this.cardService.deleteCard(postedCard.getId());
-        this.cardService.deleteCard(postedCard2.getId());
-        Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId()).size() == 1);
-        this.cardService.deleteCard(postedCard3.getId());
-        Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId()).size() == 0);
+        Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 3);
+        this.cardService.deleteCard(postedCard.getId(),"tim.vanaelst@student.kdg.be");
+        this.cardService.deleteCard(postedCard2.getId(),"tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 1);
+        this.cardService.deleteCard(postedCard3.getId(),"tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 0);
     }
 
     @Test
     public void testGetAllCardsThemaNoCards() {
-        Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId()).size() == 0);
+        Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 0);
     }
-
-    @Test
-    public void testGetThemeByCard() {
-        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be");
-
-        Assert.assertTrue(cardService.getThemesByCard(postedCard.getId()).size() == 1);
-        List<String> themes = cardService.getThemesByCard(postedCard.getId());
-        Theme theme = themeService.getTheme(themes.get(0));
-        Assert.assertTrue(theme.getDescription().equals(this.testTheme1.getDescription()));
-
-        this.cardService.deleteCard(postedCard.getId());
-    }
-
 
 }

@@ -7,15 +7,14 @@ import java.util.List;
 @Service
 public interface CardService {
 
-    Card addCard(Card card, String userId);
+    Card addCard(Card card, String userId, String themeId);
 
     Card getCard(String cardId);
 
-    List<Card> getCardsByTheme(String themeId);
+    List<Card> getCardsByTheme(String themeId, String userId);
 
     List<Card> getAll();
 
-    void deleteCard(String id);
+    void deleteCard(String id, String userId);
 
-    List<String> getThemesByCard(String cardid);
 }

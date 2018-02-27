@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.BL.Implementations;
+package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
