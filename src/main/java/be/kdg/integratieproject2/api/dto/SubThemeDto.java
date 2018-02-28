@@ -8,6 +8,17 @@ import java.util.List;
 public class SubThemeDto {
     private List<String> tags;
     private List<String> cards;
+    @NotEmpty
+    @NotNull
+    private boolean isSubTheme;
+
+    public boolean isSubTheme() {
+        return isSubTheme;
+    }
+
+    public void setSubTheme(boolean subTheme) {
+        isSubTheme = subTheme;
+    }
 
     public List<String> getTags() {
         return tags;

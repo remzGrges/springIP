@@ -33,20 +33,18 @@ public class SubThemeServiceImpl implements SubThemeService {
         ApplicationUser user = userService.getUserByUsername(userId);
         Theme theme;
         SubTheme subTheme1;
-        if(user.getThemes().stream().anyMatch(x -> x.equals(themeId)))
-        {
+        if (user.getThemes().stream().anyMatch(x -> x.equals(themeId))) {
             subTheme.setUserId(userId);
-            subTheme1= cardRepository.save(subTheme);
+            subTheme1 = cardRepository.save(subTheme);
             theme = themeService.getTheme(themeId);
             List<Card> cards = theme.getCards();
-            if (cards ==null){
-                cards =new LinkedList<>();
+            if (cards == null) {
+                cards = new LinkedList<>();
             }
             cards.add(subTheme1);
             theme.setCards(cards);
             themeService.updateTheme(theme);
-        }
-        else {
+        } else {
             throw new BadRequestException();
         }
         return subTheme1;
@@ -84,7 +82,20 @@ public class SubThemeServiceImpl implements SubThemeService {
     @Override
     public SubTheme getSubTheme(String subThemeId, String userName) {
         ApplicationUser user = userService.getUserByUsername(userName);
-        return (SubTheme)cardRepository.findOne(subThemeId);
+        return (SubTheme) cardRepository.findOne(subThemeId);
+    }
+
+    @Override
+    public List<SubTheme> getAllSubThemesTheme(String themeId, String userName) {
+        ApplicationUser user = userService.getUserByUsername(userName);
+        Theme theme = themeService.getTheme(themeId);
+        List<Card> cards = theme.getCards();
+        cards.removeIf(x -> !(x instanceof SubTheme));
+        List<SubTheme> subThemes = new LinkedList<>();
+        for (Card card : cards) {
+            subThemes.add((SubTheme) card);
+        }
+        return subThemes;
     }
 
 }
