@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.api.controllers;
 
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.api.dto.UploadPictureDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
 import be.kdg.integratieproject2.Domain.verification.*;
 import be.kdg.integratieproject2.api.dto.UserInfoDto;
@@ -101,7 +102,11 @@ public class UserController {
         UserInfoDto userDto = modelMapper.map(user2, UserInfoDto.class);
 
         return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
 
+    @PostMapping(value = "/uploadProfilePicture")
+    public String uploadProfilePicture(@Valid @RequestBody UploadPictureDto dto ) {
+        return "Succes";
     }
 
 
