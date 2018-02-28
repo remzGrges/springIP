@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         return new User(applicationUser.getEmail(),
                 applicationUser.getPassword(),
-                true,
+                applicationUser.getEnabled(),
                 true,
                 true,
                 true,
