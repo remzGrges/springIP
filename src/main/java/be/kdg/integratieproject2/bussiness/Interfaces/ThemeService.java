@@ -22,4 +22,5 @@ public interface ThemeService {
     void updateTheme(Theme theme);
 
 
+    void addOrganiser(String theme, String organiser, String newOrganiser);
 }

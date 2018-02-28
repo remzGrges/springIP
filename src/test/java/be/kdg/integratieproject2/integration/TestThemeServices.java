@@ -50,6 +50,7 @@ public class TestThemeServices {
     private Theme postedTheme1;
     private Theme postedTheme2;
     private Theme postedTheme3;
+
     //private Object o;
 
     @Before
@@ -167,6 +168,25 @@ public class TestThemeServices {
         Assert.assertTrue(theme2.getDescription().equals("This is a permanent testTheme DO NOT DELETE"));
     }
 
+    @Test
+    public void testAddOrganiser() {
+        String themeId = "5a8d51c51525a03170a20be8";
+        themeService.addOrganiser(themeId,"test@student.kdg.be" ,"indy.dewacker@student.kdg.be" );
+        List<Theme>  themes = themeService.getThemesByUser("indy.dewacker@student.kdg.be");
+        Assert.assertTrue(themes.stream().anyMatch(x -> x.getId().equals(themeId)));
+        Assert.assertTrue(themeService.getTheme(themeId).getOrganisers().contains("indy.dewacker@student.kdg.be"));
+
+    }
+
+    @Test
+    public void testAddOrganiser2() {
+        String themeId = "5a8d51c51525a03170a20be8";
+        themeService.addOrganiser(themeId,"test@student.kdg.be" ,"tim.vanaelst@student.kdg.be" );
+        List<Theme>  themes = themeService.getThemesByUser("tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(themes.stream().anyMatch(x -> x.getId().equals(themeId)));
+        Assert.assertTrue(themeService.getTheme(themeId).getOrganisers().contains("tim.vanaelst@student.kdg.be"));
+    }
+
     @After
     public void deleteThemes()
     {
@@ -182,5 +202,7 @@ public class TestThemeServices {
             Assert.assertTrue(themes.size() == 0);
         }
     }
+
+
 
 }

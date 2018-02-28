@@ -1,5 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
+import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Theme;
@@ -9,6 +10,17 @@ import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
 import org.springframework.stereotype.Service;
 
+import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
+import org.springframework.context.ApplicationListener;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,8 +33,9 @@ public class ThemeServiceImpl implements ThemeService {
 
     private ThemeRepository themeRepository;
     private UserService userService;
+    private JavaMailSender mailSender;
 
-    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService) {
+    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService,JavaMailSender mailSender) {
         this.themeRepository = themeRepository;
         this.userService = userService;
     }
@@ -81,6 +94,34 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     public void updateTheme(Theme theme) {
         themeRepository.save(theme);
+    }
+
+    @Override
+    public void addOrganiser(String themeId, String organiser, String newOrganiser) {
+        Theme theme = getTheme(themeId);
+        if (theme.getOrganisers() != null) {
+            if (theme.getOrganisers().contains(organiser)) {
+                try{
+                    ApplicationUser newOrganiserUser = userService.getUserByUsername(newOrganiser);
+                    List<String> themes = newOrganiserUser.getThemes();
+                    if(themes == null)
+                    {
+                        themes = new ArrayList<>();
+                    }
+                    themes.add(themeId);
+                    newOrganiserUser.setThemes(themes);
+                    userService.updateRegisteredUser(newOrganiserUser);
+                }
+                catch (Exception e)
+                {
+                    //email sturen
+                }
+                List<String> organisers = theme.getOrganisers();
+                organisers.add(newOrganiser);
+                theme.setOrganisers(organisers);
+                updateTheme(theme);
+            }
+        }
     }
 
 
