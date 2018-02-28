@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.api.controllers;
 
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ProfilePicture;
 import be.kdg.integratieproject2.api.dto.UploadPictureDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
 import be.kdg.integratieproject2.Domain.verification.*;
@@ -97,15 +98,18 @@ public class UserController {
 
    @RequestMapping(value = "/currentuser", method = RequestMethod.GET)
     public ResponseEntity<UserInfoDto> getCurrentUserName(Authentication authentication) {
-        String userName = authentication.getName();
-        ApplicationUser user2 = userService.getUserByUsername(userName);
+        String username = authentication.getName();
+        ApplicationUser user2 = userService.getUserByUsername(username);
         UserInfoDto userDto = modelMapper.map(user2, UserInfoDto.class);
 
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @PostMapping(value = "/uploadProfilePicture")
-    public String uploadProfilePicture(@Valid @RequestBody UploadPictureDto dto ) {
+    public String uploadProfilePicture(Authentication authentication, @Valid @RequestBody UploadPictureDto dto ) {
+        String username = authentication.getName();
+        ProfilePicture profilePicture = modelMapper.map(dto, ProfilePicture.class);
+        userService.uploadProfilePicture(username, profilePicture);
         return "Succes";
     }
 

@@ -1,6 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ProfilePicture;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,4 +22,6 @@ public interface UserService {
     ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException;
 
     void updateRegisteredUserName(ApplicationUser user, String s);
+
+    void uploadProfilePicture(String username, ProfilePicture profilePicture);
 }
