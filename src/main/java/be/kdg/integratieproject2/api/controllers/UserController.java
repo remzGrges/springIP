@@ -48,19 +48,14 @@ public class UserController {
     @PostMapping("/register")
     public String register(@Valid @RequestBody UserRegistrationDto dto, BindingResult result, WebRequest request) {
         if (result.hasErrors()){
-            return "Failure type 2";
+            return "Body not valid";
         }
 
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         ApplicationUser user = modelMapper.map(dto, ApplicationUser.class);
 
-        user = userService.registerUser(user);
-
-        if (user == null){
-            return "Failure type 1";
-        }
-
         try {
+            user = userService.registerUser(user);
             String appUrl = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl));
         } catch (Exception ex) {
