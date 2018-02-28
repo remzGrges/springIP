@@ -3,6 +3,7 @@ package be.kdg.integratieproject2.bussiness.Implementations;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;
 import org.springframework.security.core.userdetails.User;
@@ -26,10 +27,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public ApplicationUser registerUser(ApplicationUser applicationUser) {
+    public ApplicationUser registerUser(ApplicationUser applicationUser) throws UserAlreadyExistsException {
         ApplicationUser result = userRepository.findByEmail(applicationUser.getEmail());
         if (result != null) {
-            return null;
+            throw new UserAlreadyExistsException("User Already Exists");
         }
         return userRepository.save(applicationUser);
     }

@@ -2,12 +2,13 @@ package be.kdg.integratieproject2.bussiness.Interfaces;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    public ApplicationUser registerUser(ApplicationUser applicationUser);
+    public ApplicationUser registerUser(ApplicationUser applicationUser) throws UserAlreadyExistsException;
 
     void createVerificationToken(ApplicationUser user, String token);
 
