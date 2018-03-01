@@ -18,6 +18,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -90,7 +91,6 @@ public class TestThemeServices {
         Theme postedTheme = gson.fromJson(result.getResponse().getContentAsString(), Theme.class);
         Assert.assertTrue(this.testTheme1.getName().equals(themeService.getTheme(postedTheme.getId()).getName()));
     }
-
     @Test
     public void testControllerWrongClass() throws Exception
     {
@@ -99,6 +99,8 @@ public class TestThemeServices {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }*/
+
+
 
     @Test
     public void testCreateTheme()
@@ -129,6 +131,21 @@ public class TestThemeServices {
         Assert.assertTrue(postedTheme2.getDescription().equals(this.postedTheme2.getDescription()));
         Assert.assertTrue(postedTheme2.getOrganisers().contains("tim.vanaelst@student.kdg.be"));
 
+    }
+
+
+    @Test()
+    public void testCreateThemeNoOrganisers(){
+        testTheme1.setOrganisers(new LinkedList<>());
+        Theme postedTheme = this.themeService.addTheme(testTheme1, "tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(postedTheme.getName().equals(testTheme1.getName()));
+        Assert.assertTrue(postedTheme.getDescription().equals(testTheme1.getDescription()));
+        this.postedTheme1 = postedTheme;
+
+        Theme postedTheme1 = this.themeService.getTheme(this.postedTheme1.getId());
+        Assert.assertTrue(postedTheme1.getName().equals(this.postedTheme1.getName()));
+        Assert.assertTrue(postedTheme1.getDescription().equals(this.postedTheme1.getDescription()));
+        Assert.assertTrue(postedTheme1.getOrganisers().contains("tim.vanaelst@student.kdg.be"));
     }
 
     @Test

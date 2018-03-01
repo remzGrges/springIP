@@ -39,14 +39,20 @@ public class TestCardService {
     private Card testCard3;
     private Theme testTheme1;
     private Theme postedTheme1;
+    private Card postedCard1;
 
     @After
     public void delete() {
         themeService.deleteTheme(this.postedTheme1.getId());
+        if (postedCard1 != null){
+            cardService.deleteCard(postedCard1.getId(), "tim.vanaelst@student.kdg.be");
+        }
     }
 
     @Before
     public void setup() {
+        postedCard1 =null;
+
         List<String> themes = new LinkedList<>();
         this.testTheme1 = new Theme();
         testTheme1.setDescription("Test");
@@ -151,7 +157,7 @@ public class TestCardService {
 
     @Test (expected = BadRequestException.class)
     public void testDeleteCardBadUser(){
-        Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
-        cardService.deleteCard(postedCard.getId(), "leander-coevoet@hotmail.com");
+        postedCard1 = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        cardService.deleteCard(postedCard1.getId(), "leander-coevoet@hotmail.com");
     }
 }

@@ -40,6 +40,8 @@ public class TestSubThemeService {
     private Theme postedTheme1;
     private SubTheme subTheme;
     private SubTheme postedSubTheme;
+    private SubTheme subTheme2;
+    private SubTheme postedSubTheme2;
 
 
     @After
@@ -48,12 +50,22 @@ public class TestSubThemeService {
         if (postedSubTheme != null) {
             subThemeService.deleteSubTheme(postedSubTheme.getId(), "tim.vanaelst@student.kdg.be");
         }
+        if (postedSubTheme2 != null) {
+            subThemeService.deleteSubTheme(postedSubTheme2.getId(), "tim.vanaelst@student.kdg.be");
+        }
     }
 
     @Before
     public void setup() {
+        postedSubTheme = null;
+        postedSubTheme2 = null;
         subTheme = new SubTheme();
         subTheme.setText("test subtheme");
+        subTheme.setSubTheme(true);
+
+        subTheme2 = new SubTheme();
+        subTheme2.setText("test subtheme2");
+        subTheme2.setSubTheme(true);
 
         this.testTheme1 = new Theme();
         testTheme1.setDescription("Test");
@@ -62,6 +74,26 @@ public class TestSubThemeService {
         organisers1.add("tim.vanaelst@student.kdg.be");
         this.testTheme1.setOrganisers(organisers1);
         postedTheme1 = this.themeService.addTheme(testTheme1, "tim.vanaelst@student.kdg.be");
+    }
+
+    @Test
+    public void testGetAllSubThemesTheme() {
+        postedSubTheme = subThemeService.addSubTheme(subTheme, "tim.vanaelst@student.kdg.be", postedTheme1.getId());
+        postedSubTheme2 = subThemeService.addSubTheme(subTheme2, "tim.vanaelst@student.kdg.be", postedTheme1.getId());
+
+        List<SubTheme> subThemes = subThemeService.getAllSubThemesTheme(postedTheme1.getId(), "tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(subThemes.size() == 2);
+        Assert.assertTrue(subThemes.get(0).getText().equals(postedSubTheme.getText()));
+        Assert.assertTrue(subThemes.get(1).getText().equals(postedSubTheme2.getText()));
+
+        Card card = new Card();
+        card.setText("cards");
+        card = cardService.addCard(card, "tim.vanaelst@student.kdg.be", postedTheme1.getId());
+        subThemes = subThemeService.getAllSubThemesTheme(postedTheme1.getId(), "tim.vanaelst@student.kdg.be");
+        Assert.assertTrue(subThemes.size() == 2);
+        Assert.assertTrue(subThemes.get(0).getText().equals(postedSubTheme.getText()));
+        Assert.assertTrue(subThemes.get(1).getText().equals(postedSubTheme2.getText()));
+        cardService.deleteCard(card.getId(), "tim.vanaelst@student.kdg.be");
     }
 
     @Test

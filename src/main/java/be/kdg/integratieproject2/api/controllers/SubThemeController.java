@@ -13,6 +13,7 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -52,5 +53,15 @@ public class SubThemeController {
         SubTheme subTheme = subThemeService.getSubTheme(subThemeId,authentication.getName());
         SubThemeDto subThemeDto = modelMapper.map(subTheme, SubThemeDto.class);
         return new ResponseEntity<SubThemeDto>(subThemeDto, HttpStatus.FOUND);
+    }
+
+    @RequestMapping(value="/getAllSubThemesTheme/{subThemeId}", method = RequestMethod.GET, produces = "application/json")
+    public  ResponseEntity<List<SubThemeDto>> GetAllSubThemesTheme(Authentication authentication, @PathVariable String subThemeId){
+        List<SubTheme> subThemes = subThemeService.getAllSubThemesTheme(subThemeId, authentication.getName());
+        List<SubThemeDto> subThemeDtos = new LinkedList<>();
+        for (SubTheme subTheme : subThemes) {
+            subThemeDtos.add(modelMapper.map(subTheme, SubThemeDto.class));
+        }
+          return new ResponseEntity<List<SubThemeDto>>(subThemeDtos, HttpStatus.FOUND);
     }
 }

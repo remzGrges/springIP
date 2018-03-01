@@ -5,10 +5,19 @@ import org.springframework.data.annotation.Id;
 import java.util.List;
 
 public class SubTheme extends Card {
+    private boolean isSubTheme;
     private List<String> tags;
     private List<String> cards;
 
     public SubTheme() {
+    }
+
+    public boolean isSubTheme() {
+        return isSubTheme;
+    }
+
+    public void setSubTheme(boolean subTheme) {
+        isSubTheme = subTheme;
     }
 
     public List<String> getTags() {
