@@ -4,11 +4,11 @@ import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.CardDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
-import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -30,13 +30,8 @@ public class CardController {
     public ResponseEntity<CardDto> createCard(@RequestBody CardDto dto, Authentication authentication, @PathVariable String themeId) throws BadRequestException
     {
         Card card = modelMapper.map(dto, Card.class);
-        CardDto mappedCard;
-        try {
-            mappedCard = modelMapper.map(cardService.addCard(card, authentication.getName(), themeId ), CardDto.class);
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-        return new ResponseEntity<>(mappedCard, HttpStatus.CREATED);
+        CardDto mappedCard = modelMapper.map(cardService.addCard(card, authentication.getName(), themeId ), CardDto.class);
+        return new ResponseEntity<CardDto>(mappedCard, HttpStatus.CREATED);
     }
 
     @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
@@ -46,7 +41,7 @@ public class CardController {
             cardService.deleteCard(id, authentication.getName());
         }
         catch (Exception e){
-            throw new BadRequestException(e.getMessage());
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(HttpStatus.OK);
     }

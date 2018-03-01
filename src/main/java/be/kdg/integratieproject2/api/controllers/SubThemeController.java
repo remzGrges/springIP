@@ -60,7 +60,7 @@ public class SubThemeController {
             throw new BadRequestException(e.getMessage());
         }
         SubThemeDto subThemeDto = modelMapper.map(subTheme, SubThemeDto.class);
-        return new ResponseEntity<SubThemeDto>(subThemeDto, HttpStatus.FOUND);
+        return new ResponseEntity<SubThemeDto>(subThemeDto, HttpStatus.OK);
     }
 
     @RequestMapping(value="/getAllSubThemesTheme/{subThemeId}", method = RequestMethod.GET, produces = "application/json")
@@ -75,6 +75,18 @@ public class SubThemeController {
         for (SubTheme subTheme : subThemes) {
             subThemeDtos.add(modelMapper.map(subTheme, SubThemeDto.class));
         }
-          return new ResponseEntity<List<SubThemeDto>>(subThemeDtos, HttpStatus.FOUND);
+          return new ResponseEntity<List<SubThemeDto>>(subThemeDtos, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/getAllByUser", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<SubThemeDto>> getSubTheme(Authentication authentication)
+    {
+        List<SubTheme> subthemes = subThemeService.getThemesByUser(authentication.getName());
+        List<SubThemeDto> subthemeDTOs = new LinkedList<>();
+        for(SubTheme subtheme : subthemes)
+        {
+            subthemeDTOs.add(modelMapper.map(subtheme, SubThemeDto.class));
+        }
+        return new ResponseEntity<List<SubThemeDto>>(subthemeDTOs, HttpStatus.OK);
     }
 }
