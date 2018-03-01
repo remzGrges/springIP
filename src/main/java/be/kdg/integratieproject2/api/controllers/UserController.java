@@ -10,12 +10,8 @@ import be.kdg.integratieproject2.api.dto.UserInfoDto;
 import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.NoProfilePictureFoundException;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
@@ -81,22 +77,22 @@ public class UserController {
     }
 
     @PostMapping(value = "/update")
-    public String changeName(Authentication authentication, @Valid @RequestBody String newName ) throws JSONException {
+    public UserInfoDto changeName(Authentication authentication, @Valid @RequestBody UserInfoDto dto ) {
         String username = authentication.getName();
 
-        final JSONObject obj = new JSONObject(newName);
-        userService.updateRegisteredUserName(userService.getUserByUsername(username), obj.getString("newName"));
+        ApplicationUser user = userService.updateRegisteredUserName(username, dto.getFirstName());
+        dto = modelMapper.map(user, UserInfoDto.class);
 
-        return "changed name succesfully";
+        return dto;
     }
 
    @RequestMapping(value = "/currentuser", method = RequestMethod.GET)
-    public ResponseEntity<UserInfoDto> getCurrentUserName(Authentication authentication) {
+    public UserInfoDto getCurrentUserName(Authentication authentication) {
         String username = authentication.getName();
-        ApplicationUser user2 = userService.getUserByUsername(username);
-        UserInfoDto userDto = modelMapper.map(user2, UserInfoDto.class);
+        ApplicationUser user = userService.getUserByUsername(username);
+        UserInfoDto dto = modelMapper.map(user, UserInfoDto.class);
 
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+        return dto;
     }
 
     @PostMapping(value = "/uploadProfilePicture")

@@ -71,9 +71,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void updateRegisteredUserName(ApplicationUser user, String voornaam) {
+    public ApplicationUser updateRegisteredUserName(String username, String voornaam) {
+        ApplicationUser user = this.getUserByUsername(username);
         user.setFirstName(voornaam);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

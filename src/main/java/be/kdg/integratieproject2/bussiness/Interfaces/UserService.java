@@ -22,7 +22,7 @@ public interface UserService {
 
     ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException;
 
-    void updateRegisteredUserName(ApplicationUser user, String s);
+    ApplicationUser updateRegisteredUserName(String user, String s);
 
     ProfilePicture uploadProfilePicture(String username, ProfilePicture profilePicture);
 
