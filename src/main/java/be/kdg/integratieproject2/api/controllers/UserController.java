@@ -3,18 +3,13 @@ package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.ProfilePicture;
-import be.kdg.integratieproject2.api.dto.UploadPictureDto;
+import be.kdg.integratieproject2.api.dto.PictureDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
 import be.kdg.integratieproject2.Domain.verification.*;
 import be.kdg.integratieproject2.api.dto.UserInfoDto;
-import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
 import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.mongodb.util.JSON;
-import jdk.nashorn.internal.parser.JSONParser;
-import org.json.JSONArray;
+import be.kdg.integratieproject2.bussiness.exceptions.NoProfilePictureFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
@@ -26,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -106,13 +100,23 @@ public class UserController {
     }
 
     @PostMapping(value = "/uploadProfilePicture")
-    public String uploadProfilePicture(Authentication authentication, @Valid @RequestBody UploadPictureDto dto ) {
+    public PictureDto uploadProfilePicture(Authentication authentication, @Valid @RequestBody PictureDto dto ) {
         String username = authentication.getName();
         ProfilePicture profilePicture = modelMapper.map(dto, ProfilePicture.class);
-        userService.uploadProfilePicture(username, profilePicture);
-        return "Succes";
+        profilePicture = userService.uploadProfilePicture(username, profilePicture);
+        dto = modelMapper.map(profilePicture, PictureDto.class);
+        return dto;
     }
 
-
-
+    @GetMapping(value = "/getProfilePicture")
+    public PictureDto getProfilePicture(Authentication authentication){
+        String username = authentication.getName();
+        ProfilePicture profilePicture = null;
+        try {
+            profilePicture = userService.getProfilePicture(username);
+        } catch (NoProfilePictureFoundException e) {
+            return null;
+        }
+        return modelMapper.map(profilePicture, PictureDto.class);
+    }
 }

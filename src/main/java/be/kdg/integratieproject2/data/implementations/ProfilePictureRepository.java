@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProfilePictureRepository extends MongoRepository<ProfilePicture, String> {
+    ProfilePicture findByUserId(String s);
 }

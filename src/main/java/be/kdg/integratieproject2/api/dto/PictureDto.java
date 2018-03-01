@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 
-public class UploadPictureDto {
+public class PictureDto {
 
     @NotNull
     @NotEmpty
