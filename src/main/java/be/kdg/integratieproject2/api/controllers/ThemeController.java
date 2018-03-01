@@ -1,5 +1,7 @@
 package be.kdg.integratieproject2.api.controllers;
 
+import be.kdg.integratieproject2.Application;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
@@ -12,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -75,8 +78,18 @@ public class ThemeController {
         //themeService.addOrganiser(themaId, userName, email);
         String appUrl = request.getContextPath();
 
-        eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.get("email")),request.getLocale(), appUrl, themeInvitationDto.get("themaId")));
 
+
+
+        try {
+            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.get("username")), request.getLocale(), appUrl, themeInvitationDto.get("themaId")));
+
+        } catch (Exception e) {
+            ApplicationUser user = new ApplicationUser();
+            user.setEmail(themeInvitationDto.get("username"));
+            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(user), request.getLocale(), appUrl, themeInvitationDto.get("themaId")));
+
+        }
 
 
         return new ResponseEntity(HttpStatus.OK);

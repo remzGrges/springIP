@@ -2,8 +2,8 @@ package be.kdg.integratieproject2.api.controllers;
 
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
-import be.kdg.integratieproject2.Domain.Verification.*;
 import be.kdg.integratieproject2.api.dto.UserInfoDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
 import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
@@ -72,7 +72,7 @@ public class UserController {
     @GetMapping("/registrationConfirm")
     public String confirmRegistration(@RequestParam("token") String token) {
 
-      VerificationToken verificationToken = userService.getVerificationToken(token);
+       VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
             return "No Such Token";
         }
