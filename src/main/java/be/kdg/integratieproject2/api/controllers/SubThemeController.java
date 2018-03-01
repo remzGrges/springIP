@@ -1,15 +1,13 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.SubTheme;
 import be.kdg.integratieproject2.api.BadRequestException;
-import be.kdg.integratieproject2.api.dto.CardDto;
 import be.kdg.integratieproject2.api.dto.SubThemeDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +30,12 @@ public class SubThemeController {
     public ResponseEntity<SubThemeDto> createSubTheme(@RequestBody SubThemeDto dto, Authentication authentication, @PathVariable String themeId) throws BadRequestException
     {
         SubTheme subTheme = modelMapper.map(dto, SubTheme.class);
-        SubThemeDto mappedCard = modelMapper.map(subThemeService.addSubTheme(subTheme, authentication.getName(), themeId ), SubThemeDto.class);
+        SubThemeDto mappedCard = null;
+        try {
+            mappedCard = modelMapper.map(subThemeService.addSubTheme(subTheme, authentication.getName(), themeId ), SubThemeDto.class);
+        } catch (ObjectNotFoundException e) {
+           throw new BadRequestException(e.getMessage());
+        }
         return new ResponseEntity<SubThemeDto>(mappedCard, HttpStatus.CREATED);
     }
 
@@ -50,14 +53,24 @@ public class SubThemeController {
 
     @RequestMapping(value="/get/{subThemeId}", method = RequestMethod.GET, produces = "application/json")
     public  ResponseEntity<SubThemeDto> GetSubTheme(Authentication authentication, @PathVariable String subThemeId){
-        SubTheme subTheme = subThemeService.getSubTheme(subThemeId,authentication.getName());
+        SubTheme subTheme = null;
+        try {
+            subTheme = subThemeService.getSubTheme(subThemeId,authentication.getName());
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         SubThemeDto subThemeDto = modelMapper.map(subTheme, SubThemeDto.class);
         return new ResponseEntity<SubThemeDto>(subThemeDto, HttpStatus.FOUND);
     }
 
     @RequestMapping(value="/getAllSubThemesTheme/{subThemeId}", method = RequestMethod.GET, produces = "application/json")
     public  ResponseEntity<List<SubThemeDto>> GetAllSubThemesTheme(Authentication authentication, @PathVariable String subThemeId){
-        List<SubTheme> subThemes = subThemeService.getAllSubThemesTheme(subThemeId, authentication.getName());
+        List<SubTheme> subThemes = null;
+        try {
+            subThemes = subThemeService.getAllSubThemesTheme(subThemeId, authentication.getName());
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         List<SubThemeDto> subThemeDtos = new LinkedList<>();
         for (SubTheme subTheme : subThemes) {
             subThemeDtos.add(modelMapper.map(subTheme, SubThemeDto.class));

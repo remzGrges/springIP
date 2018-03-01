@@ -3,6 +3,7 @@ package be.kdg.integratieproject2.integration;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.controllers.ThemeController;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -103,8 +104,7 @@ public class TestThemeServices {
 
 
     @Test
-    public void testCreateTheme()
-    {
+    public void testCreateTheme() throws ObjectNotFoundException {
         Theme postedTheme = this.themeService.addTheme(testTheme1, "tim.vanaelst@student.kdg.be");
         Assert.assertTrue(postedTheme.getName().equals(testTheme1.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme1.getDescription()));
@@ -118,8 +118,7 @@ public class TestThemeServices {
     }
 
     @Test
-    public void testCreateSecondTheme()
-    {
+    public void testCreateSecondTheme() throws ObjectNotFoundException {
         Theme postedTheme = this.themeService.addTheme(testTheme2, "tim.vanaelst@student.kdg.be");
         Assert.assertTrue(postedTheme.getName().equals(testTheme2.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme2.getDescription()));
@@ -135,7 +134,7 @@ public class TestThemeServices {
 
 
     @Test()
-    public void testCreateThemeNoOrganisers(){
+    public void testCreateThemeNoOrganisers() throws ObjectNotFoundException {
         testTheme1.setOrganisers(new LinkedList<>());
         Theme postedTheme = this.themeService.addTheme(testTheme1, "tim.vanaelst@student.kdg.be");
         Assert.assertTrue(postedTheme.getName().equals(testTheme1.getName()));
@@ -149,8 +148,7 @@ public class TestThemeServices {
     }
 
     @Test
-    public void testSeperateUser()
-    {
+    public void testSeperateUser() throws ObjectNotFoundException {
         Theme postedTheme = this.themeService.addTheme(testTheme3, "indy.dewacker@student.kdg.be");
         Assert.assertTrue(postedTheme.getName().equals(testTheme3.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme3.getDescription()));
@@ -171,8 +169,7 @@ public class TestThemeServices {
     }
 
     @Test
-    public void testGetAllThemes()
-    {
+    public void testGetAllThemes() throws ObjectNotFoundException {
         List<Theme> themes = this.themeService.getThemesByUser("test@student.kdg.be");
         Assert.assertTrue(themes.size() == 2);
         Theme theme1 = themes.get(0);
@@ -185,8 +182,7 @@ public class TestThemeServices {
     }
 
     @After
-    public void deleteThemes()
-    {
+    public void deleteThemes() throws ObjectNotFoundException {
         if(this.postedTheme1 != null) themeService.deleteTheme(this.postedTheme1.getId());
         if(this.postedTheme2 != null) themeService.deleteTheme(this.postedTheme2.getId());
         if(this.postedTheme3 != null) themeService.deleteTheme(this.postedTheme3.getId());

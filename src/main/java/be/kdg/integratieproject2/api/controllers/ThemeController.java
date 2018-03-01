@@ -4,6 +4,7 @@ import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,18 +39,27 @@ public class ThemeController {
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication)
     {
-        List<Theme> themes = themeService.getThemesByUser(authentication.getName());
+        List<Theme> themes;
+        try {
+            themes = themeService.getThemesByUser(authentication.getName());
+        }
+        catch(ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         List<ThemeDto> themeDTOs = new LinkedList<>();
-        for(Theme theme : themes)
-        {
+        for(Theme theme : themes) {
             themeDTOs.add(modelMapper.map(theme, ThemeDto.class));
         }
-        return new ResponseEntity<List<ThemeDto>>(themeDTOs, HttpStatus.OK);
+        return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
     @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
     public ResponseEntity deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException
     {
-        themeService.deleteTheme(id);
+        try {
+            themeService.deleteTheme(id);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 }

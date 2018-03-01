@@ -1,11 +1,10 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Theme;
-import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
 import org.springframework.stereotype.Service;
 
@@ -47,17 +46,21 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public Theme getTheme(String id) {
-        return themeRepository.findOne(id);
+    public Theme getTheme(String id) throws ObjectNotFoundException{
+        try{
+            return themeRepository.findOne(id);
+        }
+        catch (Exception e)
+        {
+            throw new ObjectNotFoundException(id);
+        }
     }
 
     @Override
-    public List<Theme> getThemesByUser(String userName) {
+    public List<Theme> getThemesByUser(String userName) throws ObjectNotFoundException {
         LinkedList<Theme> themes = new LinkedList<>();
         ApplicationUser user = userService.getUserByUsername(userName);
-        if (user.getThemes()==null){
-            return new LinkedList<>();
-        }
+
         for (String id : user.getThemes()) {
             themes.add(themeRepository.findOne(id));
         }
@@ -65,25 +68,25 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public void deleteTheme(String id) {
+    public void deleteTheme(String id) throws ObjectNotFoundException {
         Theme theme = getTheme(id);
         for (String organiser : theme.getOrganisers()) {
             ApplicationUser user = userService.getUserByUsername(organiser);
             List<String> themes = user.getThemes();
-            if (themes != null) {
                 themes.removeIf(x -> x.equals(id));
                 user.setThemes(themes);
                 userService.updateRegisteredUser(user);
-            }
         }
         themeRepository.delete(id);
     }
 
 
     @Override
-    public void updateTheme(Theme theme) {
-        themeRepository.save(theme);
+    public Theme updateTheme(Theme theme) {
+        return themeRepository.save(theme);
     }
+
+
 
 
 }

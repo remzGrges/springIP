@@ -1,7 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
-import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,13 +13,13 @@ import java.util.List;
 public interface ThemeService {
     Theme addTheme(Theme theme, String userId);
 
-    Theme getTheme(String id);
+    Theme getTheme(String id) throws ObjectNotFoundException;
 
-    List<Theme> getThemesByUser(String userName);
+    List<Theme> getThemesByUser(String userName) throws ObjectNotFoundException;
 
-    void deleteTheme(String id);
+    void deleteTheme(String id) throws ObjectNotFoundException;
 
-    void updateTheme(Theme theme);
+    Theme updateTheme(Theme theme);
 
 
 }
