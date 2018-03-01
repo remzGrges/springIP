@@ -10,6 +10,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.data.implementations.CardRepository;
+import be.kdg.integratieproject2.data.implementations.SubThemeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -20,12 +21,14 @@ public class SubThemeServiceImpl implements SubThemeService {
 
     private CardRepository cardRepository;
     private ThemeService themeService;
+    private SubThemeRepository subThemeRepository;
     private UserService userService;
 
-    public SubThemeServiceImpl(ThemeService themeService, UserService userService, CardRepository cardRepository) {
+    public SubThemeServiceImpl(ThemeService themeService, UserService userService, CardRepository cardRepository, SubThemeRepository subThemeRepository) {
         this.themeService = themeService;
         this.userService = userService;
         this.cardRepository = cardRepository;
+        this.subThemeRepository = subThemeRepository;
     }
 
     @Override
@@ -84,6 +87,20 @@ public class SubThemeServiceImpl implements SubThemeService {
         ApplicationUser user = userService.getUserByUsername(userName);
         return (SubTheme) cardRepository.findOne(subThemeId);
     }
+
+    @Override
+    public List<SubTheme> getThemesByUser(String userName) {
+        LinkedList<SubTheme> subThemes = new LinkedList<>();
+        ApplicationUser user = userService.getUserByUsername(userName);
+        if (user.getSubthemes()==null){
+            return new LinkedList<>();
+        }
+        for (String id : user.getSubthemes()) {
+            subThemes.add(subThemeRepository.findOne(id));
+        }
+        return subThemes;
+    }
+
 
     @Override
     public List<SubTheme> getAllSubThemesTheme(String themeId, String userName) {

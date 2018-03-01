@@ -15,6 +15,7 @@ public class ApplicationUser {
     private String password;
     private Boolean enabled;
     private List<String> themes;
+    private List<String> subthemes;
 
 
 
@@ -66,6 +67,14 @@ public class ApplicationUser {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<String> getSubthemes() {
+        return subthemes;
+    }
+
+    public void setSubthemes(List<String> subthemes) {
+        this.subthemes = subthemes;
     }
 
     public List<String> getThemes() {

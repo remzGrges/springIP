@@ -16,5 +16,7 @@ public interface SubThemeService {
 
     SubTheme getSubTheme(String subThemeId, String userName);
 
+    List<SubTheme> getThemesByUser(String userName);
+
     List<SubTheme> getAllSubThemesTheme(String themeId, String userName);
 }

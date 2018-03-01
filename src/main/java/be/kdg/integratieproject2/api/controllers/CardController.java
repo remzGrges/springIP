@@ -54,7 +54,7 @@ public class CardController {
         for (Card card : cards) {
             cardDtos.add(modelMapper.map(card, CardDto.class));
         }
-        return new ResponseEntity<List<CardDto>>(cardDtos, HttpStatus.FOUND);
+        return new ResponseEntity<List<CardDto>>(cardDtos, HttpStatus.OK);
     }
 
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
@@ -65,7 +65,7 @@ public class CardController {
         for (Card card : cards) {
             cardDtos.add(modelMapper.map(card, CardDto.class));
         }
-        return new ResponseEntity<List<CardDto>>(cardDtos, HttpStatus.FOUND);
+        return new ResponseEntity<List<CardDto>>(cardDtos, HttpStatus.OK);
     }
 
 
