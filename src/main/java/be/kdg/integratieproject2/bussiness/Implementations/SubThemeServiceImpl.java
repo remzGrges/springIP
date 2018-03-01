@@ -9,6 +9,7 @@ import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -73,14 +74,13 @@ public class SubThemeServiceImpl implements SubThemeService {
     }
 
     @Override
-    public List<SubTheme> getThemesByUser(String userName) {
-        LinkedList<SubTheme> subThemes = new LinkedList<>();
-        ApplicationUser user = userService.getUserByUsername(userName);
-        if (user.getSubthemes()==null){
-            return new LinkedList<>();
-        }
-        for (String id : user.getSubthemes()) {
-            subThemes.add(subThemeRepository.findOne(id));
+    public List<SubTheme> getSubThemesByUser(String userName) throws ObjectNotFoundException {
+        ArrayList<SubTheme> subThemes = new ArrayList<>();
+        List<Theme> themes = themeService.getThemesByUser(userName);
+        for (Theme theme : themes) {
+            if(theme.getSubThemes() != null) {
+                subThemes.addAll(theme.getSubThemes());
+            }
         }
         return subThemes;
     }
@@ -88,7 +88,6 @@ public class SubThemeServiceImpl implements SubThemeService {
 
     @Override
     public List<SubTheme> getAllSubThemesTheme(String themeId, String userName) throws ObjectNotFoundException {
-        ApplicationUser user = userService.getUserByUsername(userName);
         return themeService.getTheme(themeId).getSubThemes();
     }
 

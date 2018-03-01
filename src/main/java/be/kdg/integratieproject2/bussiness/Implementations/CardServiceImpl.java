@@ -1,15 +1,18 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
+import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.SubTheme;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
+import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +22,12 @@ public class CardServiceImpl implements CardService {
 
     private UserService userService;
     private ThemeService themeService;
+    private SubThemeService subThemeService;
 
-    public CardServiceImpl( UserService userService, ThemeService themeService) {
+    public CardServiceImpl( UserService userService, ThemeService themeService, SubThemeService subThemeService) {
         this.userService = userService;
         this.themeService = themeService;
+        this.subThemeService = subThemeService;
     }
 
     @Override
@@ -88,6 +93,25 @@ public class CardServiceImpl implements CardService {
                 themeService.updateTheme(theme);
             }
         }
+    }
+
+    @Override
+    public List<SubTheme> getAllCards(String userName) throws ObjectNotFoundException
+    {
+        List<SubTheme> subThemes = subThemeService.getSubThemesByUser(userName);
+        List<Theme> themes = themeService.getThemesByUser(userName);
+        SubTheme uncatagorizedCards = new SubTheme();
+        uncatagorizedCards.setText("Uncategorized Cards");
+        List<Card> cards = new ArrayList<>();
+        for(Theme theme : themes)
+        {
+            if(theme.getCards() != null) {
+                cards.addAll(theme.getCards());
+            }
+        }
+        uncatagorizedCards.setCards(cards);
+        if(uncatagorizedCards.getCards().size() > 0) subThemes.add(uncatagorizedCards);
+        return subThemes;
     }
 
 }
