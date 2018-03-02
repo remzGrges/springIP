@@ -1,6 +1,7 @@
 package be.kdg.integratieproject2.api.dto;
 
 import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.Domain.SubTheme;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -23,6 +24,10 @@ public class ThemeDto {
     @NotNull
     @NotEmpty
     private List<String> organisers;
+    private List<SubTheme> subThemes;
+
+
+
     private List<Card> cards;
 
     public ThemeDto() {
@@ -74,5 +79,13 @@ public class ThemeDto {
 
     public void setOrganisers(List<String> organisers) {
         this.organisers = organisers;
+    }
+
+    public List<SubTheme> getSubThemes() {
+        return subThemes;
+    }
+
+    public void setSubThemes(List<SubTheme> subThemes) {
+        this.subThemes = subThemes;
     }
 }

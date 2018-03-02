@@ -27,7 +27,6 @@ public class ApplicationUser {
     }
 
 
-
     public String getEmail() {
         return email;
     }
@@ -67,7 +66,6 @@ public class ApplicationUser {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
     public List<String> getThemes() {
         return themes;
     }

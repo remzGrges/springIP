@@ -17,8 +17,6 @@ public class CardDto {
     @NotNull
     @NotEmpty
     private String userId;
-    private List<String> themes;
-
 
     public CardDto() {
     }
@@ -47,11 +45,4 @@ public class CardDto {
         this.text = text;
     }
 
-    public List<String> getThemes() {
-        return themes;
-    }
-
-    public void setThemes(List<String> themes) {
-        this.themes = themes;
-    }
 }

@@ -1,9 +1,12 @@
 package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.Domain.SubTheme;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.CardDto;
+import be.kdg.integratieproject2.api.dto.SubThemeDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,8 +34,13 @@ public class CardController {
     public ResponseEntity<CardDto> createCard(@RequestBody CardDto dto, Authentication authentication, @PathVariable String themeId) throws BadRequestException
     {
         Card card = modelMapper.map(dto, Card.class);
-        CardDto mappedCard = modelMapper.map(cardService.addCard(card, authentication.getName(), themeId ), CardDto.class);
-        return new ResponseEntity<CardDto>(mappedCard, HttpStatus.CREATED);
+        CardDto mappedCard = null;
+        try {
+            mappedCard = modelMapper.map(cardService.addCard(card, authentication.getName(), themeId ), CardDto.class);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        return new ResponseEntity<>(mappedCard, HttpStatus.CREATED);
     }
 
     @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
@@ -41,7 +50,7 @@ public class CardController {
             cardService.deleteCard(id, authentication.getName());
         }
         catch (Exception e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(e.getMessage());
         }
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -49,25 +58,32 @@ public class CardController {
     @RequestMapping(value="/getAllCardsTheme/{themeId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CardDto>> getAllCardsTheme(Authentication authentication, @PathVariable String themeId)
     {
-        List<Card> cards = cardService.getCardsByTheme(themeId,authentication.getName());
+        List<Card> cards;
+        try {
+            cards = cardService.getCardsByTheme(themeId,authentication.getName());
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         List<CardDto> cardDtos = new LinkedList<>();
         for (Card card : cards) {
             cardDtos.add(modelMapper.map(card, CardDto.class));
         }
-        return new ResponseEntity<List<CardDto>>(cardDtos, HttpStatus.FOUND);
+        return new ResponseEntity<>(cardDtos, HttpStatus.OK);
     }
-
-    @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<CardDto>> GetAll(Authentication authentication)
+    @RequestMapping(value="/getAll", method=RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<SubThemeDto>> getAllCards(Authentication authentication)
     {
-        List<Card> cards = cardService.getAll();
-        List<CardDto> cardDtos = new LinkedList<>();
-        for (Card card : cards) {
-            cardDtos.add(modelMapper.map(card, CardDto.class));
+        List<SubTheme> allCards;
+        try {
+            allCards = cardService.getAllCards(authentication.getName());
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
         }
-        return new ResponseEntity<List<CardDto>>(cardDtos, HttpStatus.FOUND);
+        List<SubThemeDto> subThemeDtos = new ArrayList<>();
+        for(SubTheme subTheme : allCards)
+        {
+            subThemeDtos.add(modelMapper.map(subTheme, SubThemeDto.class));
+        }
+        return new ResponseEntity<>(subThemeDtos, HttpStatus.OK);
     }
-
-
-
 }
