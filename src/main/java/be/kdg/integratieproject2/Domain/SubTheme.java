@@ -1,26 +1,14 @@
 package be.kdg.integratieproject2.Domain;
 
-import org.springframework.data.annotation.Id;
-
 import java.util.List;
 
 public class SubTheme extends Card {
-    @Id
-    private String subThemeId;
     private List<String> tags;
-    private List<String> cards;
+    private List<Card> cards;
 
     public SubTheme() {
     }
 
-
-    public String getSubThemeId() {
-        return subThemeId;
-    }
-
-    public void setSubThemeId(String subThemeId) {
-        this.subThemeId = subThemeId;
-    }
 
     public List<String> getTags() {
         return tags;
@@ -30,11 +18,11 @@ public class SubTheme extends Card {
         this.tags = tags;
     }
 
-    public List<String> getCards() {
+    public List<Card> getCards() {
         return cards;
     }
 
-    public void setCards(List<String> cards) {
+    public void setCards(List<Card> cards) {
         this.cards = cards;
     }
 }

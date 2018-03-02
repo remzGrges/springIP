@@ -4,8 +4,10 @@ package be.kdg.integratieproject2.integration;
 import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,14 +41,20 @@ public class TestCardService {
     private Card testCard3;
     private Theme testTheme1;
     private Theme postedTheme1;
+    private Card postedCard1;
 
     @After
-    public void delete() {
+    public void delete() throws ObjectNotFoundException {
         themeService.deleteTheme(this.postedTheme1.getId());
+        if (postedCard1 != null){
+            cardService.deleteCard(postedCard1.getId(), "tim.vanaelst@student.kdg.be");
+        }
     }
 
     @Before
     public void setup() {
+        postedCard1 =null;
+
         List<String> themes = new LinkedList<>();
         this.testTheme1 = new Theme();
         testTheme1.setDescription("Test");
@@ -84,6 +92,8 @@ public class TestCardService {
 
    /* @Test
     public void testCreateCard() {
+    @Test
+    public void testCreateCard() throws ObjectNotFoundException {
         Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
         Assert.assertTrue(postedCard.getText().equals(testCard1.getText()));
         Assert.assertTrue(postedCard.getId().equals(testCard1.getId()));
@@ -93,6 +103,8 @@ public class TestCardService {
 
   /*  @Test
     public void testCreate2Cards() {
+    @Test
+    public void testCreate2Cards() throws ObjectNotFoundException {
         Card postedCard = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
         Card postedCard2 = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
         Assert.assertTrue(postedCard.getText().equals(testCard1.getText()));
@@ -105,8 +117,18 @@ public class TestCardService {
         this.cardService.deleteCard(postedCard2.getId(),"tim.vanaelst@student.kdg.be");
     }*/
 
+    @Test (expected = BadRequestException.class)
+    public void testCreateCardWrongNoThema() throws ObjectNotFoundException {
+        Card postedCard = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be","wrong");
+    }
+
+    @Test (expected = UsernameNotFoundException.class)
+    public void testCreateCardWrongUser() throws ObjectNotFoundException {
+        Card postedCard = this.cardService.addCard(testCard2, "false@student.kdg.be",postedTheme1.getId());
+    }
+
     @Test(expected = UsernameNotFoundException.class)
-    public void testCreateWrongCredentials() {
+    public void testCreateWrongCredentials() throws ObjectNotFoundException {
         this.cardService.addCard(testCard1, "false@student.kdg.be",postedTheme1.getId());
     }
 
@@ -124,9 +146,20 @@ public class TestCardService {
         Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 0);
     }*/
 
+   /* @Test (expected = BadRequestException.class)
+    public void testGetCardsByThemeWrongTheme() throws ObjectNotFoundException {
+      cardService.getCardsByTheme("wrong","tim.vanaelst@student.kdg.be");
+    }
+
     @Test
-    public void testGetAllCardsThemaNoCards() {
+    public void testGetAllCardsThemaNoCards() throws ObjectNotFoundException {
         Assert.assertTrue(cardService.getCardsByTheme(testTheme1.getId(),"tim.vanaelst@student.kdg.be").size() == 0);
     }
 
+
+    @Test (expected = BadRequestException.class)
+    public void testDeleteCardBadUser() throws ObjectNotFoundException {
+        postedCard1 = this.cardService.addCard(testCard1, "tim.vanaelst@student.kdg.be",postedTheme1.getId());
+        cardService.deleteCard(postedCard1.getId(), "leander-coevoet@hotmail.com");
+    }*/
 }

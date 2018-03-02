@@ -2,29 +2,23 @@ package be.kdg.integratieproject2.api.controllers;
 
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
+import be.kdg.integratieproject2.Domain.verification.VerificationToken;
+import be.kdg.integratieproject2.Domain.ProfilePicture;
+import be.kdg.integratieproject2.api.dto.PictureDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
+import be.kdg.integratieproject2.Domain.verification.*;
 import be.kdg.integratieproject2.api.dto.UserInfoDto;
-import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
 import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.mongodb.util.JSON;
-import jdk.nashorn.internal.parser.JSONParser;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import be.kdg.integratieproject2.bussiness.exceptions.NoProfilePictureFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -46,21 +40,16 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @RequestBody UserRegistrationDto dto, BindingResult result, WebRequest request) {
+    public String register(@Valid @RequestBody UserRegistrationDto dto, BindingResult result, WebRequest request) throws UserAlreadyExistsException {
         if (result.hasErrors()){
-            return "Failure type 2";
+            return "Body not valid";
         }
 
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         ApplicationUser user = modelMapper.map(dto, ApplicationUser.class);
 
-        user = userService.registerUser(user);
-
-        if (user == null){
-            return "Failure type 1";
-        }
-
         try {
+            user = userService.registerUser(user);
             String appUrl = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl));
         } catch (Exception ex) {
@@ -90,25 +79,42 @@ public class UserController {
     }
 
     @PostMapping(value = "/update")
-    public String changeName(Authentication authentication, @Valid @RequestBody String newName ) throws JSONException {
+    public UserInfoDto changeName(Authentication authentication, @Valid @RequestBody UserInfoDto dto ) {
         String username = authentication.getName();
 
-        final JSONObject obj = new JSONObject(newName);
-        userService.updateRegisteredUserName(userService.getUserByUsername(username), obj.getString("newName"));
+        ApplicationUser user = userService.updateRegisteredUserName(username, dto.getFirstName());
+        dto = modelMapper.map(user, UserInfoDto.class);
 
-        return "changed name succesfully";
+        return dto;
     }
 
    @RequestMapping(value = "/currentuser", method = RequestMethod.GET)
-    public ResponseEntity<UserInfoDto> getCurrentUserName(Authentication authentication) {
-        String userName = authentication.getName();
-        ApplicationUser user2 = userService.getUserByUsername(userName);
-        UserInfoDto userDto = modelMapper.map(user2, UserInfoDto.class);
+    public UserInfoDto getCurrentUserName(Authentication authentication) {
+        String username = authentication.getName();
+        ApplicationUser user = userService.getUserByUsername(username);
+        UserInfoDto dto = modelMapper.map(user, UserInfoDto.class);
 
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
-
+        return dto;
     }
 
+    @PostMapping(value = "/uploadProfilePicture")
+    public PictureDto uploadProfilePicture(Authentication authentication, @Valid @RequestBody PictureDto dto ) {
+        String username = authentication.getName();
+        ProfilePicture profilePicture = modelMapper.map(dto, ProfilePicture.class);
+        profilePicture = userService.uploadProfilePicture(username, profilePicture);
+        dto = modelMapper.map(profilePicture, PictureDto.class);
+        return dto;
+    }
 
-
+    @GetMapping(value = "/getProfilePicture")
+    public PictureDto getProfilePicture(Authentication authentication){
+        String username = authentication.getName();
+        ProfilePicture profilePicture = null;
+        try {
+            profilePicture = userService.getProfilePicture(username);
+        } catch (NoProfilePictureFoundException e) {
+            return null;
+        }
+        return modelMapper.map(profilePicture, PictureDto.class);
+    }
 }

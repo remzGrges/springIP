@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
@@ -9,17 +10,24 @@ import be.kdg.integratieproject2.api.dto.ThemeInvitationDto;
 import be.kdg.integratieproject2.api.invitation.OnInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.WebRequest;
 import sun.rmi.runtime.Log;
 
+import java.util.HashMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,19 +60,27 @@ public class ThemeController {
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.CREATED);
     }
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication)
-    {
-        List<Theme> themes = themeService.getThemesByUser(authentication.getName());
+    public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication) throws ObjectNotFoundException {
+        List<Theme> themes;
+        try {
+            themes = themeService.getThemesByUser(authentication.getName());
+        }
+        catch(ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         List<ThemeDto> themeDTOs = new LinkedList<>();
-        for(Theme theme : themes)
-        {
+        for(Theme theme : themes) {
             themeDTOs.add(modelMapper.map(theme, ThemeDto.class));
         }
-        return new ResponseEntity<List<ThemeDto>>(themeDTOs, HttpStatus.OK);
+        return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
     @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
-    public ResponseEntity deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException
-    {
+    public ResponseEntity deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException, ObjectNotFoundException {
+        try {
+            themeService.deleteTheme(id);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         themeService.deleteTheme(id);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -16,8 +16,17 @@ public class Theme {
     private List<String> tags;
     private List<Organiser> organisers;
     private List<Card> cards;
+    private List<SubTheme> subThemes;
 
     public Theme() {
+    }
+
+    public List<SubTheme> getSubThemes() {
+        return subThemes;
+    }
+
+    public void setSubThemes(List<SubTheme> subThemes) {
+        this.subThemes = subThemes;
     }
 
     public List<Card> getCards() {
