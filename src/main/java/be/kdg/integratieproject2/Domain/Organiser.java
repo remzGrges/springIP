@@ -1,7 +1,5 @@
 package be.kdg.integratieproject2.Domain;
 
-import java.util.List;
-
 public class Organiser {
     private Boolean isEnabled;
     private String email;
@@ -21,6 +19,13 @@ public class Organiser {
         this.themeID = themeID;
     }
 
+    public Organiser(Boolean isEnabled, String email) {
+        this.isEnabled = isEnabled;
+        this.email = email;
+    }
+
+    public Organiser() {
+    }
 
     public Boolean getEnabled() {
         return isEnabled;

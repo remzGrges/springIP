@@ -35,23 +35,16 @@ public class SubThemeController {
     public ResponseEntity<SubThemeDto> createSubTheme(@RequestBody SubThemeDto dto, Authentication authentication, @PathVariable String themeId) throws BadRequestException
     {
         SubTheme subTheme = modelMapper.map(dto, SubTheme.class);
-        Theme theme = null;
-        try {
-            theme = subThemeService.getThemeBySubThemeId(dto.getId() , authentication.getName());
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-        Organiser organiser = themeService.getOrganiser(theme,authentication.getName());
         SubThemeDto mappedCard = null;
         try {
-            mappedCard = modelMapper.map(subThemeService.addSubTheme(subTheme, organiser, themeId ), SubThemeDto.class);
+            mappedCard = modelMapper.map(subThemeService.addSubTheme(subTheme, authentication.getName(), themeId ), SubThemeDto.class);
         } catch (ObjectNotFoundException e) {
            throw new BadRequestException(e.getMessage());
         }
-        return new ResponseEntity<SubThemeDto>(mappedCard, HttpStatus.CREATED);
+        return new ResponseEntity<SubThemeDto>(mappedCard, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteSubTheme(Authentication authentication, @PathVariable String id) throws ObjectNotFoundException {
         Theme theme = subThemeService.getThemeBySubThemeId(id , authentication.getName());
         Organiser organiser = themeService.getOrganiser(theme,authentication.getName());
@@ -78,13 +71,11 @@ public class SubThemeController {
         return new ResponseEntity<SubThemeDto>(subThemeDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/getAllSubThemesTheme/{subThemeId}", method = RequestMethod.GET, produces = "application/json")
-    public  ResponseEntity<List<SubThemeDto>> GetAllSubThemesTheme(Authentication authentication, @PathVariable String subThemeId) throws ObjectNotFoundException {
-        List<SubTheme> subThemes = null;
-        Theme theme = subThemeService.getThemeBySubThemeId(subThemeId , authentication.getName());
-        Organiser organiser = themeService.getOrganiser(theme,authentication.getName());
+    @RequestMapping(value="/getAllSubThemesTheme/{themeId}", method = RequestMethod.GET, produces = "application/json")
+    public  ResponseEntity<List<SubThemeDto>> GetAllSubThemesTheme(Authentication authentication, @PathVariable String themeId) throws ObjectNotFoundException {
+        List<SubTheme> subThemes;
         try {
-            subThemes = subThemeService.getAllSubThemesTheme(subThemeId, organiser);
+            subThemes = subThemeService.getAllSubThemesTheme(themeId);
         } catch (ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }

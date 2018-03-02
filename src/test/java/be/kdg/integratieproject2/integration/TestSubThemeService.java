@@ -77,15 +77,15 @@ public class TestSubThemeService {
         organiser1 = new Organiser(true, "tim.vanaelst@student.kdg.be" , testTheme1.getId());
         organisers1.add(organiser1);
         this.testTheme1.setOrganisers(organisers1);
-        postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        postedTheme1 = this.themeService.addTheme(testTheme1, organiser1.getEmail());
     }
 
     @Test
     public void testGetAllSubThemesTheme() throws ObjectNotFoundException {
-        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1, postedTheme1.getId());
-        postedSubTheme2 = subThemeService.addSubTheme(subTheme2, organiser1, postedTheme1.getId());
+        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
+        postedSubTheme2 = subThemeService.addSubTheme(subTheme2, organiser1.getEmail(), postedTheme1.getId());
 
-        List<SubTheme> subThemes = subThemeService.getAllSubThemesTheme(postedTheme1.getId(), organiser1);
+        List<SubTheme> subThemes = subThemeService.getAllSubThemesTheme(postedTheme1.getId());
         Assert.assertTrue(subThemes.size() == 2);
         Assert.assertTrue(subThemes.get(0).getText().equals(postedSubTheme.getText()));
         Assert.assertTrue(subThemes.get(1).getText().equals(postedSubTheme2.getText()));
@@ -93,7 +93,7 @@ public class TestSubThemeService {
         Card card = new Card();
         card.setText("cards");
         card = cardService.addCard(card, "tim.vanaelst@student.kdg.be", postedTheme1.getId());
-        subThemes = subThemeService.getAllSubThemesTheme(postedTheme1.getId(), organiser1);
+        subThemes = subThemeService.getAllSubThemesTheme(postedTheme1.getId());
         Assert.assertTrue(subThemes.size() == 2);
         Assert.assertTrue(subThemes.get(0).getText().equals(postedSubTheme.getText()));
         Assert.assertTrue(subThemes.get(1).getText().equals(postedSubTheme2.getText()));
@@ -102,19 +102,19 @@ public class TestSubThemeService {
 
     @Test
     public void testCreateSubTheme() throws ObjectNotFoundException {
-        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1, postedTheme1.getId());
+        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         Assert.assertTrue(postedSubTheme.getText().equals(subTheme.getText()));
         Assert.assertTrue(postedSubTheme.getUserId().equals("tim.vanaelst@student.kdg.be"));
     }
 
     @Test(expected = BadRequestException.class)
     public void testCreateSubThemeWrongTheme() throws ObjectNotFoundException {
-        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1, "wrong");
+        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), "wrong");
     }
 
     @Test
     public void testDeleteSubTheme() throws ObjectNotFoundException {
-        SubTheme subThemePosted = subThemeService.addSubTheme(subTheme, organiser1, postedTheme1.getId());
+        SubTheme subThemePosted = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(), "tim.vanaelst@student.kdg.be").size() == 1);
         subThemeService.deleteSubTheme(subThemePosted.getId(), organiser1);
         Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(), "tim.vanaelst@student.kdg.be").size() == 0);
@@ -122,25 +122,25 @@ public class TestSubThemeService {
 
     @Test(expected = UsernameNotFoundException.class)
     public void testDeleteSubThemeWrongUser() throws ObjectNotFoundException {
-        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1, postedTheme1.getId());
+        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(), "tim.vanaelst@student.kdg.be").size() == 1);
         subThemeService.deleteSubTheme(postedSubTheme.getId(), new Organiser(false, "blabla@student.kdg.be", postedSubTheme.getId()));
     }
 
     @Test(expected = BadRequestException.class)
     public void testDeleteSubThemeNoTheme() throws ObjectNotFoundException {
-        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1, postedTheme1.getId());
+        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         subThemeService.deleteSubTheme(postedSubTheme.getId(), organiser2);
     }
 
     @Test(expected = UsernameNotFoundException.class)
     public void testCreateWrongCredentials() throws ObjectNotFoundException {
-        subThemeService.addSubTheme(subTheme, new Organiser(false, "llaakzodkd@hotmail.be" , postedTheme1.getId()), postedTheme1.getId());
+        subThemeService.addSubTheme(subTheme, "llaakzodkd@hotmail.be", postedTheme1.getId());
     }
 
     @Test
     public void testUpdateSubTheme() throws ObjectNotFoundException {
-        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1, postedTheme1.getId());
+        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         Assert.assertTrue(subThemeService.getSubTheme(postedSubTheme.getId(), organiser1).getText().equals("test subtheme"));
         postedSubTheme.setText("Nieuwe tekst");
         SubTheme updatedSubTheme = subThemeService.updateSubTheme(postedSubTheme, organiser1);
@@ -149,7 +149,7 @@ public class TestSubThemeService {
 
     @Test
     public void testGetSubTheme() throws ObjectNotFoundException {
-        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1, postedTheme1.getId());
+        postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         SubTheme getSubTheme = subThemeService.getSubTheme(subTheme.getId(), organiser1);
         Assert.assertTrue(postedSubTheme.getText().equals(getSubTheme.getText()));
         Assert.assertTrue(postedSubTheme.getId().equals(getSubTheme.getId()));

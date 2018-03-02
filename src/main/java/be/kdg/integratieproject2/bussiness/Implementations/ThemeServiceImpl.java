@@ -1,25 +1,14 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.Application;
-import be.kdg.integratieproject2.Domain.*;
-import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
-import org.springframework.stereotype.Service;
-
-import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import org.springframework.context.ApplicationListener;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
-
-import java.util.UUID;
-
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -42,13 +31,12 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public Theme addTheme(Theme theme, Organiser userName) {
-        ApplicationUser user = userService.getUserByUsername(userName.getEmail());
-        if (theme.getOrganisers() == null || theme.getOrganisers().size() == 0) {
-            LinkedList<Organiser> organisers = new LinkedList<>();
-            organisers.add(userName);
-            theme.setOrganisers(organisers);
-        }
+    public Theme addTheme(Theme theme, String userName) {
+        ApplicationUser user = userService.getUserByUsername(userName);
+        List<Organiser> organisers = theme.getOrganisers();
+        if (organisers == null) organisers = new ArrayList<>();
+        if(!organisers.stream().anyMatch(x -> x.getEmail().equals(userName))) organisers.add(new Organiser(true, userName));
+        theme.setOrganisers(organisers);
         Theme savedTheme = themeRepository.save(theme);
         List<String> themes = user.getThemes();
         if (themes == null) themes = new LinkedList<>();
@@ -75,7 +63,6 @@ public class ThemeServiceImpl implements ThemeService {
         ApplicationUser user = userService.getUserByUsername(userName);
         for (String id : user.getThemes()
                 ) {
-
             themes.add(themeRepository.findOne(id));
         }
         return themes;

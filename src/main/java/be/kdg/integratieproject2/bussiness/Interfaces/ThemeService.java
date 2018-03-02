@@ -1,6 +1,5 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
-import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
@@ -13,7 +12,7 @@ import java.util.List;
  */
 @Service
 public interface ThemeService {
-    Theme addTheme(Theme theme, Organiser userId);
+    Theme addTheme(Theme theme, String userId);
 
     Theme getTheme(String id) throws ObjectNotFoundException;
 

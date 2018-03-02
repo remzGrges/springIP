@@ -1,8 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.*;
-import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
@@ -25,11 +23,11 @@ public class SubThemeServiceImpl implements SubThemeService {
     }
 
     @Override
-    public SubTheme addSubTheme(SubTheme subTheme, Organiser userId, String themeId) throws ObjectNotFoundException {
-        ApplicationUser user = userService.getUserByUsername(userId.getEmail());
+    public SubTheme addSubTheme(SubTheme subTheme, String userName, String themeId) throws ObjectNotFoundException {
+        ApplicationUser user = userService.getUserByUsername(userName);
         Theme theme;
         if (user.getThemes().stream().anyMatch(x -> x.equals(themeId))) {
-            subTheme.setUserId(userId.getEmail());
+            subTheme.setUserId(userName);
             theme = themeService.getTheme(themeId);
             List<SubTheme> subThemes = theme.getSubThemes();
             if(subThemes == null) subThemes = new ArrayList<>();
@@ -85,7 +83,7 @@ public class SubThemeServiceImpl implements SubThemeService {
 
 
     @Override
-    public List<SubTheme> getAllSubThemesTheme(String themeId, Organiser userName) throws ObjectNotFoundException {
+    public List<SubTheme> getAllSubThemesTheme(String themeId) throws ObjectNotFoundException {
         return themeService.getTheme(themeId).getSubThemes();
     }
 
