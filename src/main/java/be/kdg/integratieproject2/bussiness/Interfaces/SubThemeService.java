@@ -15,9 +15,9 @@ public interface SubThemeService {
 
     void deleteSubTheme(String subThemeid, Organiser userName) throws ObjectNotFoundException;
 
-    SubTheme updateSubTheme(SubTheme subThemePosted, Organiser userName) throws ObjectNotFoundException;
+    SubTheme updateSubTheme(SubTheme subThemePosted, String userName) throws ObjectNotFoundException;
 
-    SubTheme getSubTheme(String subThemeId, Organiser userName) throws ObjectNotFoundException;
+    SubTheme getSubTheme(String subThemeId, String userName) throws ObjectNotFoundException;
 
     List<SubTheme> getAllSubThemesTheme(String themeId) throws ObjectNotFoundException;
 

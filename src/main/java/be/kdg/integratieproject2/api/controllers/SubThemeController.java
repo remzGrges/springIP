@@ -59,11 +59,9 @@ public class SubThemeController {
 
     @RequestMapping(value="/get/{subThemeId}", method = RequestMethod.GET, produces = "application/json")
     public  ResponseEntity<SubThemeDto> GetSubTheme(Authentication authentication, @PathVariable String subThemeId) throws ObjectNotFoundException {
-        SubTheme subTheme = null;
-        Theme theme = subThemeService.getThemeBySubThemeId(subThemeId , authentication.getName());
-        Organiser organiser = themeService.getOrganiser(theme,authentication.getName());
+        SubTheme subTheme;
         try {
-            subTheme = subThemeService.getSubTheme(subThemeId,organiser);
+            subTheme = subThemeService.getSubTheme(subThemeId,authentication.getName());
         } catch (ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -103,5 +101,17 @@ public class SubThemeController {
             subthemeDTOs.add(modelMapper.map(subtheme, SubThemeDto.class));
         }
         return new ResponseEntity<>(subthemeDTOs, HttpStatus.OK);
+    }
+    @RequestMapping(value="/update", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<SubThemeDto> updateSubTheme(Authentication authentication, @RequestBody SubThemeDto subThemeDto)
+    {
+        SubTheme subTheme = modelMapper.map(subThemeDto, SubTheme.class);
+        SubThemeDto mappedCard = null;
+        try {
+            mappedCard = modelMapper.map(subThemeService.updateSubTheme(subTheme, authentication.getName()), SubThemeDto.class);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        return new ResponseEntity<SubThemeDto>(mappedCard, HttpStatus.OK);
     }
 }

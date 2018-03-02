@@ -54,8 +54,8 @@ public class SubThemeServiceImpl implements SubThemeService {
     }
 
     @Override
-    public SubTheme updateSubTheme(SubTheme subThemePosted, Organiser userName) throws ObjectNotFoundException {
-        Theme theme = getThemeBySubThemeId(subThemePosted.getId(), userName.getEmail());
+    public SubTheme updateSubTheme(SubTheme subThemePosted, String userName) throws ObjectNotFoundException {
+        Theme theme = getThemeBySubThemeId(subThemePosted.getId(), userName);
         List<SubTheme> subThemes = theme.getSubThemes();
         subThemes.removeIf(x -> x.getId().equals(subThemePosted.getId()));
         subThemes.add(subThemePosted);
@@ -64,8 +64,8 @@ public class SubThemeServiceImpl implements SubThemeService {
     }
 
     @Override
-    public SubTheme getSubTheme(String subThemeId, Organiser userName) throws ObjectNotFoundException {
-        Theme theme = getThemeBySubThemeId(subThemeId, userName.getEmail());
+    public SubTheme getSubTheme(String subThemeId, String userName) throws ObjectNotFoundException {
+        Theme theme = getThemeBySubThemeId(subThemeId, userName);
         return theme.getSubThemes().stream().filter(x -> x.getId().equals(subThemeId)).findFirst().get();
     }
 
@@ -91,9 +91,14 @@ public class SubThemeServiceImpl implements SubThemeService {
     public Theme getThemeBySubThemeId(String subthemeId, String userName) throws ObjectNotFoundException {
 
         Optional optTheme = themeService.getThemesByUser(userName).stream()
-                .filter(x -> x.getSubThemes()
-                        .stream()
-                        .anyMatch(y -> y.getId().equals(subthemeId)))
+                .filter(x -> {
+                    if(x.getSubThemes() == null || x.getSubThemes().size() > 0) {
+                        return x.getSubThemes()
+                                .stream()
+                                .anyMatch(y -> y.getId().equals(subthemeId));
+                    }
+                    else return false;
+                })
                 .findFirst();
         if(optTheme.isPresent()) return (Theme) optTheme.get();
         else throw new ObjectNotFoundException(subthemeId);

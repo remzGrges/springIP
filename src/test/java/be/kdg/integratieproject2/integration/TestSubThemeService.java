@@ -143,7 +143,7 @@ public class TestSubThemeService {
         postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         Assert.assertTrue(subThemeService.getSubTheme(postedSubTheme.getId(), organiser1).getText().equals("test subtheme"));
         postedSubTheme.setText("Nieuwe tekst");
-        SubTheme updatedSubTheme = subThemeService.updateSubTheme(postedSubTheme, organiser1);
+        SubTheme updatedSubTheme = subThemeService.updateSubTheme(postedSubTheme, organiser1.getEmail());
         Assert.assertTrue(updatedSubTheme.getText().equals(postedSubTheme.getText()));
     }
 
