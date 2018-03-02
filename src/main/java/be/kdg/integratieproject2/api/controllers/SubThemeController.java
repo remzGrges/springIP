@@ -75,18 +75,23 @@ public class SubThemeController {
         for (SubTheme subTheme : subThemes) {
             subThemeDtos.add(modelMapper.map(subTheme, SubThemeDto.class));
         }
-          return new ResponseEntity<List<SubThemeDto>>(subThemeDtos, HttpStatus.OK);
+          return new ResponseEntity<>(subThemeDtos, HttpStatus.OK);
     }
 
     @RequestMapping(value="/getAllByUser", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<SubThemeDto>> getSubTheme(Authentication authentication)
     {
-        List<SubTheme> subthemes = subThemeService.getThemesByUser(authentication.getName());
+        List<SubTheme> subthemes = null;
+        try {
+            subthemes = subThemeService.getSubThemesByUser(authentication.getName());
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         List<SubThemeDto> subthemeDTOs = new LinkedList<>();
         for(SubTheme subtheme : subthemes)
         {
             subthemeDTOs.add(modelMapper.map(subtheme, SubThemeDto.class));
         }
-        return new ResponseEntity<List<SubThemeDto>>(subthemeDTOs, HttpStatus.OK);
+        return new ResponseEntity<>(subthemeDTOs, HttpStatus.OK);
     }
 }

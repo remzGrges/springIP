@@ -1,6 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
 import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.Domain.SubTheme;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -16,4 +17,5 @@ public interface CardService {
 
     void deleteCard(String id, String userId) throws ObjectNotFoundException;
 
+    List<SubTheme> getAllCards(String userName) throws ObjectNotFoundException;
 }
