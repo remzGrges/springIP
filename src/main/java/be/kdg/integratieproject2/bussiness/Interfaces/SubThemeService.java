@@ -13,7 +13,7 @@ public interface SubThemeService {
 
     SubTheme addSubTheme(SubTheme subTheme, String userName, String themeId) throws ObjectNotFoundException;
 
-    void deleteSubTheme(String subThemeid, Organiser userName) throws ObjectNotFoundException;
+    void deleteSubTheme(String subThemeid, String userName) throws ObjectNotFoundException;
 
     SubTheme updateSubTheme(SubTheme subThemePosted, String userName) throws ObjectNotFoundException;
 

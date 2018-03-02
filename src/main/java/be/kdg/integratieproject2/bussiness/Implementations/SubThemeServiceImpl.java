@@ -43,16 +43,13 @@ public class SubThemeServiceImpl implements SubThemeService {
     }
 
     @Override
-    public void deleteSubTheme(String subthemeId, Organiser userName) throws ObjectNotFoundException {
+    public void deleteSubTheme(String subthemeId, String userName) throws ObjectNotFoundException {
         //TODO: Cascading delete cards of niet
-        List<Theme> themes = themeService.getThemesByUser(userName.getEmail());
-        for (Theme theme : themes) {
-            if (theme.getCards() == null) theme.setCards(new ArrayList<>());
-            List<Card> cards = theme.getCards();
-            cards.removeIf(x -> x.getId().equals(subthemeId));
-            theme.setCards(cards);
-            themeService.updateTheme(theme);
-        }
+        Theme theme = getThemeBySubThemeId(subthemeId, userName);
+        List<SubTheme> subThemes = theme.getSubThemes();
+        subThemes.removeIf(x -> x.getId().equals(subthemeId));
+        theme.setSubThemes(subThemes);
+        themeService.updateTheme(theme);
     }
 
     @Override

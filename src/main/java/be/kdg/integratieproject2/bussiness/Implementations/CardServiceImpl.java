@@ -133,16 +133,34 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public void deleteCard(String id, String userName) throws ObjectNotFoundException {
-        Card card = getCard(id, userName);
         List<Theme> themes = themeService.getThemesByUser(userName);
-        for (Theme theme : themes) {
-            if (theme.getCards() != null) {
-                List<Card> cards = theme.getCards();
-                cards.removeIf(x -> x.getId().equals(card.getId()));
-                theme.setCards(cards);
-                themeService.updateTheme(theme);
+        Optional cardOpt;
+        for (Theme theme : themes)
+        {
+            if(theme.getCards() != null) {
+                cardOpt = theme.getCards().stream().filter(x -> x.getId().equals(id)).findFirst();
+                if (cardOpt.isPresent()){
+                    List<Card> cards = theme.getCards();
+                    cards.remove(cardOpt.get());
+                    theme.setCards(cards);
+                    themeService.updateTheme(theme);
+                    return;
+                }
+            }
+            if(theme.getSubThemes() != null) {
+                for (SubTheme subTheme : theme.getSubThemes()) {
+                    cardOpt = subTheme.getCards().stream().filter(x -> x.getId().equals(id)).findFirst();
+                    if (cardOpt.isPresent()){
+                        List<Card> cards = subTheme.getCards();
+                        cards.remove(cardOpt.get());
+                        subTheme.setCards(cards);
+                        subThemeService.updateSubTheme(subTheme, userName);
+                        return;
+                    }
+                }
             }
         }
+        throw new ObjectNotFoundException(id);
     }
 
     @Override

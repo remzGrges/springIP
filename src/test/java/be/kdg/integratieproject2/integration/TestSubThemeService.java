@@ -49,10 +49,10 @@ public class TestSubThemeService {
     public void delete() throws ObjectNotFoundException {
         themeService.deleteTheme(this.postedTheme1.getId());
         if (postedSubTheme != null) {
-            subThemeService.deleteSubTheme(postedSubTheme.getId(), organiser1);
+            subThemeService.deleteSubTheme(postedSubTheme.getId(), organiser1.getEmail());
         }
         if (postedSubTheme2 != null) {
-            subThemeService.deleteSubTheme(postedSubTheme2.getId(), organiser1);
+            subThemeService.deleteSubTheme(postedSubTheme2.getId(), organiser1.getEmail());
         }
     }
 
@@ -110,7 +110,7 @@ public class TestSubThemeService {
     public void testDeleteSubTheme() throws ObjectNotFoundException {
         SubTheme subThemePosted = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         //Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(), "tim.vanaelst@student.kdg.be").size() == 1);
-        subThemeService.deleteSubTheme(subThemePosted.getId(), organiser1);
+        subThemeService.deleteSubTheme(subThemePosted.getId(), organiser1.getEmail());
         //Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(), "tim.vanaelst@student.kdg.be").size() == 0);
     }
 
@@ -118,7 +118,7 @@ public class TestSubThemeService {
     public void testDeleteSubThemeWrongUser() throws ObjectNotFoundException {
         postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
         //Assert.assertTrue(cardService.getCardsByTheme(postedTheme1.getId(), "tim.vanaelst@student.kdg.be").size() == 1);
-        subThemeService.deleteSubTheme(postedSubTheme.getId(), new Organiser(false, "blabla@student.kdg.be", postedSubTheme.getId()));
+        subThemeService.deleteSubTheme(postedSubTheme.getId(), "blabla@student.kdg.be");
     }
     //TODO: de code werkt perfect maar verwacht exception??
     /*

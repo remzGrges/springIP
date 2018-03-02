@@ -69,7 +69,7 @@ public class CardController {
     }
 
     @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-    public ResponseEntity deleteCard(Authentication authentication, @PathVariable String id)
+    public ResponseEntity<CardDto> deleteCard(Authentication authentication, @PathVariable String id)
     {
         try {
             cardService.deleteCard(id, authentication.getName());
@@ -77,7 +77,7 @@ public class CardController {
         catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity( new CardDto(), HttpStatus.OK);
     }
 
     @RequestMapping(value="/getAllCardsTheme/{themeId}", method = RequestMethod.GET, produces = "application/json")

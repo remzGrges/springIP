@@ -44,17 +44,15 @@ public class SubThemeController {
         return new ResponseEntity<SubThemeDto>(mappedCard, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteSubTheme(Authentication authentication, @PathVariable String id) throws ObjectNotFoundException {
-        Theme theme = subThemeService.getThemeBySubThemeId(id , authentication.getName());
-        Organiser organiser = themeService.getOrganiser(theme,authentication.getName());
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
+    public ResponseEntity<SubThemeDto> deleteSubTheme(Authentication authentication, @PathVariable String id) throws ObjectNotFoundException {
         try {
-            subThemeService.deleteSubTheme(id, organiser);
+            subThemeService.deleteSubTheme(id, authentication.getName());
         }
         catch (Exception e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(e.getMessage());
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(new SubThemeDto(),HttpStatus.OK);
     }
 
     @RequestMapping(value="/get/{subThemeId}", method = RequestMethod.GET, produces = "application/json")

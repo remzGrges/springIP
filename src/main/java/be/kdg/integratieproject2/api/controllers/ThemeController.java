@@ -66,6 +66,7 @@ public class ThemeController {
         return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
 
+    //TODO: GET = DELETE, geen DTO teruggeven
     @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
     public ResponseEntity<ThemeDto> deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException, ObjectNotFoundException {
         try {
