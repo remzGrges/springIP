@@ -35,6 +35,7 @@ public class ThemeController {
         ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.CREATED);
     }
+
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication)
     {
@@ -46,10 +47,11 @@ public class ThemeController {
         }
         return new ResponseEntity<List<ThemeDto>>(themeDTOs, HttpStatus.OK);
     }
+
     @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
-    public ResponseEntity deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException
+    public ResponseEntity<ThemeDto> deleteTheme(@PathVariable String id) throws BadRequestException
     {
         themeService.deleteTheme(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 }
