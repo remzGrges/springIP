@@ -34,8 +34,16 @@ public class ThemeServiceImpl implements ThemeService {
     public Theme addTheme(Theme theme, String userName) {
         ApplicationUser user = userService.getUserByUsername(userName);
         List<Organiser> organisers = theme.getOrganisers();
-        if (organisers == null) organisers = new ArrayList<>();
-        if(!organisers.stream().anyMatch(x -> x.getEmail().equals(userName))) organisers.add(new Organiser(true, userName));
+
+        if (organisers == null || organisers.size() == 0) {
+            organisers = new ArrayList<>();
+            organisers.add(new Organiser(true, userName));
+        } else {
+            if (organisers.stream().filter(o -> o.getEmail().equals(userName)).count() > 0){
+                organisers.add(new Organiser(true, userName));
+            }
+        }
+
         theme.setOrganisers(organisers);
         Theme savedTheme = themeRepository.save(theme);
         List<String> themes = user.getThemes();
@@ -74,16 +82,18 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     public void deleteTheme(String id) throws ObjectNotFoundException {
         Theme theme = getTheme(id);
-        for (Organiser organiser : theme.getOrganisers()) {
-            ApplicationUser user = userService.getUserByUsername(organiser.getEmail());
-            List<String> themes = user.getThemes();
-            if (themes != null) {
-                themes.removeIf(x -> x.equals(id));
-                user.setThemes(themes);
-                userService.updateRegisteredUser(user);
+        if (theme.getOrganisers() != null){
+            for (Organiser organiser : theme.getOrganisers()) {
+                ApplicationUser user = userService.getUserByUsername(organiser.getEmail());
+                List<String> themes = user.getThemes();
+                if (themes != null) {
+                    themes.removeIf(x -> x.equals(id));
+                    user.setThemes(themes);
+                    userService.updateRegisteredUser(user);
+                }
             }
-            themeRepository.delete(id);
         }
+        themeRepository.delete(id);
     }
 
     @Override

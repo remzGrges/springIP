@@ -66,14 +66,13 @@ public class ThemeController {
         return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ThemeDto> deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException, ObjectNotFoundException {
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
+    public ResponseEntity<ThemeDto> deleteTheme(@PathVariable String id) throws BadRequestException, ObjectNotFoundException {
         try {
             themeService.deleteTheme(id);
         } catch (ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
-        themeService.deleteTheme(id);
         return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 
