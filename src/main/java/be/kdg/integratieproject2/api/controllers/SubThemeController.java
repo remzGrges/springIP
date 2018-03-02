@@ -26,7 +26,7 @@ public class SubThemeController {
         this.subThemeService = subThemeService;
     }
 
-    @RequestMapping(value = "/create/{themedId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/create/{themeId}", method = RequestMethod.POST)
     public ResponseEntity<SubThemeDto> createSubTheme(@RequestBody SubThemeDto dto, Authentication authentication, @PathVariable String themeId) throws BadRequestException
     {
         SubTheme subTheme = modelMapper.map(dto, SubTheme.class);
@@ -63,7 +63,7 @@ public class SubThemeController {
         return new ResponseEntity<SubThemeDto>(subThemeDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/getAllSubThemesTheme/{subThemeId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value="/getAllSubThemesTheme/{themeId}", method = RequestMethod.GET, produces = "application/json")
     public  ResponseEntity<List<SubThemeDto>> GetAllSubThemesTheme(Authentication authentication, @PathVariable String subThemeId){
         List<SubTheme> subThemes = null;
         try {

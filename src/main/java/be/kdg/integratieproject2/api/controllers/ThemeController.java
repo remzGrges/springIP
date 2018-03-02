@@ -34,7 +34,7 @@ public class ThemeController {
     {
         Theme theme = modelMapper.map(dto, Theme.class);
         ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);
-        return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.CREATED);
+        return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication)

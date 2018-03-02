@@ -34,9 +34,10 @@ public class SubThemeServiceImpl implements SubThemeService {
         if (user.getThemes().stream().anyMatch(x -> x.equals(themeId))) {
             subTheme.setUserId(userId);
             theme = themeService.getTheme(themeId);
-            List<Card> cards = theme.getCards();
-            cards.add(subTheme);
-            theme.setCards(cards);
+            List<SubTheme> subThemes = theme.getSubThemes();
+            if(subThemes == null) subThemes = new ArrayList<>();
+            subThemes.add(subTheme);
+            theme.setSubThemes(subThemes);
             themeService.updateTheme(theme);
         } else {
             throw new ObjectNotFoundException(themeId);
