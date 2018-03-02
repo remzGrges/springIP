@@ -52,7 +52,7 @@ public class ThemeController {
         }
         return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
     public ResponseEntity deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException
     {
         try {
