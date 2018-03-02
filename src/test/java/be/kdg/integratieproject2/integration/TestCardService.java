@@ -118,7 +118,7 @@ public class TestCardService {
         this.cardService.deleteCard(postedCard2.getId(),"tim.vanaelst@student.kdg.be");
     }*/
 
-    @Test (expected = BadRequestException.class)
+    @Test (expected = ObjectNotFoundException.class)
     public void testCreateCardWrongNoThema() throws ObjectNotFoundException {
         Card postedCard = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be","wrong");
     }
