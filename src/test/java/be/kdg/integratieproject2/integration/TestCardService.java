@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.integration;
 
 
 import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
@@ -50,8 +51,8 @@ public class TestCardService {
         this.testTheme1 = new Theme();
         testTheme1.setDescription("Test");
         testTheme1.setName("testTheme1");
-        List<String> organisers1 = new ArrayList<>();
-        organisers1.add("tim.vanaelst@student.kdg.be");
+        List<Organiser> organisers1 = new ArrayList<>();
+        organisers1.add(new Organiser(true , "tim.vanaelst@student.kdg.be" , testTheme1.getId()));
         this.testTheme1.setOrganisers(organisers1);
         postedTheme1 = this.themeService.addTheme(testTheme1, "tim.vanaelst@student.kdg.be");
         themes.add(postedTheme1.getId());

@@ -1,7 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.verification.VerificationToken;
+import be.kdg.integratieproject2.Domain.Verification.VerificationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 

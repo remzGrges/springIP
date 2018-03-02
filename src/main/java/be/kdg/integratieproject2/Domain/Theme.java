@@ -14,7 +14,7 @@ public class Theme {
     private String name;
     private String description;
     private List<String> tags;
-    private List<String> organisers;
+    private List<Organiser> organisers;
     private List<Card> cards;
 
     public Theme() {
@@ -52,11 +52,11 @@ public class Theme {
         this.tags = tags;
     }
 
-    public List<String> getOrganisers() {
+    public List<Organiser> getOrganisers() {
         return organisers;
     }
 
-    public void setOrganisers(List<String> organisers) {
+    public void setOrganisers(List<Organiser> organisers) {
         this.organisers = organisers;
     }
 

@@ -1,6 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
 import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,7 @@ public interface ThemeService {
     void updateTheme(Theme theme);
 
 
-    void addOrganiser(String theme, String organiser, String newOrganiser);
+    void addOrganiser(String theme, Organiser newOrganiser);
+
+    Boolean isOrganiser(String loggedInUser, String themeId);
 }
