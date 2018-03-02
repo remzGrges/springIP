@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.api.controllers;
 
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.Domain.ProfilePicture;
 import be.kdg.integratieproject2.api.dto.PictureDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
@@ -10,6 +11,7 @@ import be.kdg.integratieproject2.api.dto.UserInfoDto;
 import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.NoProfilePictureFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
@@ -38,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @RequestBody UserRegistrationDto dto, BindingResult result, WebRequest request) {
+    public String register(@Valid @RequestBody UserRegistrationDto dto, BindingResult result, WebRequest request) throws UserAlreadyExistsException {
         if (result.hasErrors()){
             return "Body not valid";
         }
@@ -59,7 +61,7 @@ public class UserController {
     @GetMapping("/registrationConfirm")
     public String confirmRegistration(@RequestParam("token") String token) {
 
-      VerificationToken verificationToken = userService.getVerificationToken(token);
+       VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
             return "No Such Token";
         }
