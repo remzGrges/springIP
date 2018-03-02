@@ -61,10 +61,13 @@ public class ThemeServiceImpl implements ThemeService {
     public List<Theme> getThemesByUser(String userName) throws ObjectNotFoundException {
         LinkedList<Theme> themes = new LinkedList<>();
         ApplicationUser user = userService.getUserByUsername(userName);
-        for (String id : user.getThemes()
-                ) {
-            themes.add(themeRepository.findOne(id));
+        if (user.getThemes() != null) {
+            for (String id : user.getThemes()
+                    ) {
+                themes.add(themeRepository.findOne(id));
+            }
         }
+
         return themes;
     }
 

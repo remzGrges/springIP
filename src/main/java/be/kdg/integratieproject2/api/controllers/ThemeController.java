@@ -65,6 +65,7 @@ public class ThemeController {
         }
         return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
+
     @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
     public ResponseEntity<ThemeDto> deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException, ObjectNotFoundException {
         try {
@@ -84,9 +85,6 @@ public class ThemeController {
         //Theme theme = themeService.getTheme(themaId);
         //themeService.addOrganiser(themaId, userName, email);
         String appUrl = request.getContextPath();
-
-
-
 
         try {
             eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.get("username")), request.getLocale(), appUrl, themeInvitationDto.get("themaId")));
