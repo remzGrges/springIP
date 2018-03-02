@@ -68,7 +68,7 @@ public class CardController {
         return new ResponseEntity<>(mappedCard, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
     public ResponseEntity deleteCard(Authentication authentication, @PathVariable String id)
     {
         try {
