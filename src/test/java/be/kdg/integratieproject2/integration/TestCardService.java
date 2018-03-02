@@ -42,6 +42,7 @@ public class TestCardService {
     private Theme testTheme1;
     private Theme postedTheme1;
     private Card postedCard1;
+    private Organiser organiser1;
 
     @After
     public void delete() throws ObjectNotFoundException {
@@ -60,9 +61,10 @@ public class TestCardService {
         testTheme1.setDescription("Test");
         testTheme1.setName("testTheme1");
         List<Organiser> organisers1 = new ArrayList<>();
-        organisers1.add(new Organiser(true , "tim.vanaelst@student.kdg.be" , testTheme1.getId()));
+        organiser1 = new Organiser(true , "tim.vanaelst@student.kdg.be" , testTheme1.getId());
+        organisers1.add(organiser1);
         this.testTheme1.setOrganisers(organisers1);
-        postedTheme1 = this.themeService.addTheme(testTheme1, "tim.vanaelst@student.kdg.be");
+        postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
         themes.add(postedTheme1.getId());
 
         this.testCard1 = new Card();

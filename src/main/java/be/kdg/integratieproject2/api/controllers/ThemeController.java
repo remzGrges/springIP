@@ -3,6 +3,7 @@ package be.kdg.integratieproject2.api.controllers;
 import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
@@ -13,6 +14,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
@@ -56,7 +58,8 @@ public class ThemeController {
     public ResponseEntity<ThemeDto> createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
     {
         Theme theme = modelMapper.map(dto, Theme.class);
-        ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);
+        Organiser organiser = themeService.getOrganiser(theme, authentication.getName());
+        ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, organiser), ThemeDto.class);
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.CREATED);
     }
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
@@ -86,7 +89,7 @@ public class ThemeController {
     }
 
     @RequestMapping(value = "/inviteOrg" , method = RequestMethod.POST)
-    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody HashMap<String, String> themeInvitationDto, BindingResult result, WebRequest request) {
+    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody HashMap<String, String> themeInvitationDto, BindingResult result, WebRequest request) throws UserAlreadyExistsException {
 
 
         String userName = authentication.getName();

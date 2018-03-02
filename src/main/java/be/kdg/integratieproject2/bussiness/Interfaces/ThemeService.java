@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Service
 public interface ThemeService {
-    Theme addTheme(Theme theme, String userId);
+    Theme addTheme(Theme theme, Organiser userId);
 
     Theme getTheme(String id) throws ObjectNotFoundException;
 
@@ -24,7 +24,9 @@ public interface ThemeService {
     Theme updateTheme(Theme theme);
 
 
-    void addOrganiser(String theme, Organiser newOrganiser);
+    void addOrganiser(String theme, Organiser newOrganiser) throws ObjectNotFoundException;;
 
-    Boolean isOrganiser(String loggedInUser, String themeId);
+    Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException;
+
+    Organiser getOrganiser(Theme theme, String username);
 }

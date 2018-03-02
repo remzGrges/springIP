@@ -36,17 +36,17 @@ public class ThemeServiceImpl implements ThemeService {
     private UserService userService;
     private JavaMailSender mailSender;
 
-    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService,JavaMailSender mailSender) {
+    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender) {
         this.themeRepository = themeRepository;
         this.userService = userService;
     }
 
     @Override
-    public Theme addTheme(Theme theme, String userName) {
-        ApplicationUser user = userService.getUserByUsername(userName);
+    public Theme addTheme(Theme theme, Organiser userName) {
+        ApplicationUser user = userService.getUserByUsername(userName.getEmail());
         if (theme.getOrganisers() == null || theme.getOrganisers().size() == 0) {
             LinkedList<Organiser> organisers = new LinkedList<>();
-            organisers.add(new Organiser(true , userName, theme.getId()));
+            organisers.add(userName);
             theme.setOrganisers(organisers);
         }
         Theme savedTheme = themeRepository.save(theme);
@@ -61,12 +61,10 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public Theme getTheme(String id) throws ObjectNotFoundException{
-        try{
+    public Theme getTheme(String id) throws ObjectNotFoundException {
+        try {
             return themeRepository.findOne(id);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new ObjectNotFoundException(id);
         }
     }
@@ -93,12 +91,16 @@ public class ThemeServiceImpl implements ThemeService {
                 themes.removeIf(x -> x.equals(id));
                 user.setThemes(themes);
                 userService.updateRegisteredUser(user);
+            }
+            themeRepository.delete(id);
         }
-        themeRepository.delete(id);
+
+
+
+
+
     }
-
-
-    @Override
+      @Override
     public Theme updateTheme(Theme theme) {
         return themeRepository.save(theme);
     }
@@ -106,7 +108,7 @@ public class ThemeServiceImpl implements ThemeService {
 
 
     @Override
-    public void addOrganiser(String themeId, Organiser newOrganiser) throws ObjectNotFoundException {
+    public void addOrganiser (String themeId, Organiser newOrganiser) throws ObjectNotFoundException {
         Theme theme = getTheme(themeId);
         if (theme.getOrganisers() != null) {
            /* if (theme.getOrganisers().contains(organiser)) {
@@ -134,7 +136,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException {
+    public Boolean isOrganiser (String loggedInUser, String themeId) throws ObjectNotFoundException {
         Theme theme = getTheme(themeId);
 
         if (theme.getOrganisers() != null) {
@@ -144,5 +146,14 @@ public class ThemeServiceImpl implements ThemeService {
 
     }
 
-
+    @Override
+    public Organiser getOrganiser(Theme theme, String username) {
+        Organiser currentOrganiser = null;
+        for (Organiser organiser : theme.getOrganisers()) {
+            if (organiser.getEmail().equals(username)) {
+                currentOrganiser = organiser;
+            }
+        }
+        return currentOrganiser;
+    }
 }

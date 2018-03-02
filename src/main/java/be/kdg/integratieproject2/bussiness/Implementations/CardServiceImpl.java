@@ -1,10 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Application;
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Card;
-import be.kdg.integratieproject2.Domain.SubTheme;
-import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.*;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;

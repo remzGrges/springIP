@@ -3,6 +3,7 @@ import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,12 +27,16 @@ public class InvitationListener implements ApplicationListener<OnInvitationCompl
 
     @Override
     public void onApplicationEvent(OnInvitationCompleteEvent event) {
-        this.confirmInvitation(event);
+        try {
+            this.confirmInvitation(event);
+        } catch (ObjectNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
     }
 
-    private void confirmInvitation(OnInvitationCompleteEvent event) {
+    private void confirmInvitation(OnInvitationCompleteEvent event) throws ObjectNotFoundException {
         String user = event.getUser();
         String themeId = event.getTheme();
         Theme theme = themeService.getTheme(themeId);
