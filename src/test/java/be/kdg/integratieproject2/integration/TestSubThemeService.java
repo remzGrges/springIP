@@ -141,7 +141,7 @@ public class TestSubThemeService {
     @Test
     public void testUpdateSubTheme() throws ObjectNotFoundException {
         postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
-        Assert.assertTrue(subThemeService.getSubTheme(postedSubTheme.getId(), organiser1).getText().equals("test subtheme"));
+        Assert.assertTrue(subThemeService.getSubTheme(postedSubTheme.getId(), organiser1.getEmail()).getText().equals("test subtheme"));
         postedSubTheme.setText("Nieuwe tekst");
         SubTheme updatedSubTheme = subThemeService.updateSubTheme(postedSubTheme, organiser1.getEmail());
         Assert.assertTrue(updatedSubTheme.getText().equals(postedSubTheme.getText()));
@@ -150,7 +150,7 @@ public class TestSubThemeService {
     @Test
     public void testGetSubTheme() throws ObjectNotFoundException {
         postedSubTheme = subThemeService.addSubTheme(subTheme, organiser1.getEmail(), postedTheme1.getId());
-        SubTheme getSubTheme = subThemeService.getSubTheme(subTheme.getId(), organiser1);
+        SubTheme getSubTheme = subThemeService.getSubTheme(subTheme.getId(), organiser1.getEmail());
         Assert.assertTrue(postedSubTheme.getText().equals(getSubTheme.getText()));
         Assert.assertTrue(postedSubTheme.getId().equals(getSubTheme.getId()));
         Assert.assertTrue(postedSubTheme.getUserId().equals(getSubTheme.getUserId()));

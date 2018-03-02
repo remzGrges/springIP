@@ -7,6 +7,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,10 +29,11 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card addCard(Card card, String userId, String themeId) throws ObjectNotFoundException {
-        ApplicationUser user = userService.getUserByUsername(userId);
+    public Card addCard(Card card, String userName, String themeId) throws ObjectNotFoundException {
+        ApplicationUser user = userService.getUserByUsername(userName);
         if (user.getThemes().contains(themeId)) {
-            card.setUserId(userId);
+            card.setUserId(userName);
+            card.setId(new ObjectId().toString());
             Theme theme = themeService.getTheme(themeId);
             List<Card> cards = theme.getCards();
             if (cards == null) {
@@ -46,18 +48,69 @@ public class CardServiceImpl implements CardService {
         return card;
     }
 
+    @Override
+    public Card addCardAtSubTheme(Card card, String userName, String subThemeId) throws ObjectNotFoundException {
+        SubTheme subTheme = subThemeService.getSubTheme(subThemeId, userName);
+        card.setUserId(userName);
+        card.setId(new ObjectId().toString());
+        List<Card> cards = subTheme.getCards();
+        if(cards == null) cards = new ArrayList<>();
+        cards.add(card);
+        subTheme.setCards(cards);
+        subThemeService.updateSubTheme(subTheme, userName);
+        return card;
+    }
+
+    @Override
+    public Card updateCard(Card card, String userName) throws ObjectNotFoundException {
+        List<Theme> themes = themeService.getThemesByUser(userName);
+        Optional cardOpt;
+        for (Theme theme : themes)
+        {
+            if(theme.getCards() != null) {
+                cardOpt = theme.getCards().stream().filter(x -> x.getId().equals(card.getId())).findFirst();
+                if (cardOpt.isPresent()){
+                    List<Card> cards = theme.getCards();
+                    cards.remove(cardOpt.get());
+                    cards.add(card);
+                    theme.setCards(cards);
+                    themeService.updateTheme(theme);
+                    return card;
+                }
+            }
+            if(theme.getSubThemes() != null) {
+                for (SubTheme subTheme : theme.getSubThemes()) {
+                    cardOpt = subTheme.getCards().stream().filter(x -> x.getId().equals(card.getId())).findFirst();
+                    if (cardOpt.isPresent()){
+                        List<Card> cards = subTheme.getCards();
+                        cards.remove(cardOpt.get());
+                        cards.add(card);
+                        subTheme.setCards(cards);
+                        subThemeService.updateSubTheme(subTheme, userName);
+                        return card;
+                    }
+                }
+            }
+        }
+        throw new ObjectNotFoundException(card.getId());
+    }
+
 
     @Override
     public Card getCard(String cardId, String userId) throws ObjectNotFoundException {
         List<Theme> themes = themeService.getThemesByUser(userId);
+        Optional card;
         for (Theme theme : themes)
         {
-            Optional card = theme.getCards().stream().filter(x -> x.getId().equals(cardId)).findFirst();
-            if(card.isPresent()) return (Card) card.get();
-            for (SubTheme subTheme : theme.getSubThemes())
-            {
-                card = subTheme.getCards().stream().filter(x -> x.getId().equals(cardId)).findFirst();
-                if(card.isPresent()) return (Card) card.get();
+            if(theme.getCards() != null) {
+                card = theme.getCards().stream().filter(x -> x.getId().equals(cardId)).findFirst();
+                if (card.isPresent()) return (Card) card.get();
+            }
+            if(theme.getSubThemes() != null) {
+                for (SubTheme subTheme : theme.getSubThemes()) {
+                    card = subTheme.getCards().stream().filter(x -> x.getId().equals(cardId)).findFirst();
+                    if (card.isPresent()) return (Card) card.get();
+                }
             }
         }
         throw new ObjectNotFoundException(cardId);
@@ -79,9 +132,9 @@ public class CardServiceImpl implements CardService {
 
 
     @Override
-    public void deleteCard(String id, String userId) throws ObjectNotFoundException {
-        Card card = getCard(id, userId);
-        List<Theme> themes = themeService.getThemesByUser(userId);
+    public void deleteCard(String id, String userName) throws ObjectNotFoundException {
+        Card card = getCard(id, userName);
+        List<Theme> themes = themeService.getThemesByUser(userName);
         for (Theme theme : themes) {
             if (theme.getCards() != null) {
                 List<Card> cards = theme.getCards();
@@ -110,5 +163,7 @@ public class CardServiceImpl implements CardService {
         if(uncatagorizedCards.getCards().size() > 0) subThemes.add(uncatagorizedCards);
         return subThemes;
     }
+
+
 
 }

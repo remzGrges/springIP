@@ -16,7 +16,11 @@ public interface CardService {
 
     List<Card> getCardsByTheme(String themeId, String userId) throws ObjectNotFoundException;
 
-    void deleteCard(String id, String userId) throws ObjectNotFoundException;
+    void deleteCard(String id, String userName) throws ObjectNotFoundException;
 
     List<SubTheme> getAllCards(String userName) throws ObjectNotFoundException;
+
+    Card addCardAtSubTheme(Card card, String userName, String subThemeId) throws ObjectNotFoundException;
+
+    Card updateCard(Card card, String userName) throws ObjectNotFoundException;
 }

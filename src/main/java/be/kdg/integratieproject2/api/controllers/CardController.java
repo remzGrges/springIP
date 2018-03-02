@@ -39,7 +39,33 @@ public class CardController {
         } catch (ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
-        return new ResponseEntity<>(mappedCard, HttpStatus.CREATED);
+        return new ResponseEntity<>(mappedCard, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/createAtSubtheme/{subThemeId}", method=RequestMethod.POST)
+    public ResponseEntity<CardDto> createCardAtSubTheme(@RequestBody CardDto dto, Authentication authentication, @PathVariable String subThemeId) throws BadRequestException
+    {
+        Card card = modelMapper.map(dto, Card.class);
+        CardDto mappedCard = null;
+        try {
+            mappedCard = modelMapper.map(cardService.addCardAtSubTheme(card, authentication.getName(), subThemeId ), CardDto.class);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        return new ResponseEntity<>(mappedCard, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/update", method = RequestMethod.POST)
+    public ResponseEntity<CardDto> updateCard(Authentication authentication, @RequestBody CardDto dto)
+    {
+        Card card = modelMapper.map(dto, Card.class);
+        CardDto mappedCard = null;
+        try {
+            mappedCard = modelMapper.map(cardService.updateCard(card, authentication.getName()), CardDto.class);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        return new ResponseEntity<>(mappedCard, HttpStatus.OK);
     }
 
     @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)

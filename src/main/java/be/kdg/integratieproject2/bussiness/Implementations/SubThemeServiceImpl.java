@@ -5,6 +5,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class SubThemeServiceImpl implements SubThemeService {
     @Override
     public SubTheme addSubTheme(SubTheme subTheme, String userName, String themeId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userName);
+        subTheme.setId(new ObjectId().toString());
         Theme theme;
         if (user.getThemes().stream().anyMatch(x -> x.equals(themeId))) {
             subTheme.setUserId(userName);
@@ -60,6 +62,7 @@ public class SubThemeServiceImpl implements SubThemeService {
         subThemes.removeIf(x -> x.getId().equals(subThemePosted.getId()));
         subThemes.add(subThemePosted);
         theme.setSubThemes(subThemes);
+        themeService.updateTheme(theme);
         return subThemePosted;
     }
 
