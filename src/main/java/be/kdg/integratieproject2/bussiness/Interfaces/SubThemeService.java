@@ -11,16 +11,17 @@ import java.util.List;
 @Service
 public interface SubThemeService {
 
-    SubTheme addSubTheme(SubTheme subTheme, Organiser userId, String themeId) throws ObjectNotFoundException;
+    SubTheme addSubTheme(SubTheme subTheme, String userName, String themeId) throws ObjectNotFoundException;
 
-    void deleteSubTheme(String subThemeid, Organiser userName) throws ObjectNotFoundException;
+    void deleteSubTheme(String subThemeid, String userName) throws ObjectNotFoundException;
 
-    SubTheme updateSubTheme(SubTheme subThemePosted, Organiser userName) throws ObjectNotFoundException;
+    SubTheme updateSubTheme(SubTheme subThemePosted, String userName) throws ObjectNotFoundException;
 
-    SubTheme getSubTheme(String subThemeId, Organiser userName) throws ObjectNotFoundException;
+    SubTheme getSubTheme(String subThemeId, String userName) throws ObjectNotFoundException;
 
-    List<SubTheme> getAllSubThemesTheme(String themeId, Organiser userName) throws ObjectNotFoundException;
+    List<SubTheme> getAllSubThemesTheme(String themeId) throws ObjectNotFoundException;
 
     Theme getThemeBySubThemeId(String subthemeId, String userName) throws ObjectNotFoundException;
+
     List<SubTheme> getSubThemesByUser(String userName) throws ObjectNotFoundException;
 }

@@ -9,7 +9,6 @@ import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,7 +63,7 @@ public class TestCardService {
         organiser1 = new Organiser(true , "tim.vanaelst@student.kdg.be" , testTheme1.getId());
         organisers1.add(organiser1);
         this.testTheme1.setOrganisers(organisers1);
-        postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        postedTheme1 = this.themeService.addTheme(testTheme1, organiser1.getEmail());
         themes.add(postedTheme1.getId());
 
         this.testCard1 = new Card();
@@ -119,7 +118,7 @@ public class TestCardService {
         this.cardService.deleteCard(postedCard2.getId(),"tim.vanaelst@student.kdg.be");
     }*/
 
-    @Test (expected = BadRequestException.class)
+    @Test (expected = ObjectNotFoundException.class)
     public void testCreateCardWrongNoThema() throws ObjectNotFoundException {
         Card postedCard = this.cardService.addCard(testCard2, "tim.vanaelst@student.kdg.be","wrong");
     }

@@ -1,35 +1,23 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
-import be.kdg.integratieproject2.api.dto.ThemeInvitationDto;
 import be.kdg.integratieproject2.api.invitation.OnInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
-import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.WebRequest;
-import sun.rmi.runtime.Log;
 
-import java.util.HashMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,10 +46,10 @@ public class ThemeController {
     public ResponseEntity<ThemeDto> createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
     {
         Theme theme = modelMapper.map(dto, Theme.class);
-        Organiser organiser = themeService.getOrganiser(theme, authentication.getName());
-        ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, organiser), ThemeDto.class);
-        return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.CREATED);
+        ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);
+        return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
+
     @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication) throws ObjectNotFoundException {
         List<Theme> themes;
@@ -77,15 +65,17 @@ public class ThemeController {
         }
         return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
-    public ResponseEntity deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException, ObjectNotFoundException {
+
+    //TODO: GET = DELETE, geen DTO teruggeven
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
+    public ResponseEntity<ThemeDto> deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException, ObjectNotFoundException {
         try {
             themeService.deleteTheme(id);
         } catch (ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
         themeService.deleteTheme(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/inviteOrg" , method = RequestMethod.POST)
@@ -96,9 +86,6 @@ public class ThemeController {
         //Theme theme = themeService.getTheme(themaId);
         //themeService.addOrganiser(themaId, userName, email);
         String appUrl = request.getContextPath();
-
-
-
 
         try {
             eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.get("username")), request.getLocale(), appUrl, themeInvitationDto.get("themaId")));

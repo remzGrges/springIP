@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -40,11 +39,37 @@ public class CardController {
         } catch (ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
-        return new ResponseEntity<>(mappedCard, HttpStatus.CREATED);
+        return new ResponseEntity<>(mappedCard, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST)
-    public ResponseEntity deleteCard(Authentication authentication, @PathVariable String id)
+    @RequestMapping(value="/createAtSubtheme/{subThemeId}", method=RequestMethod.POST)
+    public ResponseEntity<CardDto> createCardAtSubTheme(@RequestBody CardDto dto, Authentication authentication, @PathVariable String subThemeId) throws BadRequestException
+    {
+        Card card = modelMapper.map(dto, Card.class);
+        CardDto mappedCard = null;
+        try {
+            mappedCard = modelMapper.map(cardService.addCardAtSubTheme(card, authentication.getName(), subThemeId ), CardDto.class);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        return new ResponseEntity<>(mappedCard, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/update", method = RequestMethod.POST)
+    public ResponseEntity<CardDto> updateCard(Authentication authentication, @RequestBody CardDto dto)
+    {
+        Card card = modelMapper.map(dto, Card.class);
+        CardDto mappedCard = null;
+        try {
+            mappedCard = modelMapper.map(cardService.updateCard(card, authentication.getName()), CardDto.class);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        return new ResponseEntity<>(mappedCard, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
+    public ResponseEntity<CardDto> deleteCard(Authentication authentication, @PathVariable String id)
     {
         try {
             cardService.deleteCard(id, authentication.getName());
@@ -52,7 +77,7 @@ public class CardController {
         catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity( new CardDto(), HttpStatus.OK);
     }
 
     @RequestMapping(value="/getAllCardsTheme/{themeId}", method = RequestMethod.GET, produces = "application/json")

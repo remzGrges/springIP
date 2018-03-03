@@ -1,12 +1,11 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.*;
-import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.bussiness.Interfaces.SubThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,15 +24,17 @@ public class SubThemeServiceImpl implements SubThemeService {
     }
 
     @Override
-    public SubTheme addSubTheme(SubTheme subTheme, Organiser userId, String themeId) throws ObjectNotFoundException {
-        ApplicationUser user = userService.getUserByUsername(userId.getEmail());
+    public SubTheme addSubTheme(SubTheme subTheme, String userName, String themeId) throws ObjectNotFoundException {
+        ApplicationUser user = userService.getUserByUsername(userName);
+        subTheme.setId(new ObjectId().toString());
         Theme theme;
         if (user.getThemes().stream().anyMatch(x -> x.equals(themeId))) {
-            subTheme.setUserId(userId.getEmail());
+            subTheme.setUserId(userName);
             theme = themeService.getTheme(themeId);
-            List<Card> cards = theme.getCards();
-            cards.add(subTheme);
-            theme.setCards(cards);
+            List<SubTheme> subThemes = theme.getSubThemes();
+            if(subThemes == null) subThemes = new ArrayList<>();
+            subThemes.add(subTheme);
+            theme.setSubThemes(subThemes);
             themeService.updateTheme(theme);
         } else {
             throw new ObjectNotFoundException(themeId);
@@ -42,31 +43,29 @@ public class SubThemeServiceImpl implements SubThemeService {
     }
 
     @Override
-    public void deleteSubTheme(String subthemeId, Organiser userName) throws ObjectNotFoundException {
+    public void deleteSubTheme(String subthemeId, String userName) throws ObjectNotFoundException {
         //TODO: Cascading delete cards of niet
-        List<Theme> themes = themeService.getThemesByUser(userName.getEmail());
-        for (Theme theme : themes) {
-            if (theme.getCards() == null) theme.setCards(new ArrayList<>());
-            List<Card> cards = theme.getCards();
-            cards.removeIf(x -> x.getId().equals(subthemeId));
-            theme.setCards(cards);
-            themeService.updateTheme(theme);
-        }
+        Theme theme = getThemeBySubThemeId(subthemeId, userName);
+        List<SubTheme> subThemes = theme.getSubThemes();
+        subThemes.removeIf(x -> x.getId().equals(subthemeId));
+        theme.setSubThemes(subThemes);
+        themeService.updateTheme(theme);
     }
 
     @Override
-    public SubTheme updateSubTheme(SubTheme subThemePosted, Organiser userName) throws ObjectNotFoundException {
-        Theme theme = getThemeBySubThemeId(subThemePosted.getId(), userName.getEmail());
+    public SubTheme updateSubTheme(SubTheme subThemePosted, String userName) throws ObjectNotFoundException {
+        Theme theme = getThemeBySubThemeId(subThemePosted.getId(), userName);
         List<SubTheme> subThemes = theme.getSubThemes();
         subThemes.removeIf(x -> x.getId().equals(subThemePosted.getId()));
         subThemes.add(subThemePosted);
         theme.setSubThemes(subThemes);
+        themeService.updateTheme(theme);
         return subThemePosted;
     }
 
     @Override
-    public SubTheme getSubTheme(String subThemeId, Organiser userName) throws ObjectNotFoundException {
-        Theme theme = getThemeBySubThemeId(subThemeId, userName.getEmail());
+    public SubTheme getSubTheme(String subThemeId, String userName) throws ObjectNotFoundException {
+        Theme theme = getThemeBySubThemeId(subThemeId, userName);
         return theme.getSubThemes().stream().filter(x -> x.getId().equals(subThemeId)).findFirst().get();
     }
 
@@ -84,7 +83,7 @@ public class SubThemeServiceImpl implements SubThemeService {
 
 
     @Override
-    public List<SubTheme> getAllSubThemesTheme(String themeId, Organiser userName) throws ObjectNotFoundException {
+    public List<SubTheme> getAllSubThemesTheme(String themeId) throws ObjectNotFoundException {
         return themeService.getTheme(themeId).getSubThemes();
     }
 
@@ -92,9 +91,14 @@ public class SubThemeServiceImpl implements SubThemeService {
     public Theme getThemeBySubThemeId(String subthemeId, String userName) throws ObjectNotFoundException {
 
         Optional optTheme = themeService.getThemesByUser(userName).stream()
-                .filter(x -> x.getSubThemes()
-                        .stream()
-                        .anyMatch(y -> y.getId().equals(subthemeId)))
+                .filter(x -> {
+                    if(x.getSubThemes() == null || x.getSubThemes().size() > 0) {
+                        return x.getSubThemes()
+                                .stream()
+                                .anyMatch(y -> y.getId().equals(subthemeId));
+                    }
+                    else return false;
+                })
                 .findFirst();
         if(optTheme.isPresent()) return (Theme) optTheme.get();
         else throw new ObjectNotFoundException(subthemeId);
