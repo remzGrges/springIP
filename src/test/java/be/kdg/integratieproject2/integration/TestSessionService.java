@@ -52,7 +52,7 @@ public class TestSessionService {
         organiser = new Organiser(true, "leander.coevoet@student.kdg.be", testTheme1.getId());
         organisers1.add(organiser);
         this.testTheme1.setOrganisers(organisers1);
-        this.testTheme1 = this.themeService.addTheme(testTheme1, organiser);
+        this.testTheme1 = this.themeService.addTheme(testTheme1, "leander.coevoet@student.kdg.be");
 
         user1 = userService.getUserByUsername("leander.coevoet@student.kdg.be");
         List<ApplicationUser> players = new LinkedList<>();
