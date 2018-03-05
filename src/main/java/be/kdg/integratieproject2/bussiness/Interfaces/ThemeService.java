@@ -3,6 +3,7 @@ package be.kdg.integratieproject2.bussiness.Interfaces;
 import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,9 +24,13 @@ public interface ThemeService {
     Theme updateTheme(Theme theme);
 
 
-    void addOrganiser(String theme, Organiser newOrganiser) throws ObjectNotFoundException;;
+    Organiser addOrganiser(String theme, String curOrg ,String newOrganiser) throws ObjectNotFoundException, UserAlreadyExistsException;;
 
     Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException;
 
-    Organiser getOrganiser(Theme theme, String username);
+    Organiser getOrganiser(String  theme, String username) throws ObjectNotFoundException;
+
+    Organiser updateExistingOrganiser(Organiser organiser) throws ObjectNotFoundException;
+
+    Organiser deleteOrganiser(String themeId, String username) throws ObjectNotFoundException;
 }

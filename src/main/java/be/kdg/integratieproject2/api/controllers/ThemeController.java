@@ -1,14 +1,18 @@
 package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.api.BadRequestException;
+import be.kdg.integratieproject2.api.dto.OrganiserDto;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
 import be.kdg.integratieproject2.api.invitation.OnInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
+import jdk.net.SocketFlow;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -18,7 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,31 +47,29 @@ public class ThemeController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<ThemeDto> createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
-    {
+    public ResponseEntity<ThemeDto> createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException {
         Theme theme = modelMapper.map(dto, Theme.class);
         ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication) throws ObjectNotFoundException {
         List<Theme> themes;
         try {
             themes = themeService.getThemesByUser(authentication.getName());
-        }
-        catch(ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
         List<ThemeDto> themeDTOs = new LinkedList<>();
-        for(Theme theme : themes) {
+        for (Theme theme : themes) {
             themeDTOs.add(modelMapper.map(theme, ThemeDto.class));
         }
         return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
 
     //TODO: GET = DELETE, geen DTO teruggeven
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public ResponseEntity<ThemeDto> deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException, ObjectNotFoundException {
         try {
             themeService.deleteTheme(id);
@@ -78,26 +80,74 @@ public class ThemeController {
         return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/inviteOrg" , method = RequestMethod.POST)
-    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody HashMap<String, String> themeInvitationDto, BindingResult result, WebRequest request) throws UserAlreadyExistsException {
+    @RequestMapping(value = "/inviteOrg", method = RequestMethod.POST)
+    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody OrganiserDto themeInvitationDto, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
 
 
+        Organiser organiser = modelMapper.map(themeInvitationDto, Organiser.class);
+        //OrganiserDto mappedOrganiser = modelMapper.map(themeService.addOrganiser(organiser.getThemeID(), authentication.getName(), organiser.getEmail()) , OrganiserDto.class);
+
+        Organiser newOrganiser = themeService.addOrganiser(organiser.getThemeID(), authentication.getName(), organiser.getEmail());
+/*
         String userName = authentication.getName();
+*/
         //Theme theme = themeService.getTheme(themaId);
         //themeService.addOrganiser(themaId, userName, email);
         String appUrl = request.getContextPath();
 
         try {
-            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.get("username")), request.getLocale(), appUrl, themeInvitationDto.get("themaId")));
 
+            if (newOrganiser != null) {
+                eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.getEmail()), request.getLocale(), appUrl, themeInvitationDto.getThemeID()));
+            }
         } catch (Exception e) {
             ApplicationUser user = new ApplicationUser();
-            user.setEmail(themeInvitationDto.get("username"));
-            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(user), request.getLocale(), appUrl, themeInvitationDto.get("themaId")));
+            user.setEmail(themeInvitationDto.getEmail());
+            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(user), request.getLocale(), appUrl, themeInvitationDto.getThemeID()));
 
         }
 
 
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/acceptOrganiserInvite", method = RequestMethod.POST)
+    public ResponseEntity acceptInvite(Authentication authentication, @RequestHeader("token") String token, @RequestHeader("themeId") String id) throws ObjectNotFoundException {
+        VerificationToken verificationToken = userService.getVerificationToken(token);
+        if (verificationToken == null) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        ApplicationUser applicationUser = verificationToken.getApplicationUser();
+
+
+        Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        Organiser organiser = themeService.getOrganiser(id, authentication.getName());
+
+        organiser.setEnabled(true);
+
+        if (organiser.getEmail().equals(applicationUser.getEmail())) {
+            themeService.updateExistingOrganiser(organiser);
+        } else {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+
+        return new ResponseEntity(HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/register",method = RequestMethod.GET)
+    public ResponseEntity<OrganiserDto> register(@RequestHeader("token") String token, @RequestHeader("themeId") String id) throws ObjectNotFoundException {
+
+        return null;
+    }
+
+
+
+
 }

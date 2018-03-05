@@ -1,4 +1,5 @@
 package be.kdg.integratieproject2.api.invitation;
+
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class InvitationListener implements ApplicationListener<OnInvitationCompleteEvent>{
+public class InvitationListener implements ApplicationListener<OnInvitationCompleteEvent> {
     private UserService userService;
     private ThemeService themeService;
     private JavaMailSender mailSender;
@@ -22,7 +23,7 @@ public class InvitationListener implements ApplicationListener<OnInvitationCompl
         this.userService = userService;
         this.themeService = themeService;
         this.mailSender = mailSender;
-       // this.themeId = themeId;
+        // this.themeId = themeId;
     }
 
     @Override
@@ -41,26 +42,22 @@ public class InvitationListener implements ApplicationListener<OnInvitationCompl
         String themeId = event.getTheme();
         Theme theme = themeService.getTheme(themeId);
         ApplicationUser applicationUser = userService.getUserByUsername(user);
-        String subject = "Je bent uitgenodigd om het thema " + theme.getName() + " te bewerken" ;
+        String subject = "Je bent uitgenodigd om het thema " + theme.getName() + " te bewerken";
+        String token = UUID.randomUUID().toString();
+        String confirmationUrl;
+        SimpleMailMessage inviteEmail;
+        userService.createVerificationToken(applicationUser, token);
         if (userService.getUserByUsername(user).getPassword() == null) {
-            String token = UUID.randomUUID().toString();
-            userService.createVerificationToken(applicationUser, token);
-            String confirmationUrl = event.getAppUrl() + "/themes/register?themeId=" + themeId;
-            SimpleMailMessage verificationEmail = new SimpleMailMessage();
-            verificationEmail.setTo(user);
-            verificationEmail.setSubject(subject);
-            verificationEmail.setText("http://localhost:8080" + confirmationUrl);
-            mailSender.send(verificationEmail);
+            confirmationUrl = event.getAppUrl() + "/themes/startRegister?themeId=" + themeId + "&token=" + token;
         } else {
-
-            String confirmationUrl = event.getAppUrl() + "/theme/acceptOrganiserInvite";
-            SimpleMailMessage verificationEmail = new SimpleMailMessage();
-            verificationEmail.setTo(user);
-            verificationEmail.setSubject(subject);
-            verificationEmail.setText("http://localhost:8080" + confirmationUrl);
-            mailSender.send(verificationEmail);
-
+            confirmationUrl = event.getAppUrl() + "/theme/acceptOrganiserInvite?themeId=" + themeId + "&token=" + token;
         }
+
+        inviteEmail = new SimpleMailMessage();
+        inviteEmail.setTo(user);
+        inviteEmail.setSubject(subject);
+        inviteEmail.setText("http://localhost:8080" + confirmationUrl);
+        mailSender.send(inviteEmail);
     }
 
 
