@@ -58,7 +58,7 @@ public class TestThemeServices {
 
     //private Object o;
 
-    @Before
+/*    @Before
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
@@ -87,7 +87,13 @@ public class TestThemeServices {
 
        // this.gson = new Gson();
         //this.o = new StringBuilder();
-    }
+    }*/
+
+@Test
+public void getTheme() throws ObjectNotFoundException {
+    Theme theme = themeService.getTheme("5a9ee28a8e56602cb4889fce");
+    Assert.assertTrue(theme.getName().equals("Muziek"));
+}
     /*@Test
     public void testControllerCreateTheme() throws Exception {
        MvcResult result = mvc.perform(post("/themes/create")
