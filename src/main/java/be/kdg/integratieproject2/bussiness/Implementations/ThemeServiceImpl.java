@@ -13,10 +13,13 @@ import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Tim on 08/02/2018.
@@ -71,6 +74,7 @@ public class ThemeServiceImpl implements ThemeService {
             return themeRepository.findOne(id);
         } catch (Exception e) {
             throw new ObjectNotFoundException(id);
+
         }
     }
 
@@ -111,6 +115,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public Organiser addOrganiser(String themeId, String currentOrganiser, String newOrgMail) throws ObjectNotFoundException, UserAlreadyExistsException {
+
         Theme theme = getTheme(themeId);
         Organiser curOrganiser = getOrganiser(themeId, currentOrganiser);
         if (theme.getOrganisers() != null) {

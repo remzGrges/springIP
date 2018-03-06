@@ -26,7 +26,7 @@ public class InvitationToken extends Token{
     }
 
 
-    
+
 
     public String getEmail() {
         return email;
