@@ -18,7 +18,7 @@ public interface ThemeService {
 
     InvitationToken getInvitationToken(String token);
 
-    void createInvitationToken(ApplicationUser email, String themeId, String token);
+    void createInvitationToken(String email, String themeId, String token);
 
     Theme addTheme(Theme theme, String userId);
 

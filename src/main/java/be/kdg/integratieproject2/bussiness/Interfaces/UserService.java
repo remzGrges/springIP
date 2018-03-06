@@ -8,6 +8,8 @@ import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface UserService {
     public ApplicationUser registerUser(ApplicationUser applicationUser) throws UserAlreadyExistsException;
@@ -27,4 +29,6 @@ public interface UserService {
     ProfilePicture uploadProfilePicture(String username, ProfilePicture profilePicture);
 
     ProfilePicture getProfilePicture(String username) throws NoProfilePictureFoundException;
+
+    List<ApplicationUser> getAllUsers();
 }

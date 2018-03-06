@@ -38,11 +38,11 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public InvitationToken getInvitationToken(String token) {
-        return null;
+        return (InvitationToken) tokenRepository.findByToken(token);
     }
 
     @Override
-    public void createInvitationToken(ApplicationUser email, String themeId, String token) {
+    public void createInvitationToken(String email, String themeId, String token) {
         tokenRepository.save(new InvitationToken(token,email,themeId));
     }
 

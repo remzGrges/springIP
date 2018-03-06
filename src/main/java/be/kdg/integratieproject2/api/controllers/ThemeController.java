@@ -112,14 +112,15 @@ public class ThemeController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/acceptOrganiserInvite", method = RequestMethod.POST)
+    @GetMapping(value = "/acceptOrganiserInvite")
     public ResponseEntity acceptInvite(Authentication authentication, @RequestParam("token") String token) throws ObjectNotFoundException {
-        InvitationToken verificationToken = themeService.get(token);
+        InvitationToken verificationToken = themeService.getInvitationToken(token);
         if (verificationToken == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
+        String themeId = verificationToken.getThemeId();
 
-        ApplicationUser applicationUser = verificationToken.getApplicationUser();
+        String email = verificationToken.getEmail();
 
 
         Calendar cal = Calendar.getInstance();
@@ -127,11 +128,11 @@ public class ThemeController {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        Organiser organiser = themeService.getOrganiser(id, authentication.getName());
+        Organiser organiser = themeService.getOrganiser(themeId, authentication.getName());
 
         organiser.setEnabled(true);
 
-        if (organiser.getEmail().equals(applicationUser.getEmail())) {
+        if (organiser.getEmail().equals(email)) {
             themeService.updateExistingOrganiser(organiser);
         } else {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
@@ -144,7 +145,7 @@ public class ThemeController {
 
     @RequestMapping(value = "/register",method = RequestMethod.GET)
     public ResponseEntity<OrganiserDto> register(@RequestHeader("token") String token, @RequestHeader("themeId") String id) throws ObjectNotFoundException {
-
+        //InvitationToken invitationToken = themeService.ge
         return null;
     }
 

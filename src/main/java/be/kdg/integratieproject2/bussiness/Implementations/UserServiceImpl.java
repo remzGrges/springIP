@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.ProfilePicture;
+import be.kdg.integratieproject2.Domain.verification.Token;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.NoProfilePictureFoundException;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -56,8 +58,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public VerificationToken getVerificationToken(String token) {
-        return tokenRepository.findByToken(token);
+    public VerificationToken getVerificationToken(String token) { return (VerificationToken) tokenRepository.findByToken(token);
     }
 
     @Override
@@ -109,6 +110,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public List<ApplicationUser> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         ApplicationUser applicationUser = userRepository.findByEmail(s);
         if (applicationUser == null)
@@ -122,4 +128,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 true,
                 Collections.emptyList());
     }
+
+
+
 }

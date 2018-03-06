@@ -8,66 +8,56 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
-public class InvitationToken extends VerificationToken{
-    private static final int EXPIRATION = 60 * 24;
+public class InvitationToken extends Token{
 
-    @Id
-    private String id;
 
     private String token;
-    private ApplicationUser email;
+    private String email;
     private String themeId;
     private Date expiryDate;
 
-    public InvitationToken(String token, ApplicationUser email, String themeId) {
-        super(email, token);
-        this.themeId = themeId;
-        this.expiryDate = calculateExpiryDate(EXPIRATION);
-    }
-
-    private Date calculateExpiryDate(int expiryTimeInMinutes) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Timestamp(cal.getTime().getTime()));
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
-        return new Date(cal.getTime().getTime());
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setEmail(ApplicationUser email) {
+    public InvitationToken(String token, String email, String themeId) {
+        super(token);
         this.email = email;
-    }
 
-    public void setThemeId(String themeId) {
         this.themeId = themeId;
+
+
     }
 
-    public ApplicationUser getEmail() {
+
+    @Override
+    public String getToken() {
+        return token;
+    }
+
+    @Override
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getThemeId() {
         return themeId;
     }
 
-    public String getId() {
-        return id;
+    public void setThemeId(String themeId) {
+        this.themeId = themeId;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
+    @Override
     public Date getExpiryDate() {
         return expiryDate;
     }
 
+    @Override
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
