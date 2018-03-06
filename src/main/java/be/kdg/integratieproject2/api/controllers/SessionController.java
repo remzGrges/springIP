@@ -7,6 +7,7 @@ import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.CardDto;
 import be.kdg.integratieproject2.api.dto.SessionDto;
 import be.kdg.integratieproject2.api.dto.SubThemeDto;
+import be.kdg.integratieproject2.api.dto.UserInfoDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.CardService;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,8 +32,24 @@ public class SessionController {
         this.modelMapper = modelMapper;
         this.sessionService = sessionService;
     }
-   /*
-      List<Session> getAllSessionsByUser(String userId) throws ObjectNotFoundException;*/
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public ResponseEntity<SessionDto> updateSession(Authentication authentication, @Valid @RequestBody SessionDto dto) throws BadRequestException {
+        Session session = modelMapper.map(dto, Session.class);
+        SessionDto mappedSession = null;
+        Session getSes = null;
+        try {
+            getSes = sessionService.getSession(session.getSessionId(), authentication.getName());
+            if (getSes == null) {
+                throw new BadRequestException("No valid Session");
+            }
+            mappedSession = modelMapper.map(sessionService.addSession(session, authentication.getName()), SessionDto.class);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
+        return new ResponseEntity<>(mappedSession, HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto dto, Authentication authentication) throws BadRequestException {
@@ -58,7 +76,6 @@ public class SessionController {
         SessionDto sessionDto = modelMapper.map(session, SessionDto.class);
         return new ResponseEntity<SessionDto>(sessionDto, HttpStatus.OK);
     }
-
 
     @RequestMapping(value = "/delete/{sessionId]", method = RequestMethod.DELETE)
     public ResponseEntity deleteCard(Authentication authentication, @PathVariable String sessionId) {

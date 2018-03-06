@@ -1,10 +1,7 @@
 package be.kdg.integratieproject2.integration;
 
 
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Organiser;
-import be.kdg.integratieproject2.Domain.Session;
-import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.*;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
@@ -136,8 +133,16 @@ public class TestSessionService {
     }
 
     @Test
-    public void testUpdateSession()throws ObjectNotFoundException{
-        this.postedSession=this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
-
+    public void testUpdateSession() throws ObjectNotFoundException {
+        this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
+        Assert.assertTrue(postedSession.getSessionType() == session.getSessionType());
+        postedSession.setCanComment(true);
+        postedSession.setSessionType(SessionType.CIRCLE);
+        Session updatedSession = this.sessionService.addSession(postedSession, "leander.coevoet@student.kdg.be");
+        Assert.assertTrue(postedSession.getSessionId().equals(updatedSession.getSessionId()));
+        Assert.assertTrue(postedSession.getSessionType() == updatedSession.getSessionType());
+        Assert.assertTrue(postedSession.isCanComment() == updatedSession.isCanComment());
     }
+
+
 }
