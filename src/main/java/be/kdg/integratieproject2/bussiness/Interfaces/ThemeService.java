@@ -1,7 +1,9 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,11 @@ import java.util.List;
  */
 @Service
 public interface ThemeService {
+
+    InvitationToken getInvitationToken(String token);
+
+    void createInvitationToken(ApplicationUser email, String themeId, String token);
+
     Theme addTheme(Theme theme, String userId);
 
     Theme getTheme(String id) throws ObjectNotFoundException;

@@ -3,11 +3,13 @@ package be.kdg.integratieproject2.bussiness.Implementations;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
+import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,23 @@ public class ThemeServiceImpl implements ThemeService {
 
     private ThemeRepository themeRepository;
     private UserService userService;
+    private TokenRepository tokenRepository;
     private JavaMailSender mailSender;
 
-    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender) {
+    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender, TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
         this.themeRepository = themeRepository;
         this.userService = userService;
+    }
+
+    @Override
+    public InvitationToken getInvitationToken(String token) {
+        return null;
+    }
+
+    @Override
+    public void createInvitationToken(ApplicationUser email, String themeId, String token) {
+        tokenRepository.save(new InvitationToken(token,email,themeId));
     }
 
     @Override

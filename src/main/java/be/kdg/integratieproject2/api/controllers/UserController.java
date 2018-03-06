@@ -1,6 +1,7 @@
 package be.kdg.integratieproject2.api.controllers;
 
 
+import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.Domain.ProfilePicture;
@@ -59,23 +60,25 @@ public class UserController {
     }
 
     @GetMapping("/registrationConfirm")
-    public String confirmRegistration(@RequestParam("token") String token) {
+    public UserInfoDto confirmRegistration(@RequestParam("token") String token) {
 
        VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
-            return "No Such Token";
+            return new UserInfoDto();
         }
 
         ApplicationUser applicationUser = verificationToken.getApplicationUser();
+        UserInfoDto dto = modelMapper.map(applicationUser, UserInfoDto.class);
+
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return "Token expired";
+            return new UserInfoDto();
         }
 
         applicationUser.setEnabled(true);
         userService.updateRegisteredUser(applicationUser);
         userService.deleteToken(verificationToken);
-        return "User verified";
+        return dto;
     }
 
     @PostMapping(value = "/update")

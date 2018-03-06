@@ -3,6 +3,7 @@ package be.kdg.integratieproject2.api.controllers;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.OrganiserDto;
@@ -112,8 +113,8 @@ public class ThemeController {
     }
 
     @RequestMapping(value = "/acceptOrganiserInvite", method = RequestMethod.POST)
-    public ResponseEntity acceptInvite(Authentication authentication, @RequestHeader("token") String token, @RequestHeader("themeId") String id) throws ObjectNotFoundException {
-        VerificationToken verificationToken = userService.getVerificationToken(token);
+    public ResponseEntity acceptInvite(Authentication authentication, @RequestParam("token") String token) throws ObjectNotFoundException {
+        InvitationToken verificationToken = themeService.get(token);
         if (verificationToken == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }

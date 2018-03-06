@@ -46,11 +46,12 @@ public class InvitationListener implements ApplicationListener<OnInvitationCompl
         String token = UUID.randomUUID().toString();
         String confirmationUrl;
         SimpleMailMessage inviteEmail;
-        userService.createVerificationToken(applicationUser, token);
+        themeService.createInvitationToken(applicationUser,themeId, token);
+
         if (userService.getUserByUsername(user).getPassword() == null) {
-            confirmationUrl = event.getAppUrl() + "/themes/startRegister?themeId=" + themeId + "&token=" + token;
+            confirmationUrl = event.getAppUrl() + "/themes/startRegister&token=" + token;
         } else {
-            confirmationUrl = event.getAppUrl() + "/theme/acceptOrganiserInvite?themeId=" + themeId + "&token=" + token;
+            confirmationUrl = event.getAppUrl() + "/theme/acceptOrganiserInvite&token=" + token;
         }
 
         inviteEmail = new SimpleMailMessage();
