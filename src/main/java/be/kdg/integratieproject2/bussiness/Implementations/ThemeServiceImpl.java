@@ -7,6 +7,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
+import org.bson.types.ObjectId;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -22,38 +23,27 @@ import java.util.List;
 public class ThemeServiceImpl implements ThemeService {
 
     private ThemeRepository themeRepository;
-    private UserService userService;
-    private JavaMailSender mailSender;
 
-    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender) {
+    public ThemeServiceImpl(ThemeRepository themeRepository) {
         this.themeRepository = themeRepository;
-        this.userService = userService;
     }
 
     @Override
-    public Theme addTheme(Theme theme, String userName) {
-        ApplicationUser user = userService.getUserByUsername(userName);
-        List<Organiser> organisers = theme.getOrganisers();
+    public Theme updateTheme(Theme theme) {
 
-        if (organisers == null || organisers.size() == 0) {
-            organisers = new ArrayList<>();
-            organisers.add(new Organiser(true, userName));
-        } else {
-            if (organisers.stream().filter(o -> o.getEmail().equals(userName)).count() > 0){
-                organisers.add(new Organiser(true, userName));
-            }
+        if (theme.getSubThemes() != null && theme.getSubThemes().stream().anyMatch(s -> s.getId() == null)) {
+            theme.getSubThemes().stream().filter(s -> s.getId() == null).forEach(s -> s.setId(new ObjectId().toString()));
         }
 
+        return themeRepository.save(theme);
+    }
+
+    @Override
+    public Theme addTheme(Theme theme, String username) {
+        LinkedList<String> organisers = new LinkedList<>();
+        organisers.add(username);
         theme.setOrganisers(organisers);
-        Theme savedTheme = themeRepository.save(theme);
-        List<String> themes = user.getThemes();
-        if (themes == null) themes = new LinkedList<>();
-        if (!themes.contains(savedTheme.getId())) {
-            themes.add(savedTheme.getId());
-        }
-        user.setThemes(themes);
-        userService.updateRegisteredUser(user);
-        return savedTheme;
+        return themeRepository.save(theme);
     }
 
     @Override
@@ -66,90 +56,12 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public List<Theme> getThemesByUser(String userName) throws ObjectNotFoundException {
-        LinkedList<Theme> themes = new LinkedList<>();
-        ApplicationUser user = userService.getUserByUsername(userName);
-        if (user.getThemes() != null) {
-            for (String id : user.getThemes()
-                    ) {
-                themes.add(themeRepository.findOne(id));
-            }
-        }
-
-        return themes;
+    public List<Theme> getThemesByUser(String username) {
+        return themeRepository.getAllByOrganisersContaining(username);
     }
 
     @Override
-    public void deleteTheme(String id) throws ObjectNotFoundException {
-        Theme theme = getTheme(id);
-        if (theme.getOrganisers() != null){
-            for (Organiser organiser : theme.getOrganisers()) {
-                ApplicationUser user = userService.getUserByUsername(organiser.getEmail());
-                List<String> themes = user.getThemes();
-                if (themes != null) {
-                    themes.removeIf(x -> x.equals(id));
-                    user.setThemes(themes);
-                    userService.updateRegisteredUser(user);
-                }
-            }
-        }
+    public void deleteTheme(String id) {
         themeRepository.delete(id);
-    }
-
-    @Override
-    public Theme updateTheme(Theme theme) {
-        return themeRepository.save(theme);
-    }
-
-
-
-    @Override
-    public void addOrganiser (String themeId, Organiser newOrganiser) throws ObjectNotFoundException {
-        Theme theme = getTheme(themeId);
-        if (theme.getOrganisers() != null) {
-           /* if (theme.getOrganisers().contains(organiser)) {
-                try{
-                    ApplicationUser newOrganiserUser = userService.getUserByUsername(newOrganiser);
-                    List<String> themes = newOrganiserUser.getThemes();
-                    if(themes == null)
-                    {
-                        themes = new ArrayList<>();
-                    }
-                    themes.add(themeId);
-                    newOrganiserUser.setThemes(themes);
-                    userService.updateRegisteredUser(newOrganiserUser);
-                }
-                catch (Exception e)
-                {
-                    //email sturen
-                }
-                List<String> organisers = theme.getOrganisers();
-                organisers.add(newOrganiser);
-                theme.setOrganisers(organisers);
-                updateTheme(theme);
-            }*/
-        }
-    }
-
-    @Override
-    public Boolean isOrganiser (String loggedInUser, String themeId) throws ObjectNotFoundException {
-        Theme theme = getTheme(themeId);
-
-        if (theme.getOrganisers() != null) {
-
-        }
-        return null;
-
-    }
-
-    @Override
-    public Organiser getOrganiser(Theme theme, String username) {
-        Organiser currentOrganiser = null;
-        for (Organiser organiser : theme.getOrganisers()) {
-            if (organiser.getEmail().equals(username)) {
-                currentOrganiser = organiser;
-            }
-        }
-        return currentOrganiser;
     }
 }

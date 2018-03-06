@@ -21,11 +21,4 @@ public interface ThemeService {
     void deleteTheme(String id) throws ObjectNotFoundException;
 
     Theme updateTheme(Theme theme);
-
-
-    void addOrganiser(String theme, Organiser newOrganiser) throws ObjectNotFoundException;;
-
-    Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException;
-
-    Organiser getOrganiser(Theme theme, String username);
 }
