@@ -88,10 +88,10 @@ public class ThemeController {
     public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody OrganiserDto themeInvitationDto, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
 
 
-        Organiser organiser = modelMapper.map(themeInvitationDto, Organiser.class);
+        //Organiser organiser = modelMapper.map(themeInvitationDto, Organiser.class);
         //OrganiserDto mappedOrganiser = modelMapper.map(themeService.addOrganiser(organiser.getThemeID(), authentication.getName(), organiser.getEmail()) , OrganiserDto.class);
 
-        Organiser newOrganiser = themeService.addOrganiser(organiser.getThemeID(), authentication.getName(), organiser.getEmail());
+        String newOrganiser = themeService.addOrganiser(themeInvitationDto.getThemeID(), authentication.getName(), themeInvitationDto.getEmail());
 /*
         String userName = authentication.getName();
 */
@@ -131,12 +131,12 @@ public class ThemeController {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        Organiser organiser = themeService.getOrganiser(themeId, authentication.getName());
+        String organiser = themeService.getOrganiser(themeId, authentication.getName());
 
-        organiser.setEnabled(true);
 
-        if (organiser.getEmail().equals(email)) {
-            themeService.updateExistingOrganiser(organiser);
+
+        if (organiser.equals(email)) {
+            themeService.updateExistingOrganiser(organiser, verificationToken.getThemeId());
         } else {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }

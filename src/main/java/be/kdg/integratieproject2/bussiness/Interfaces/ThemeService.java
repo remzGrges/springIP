@@ -31,13 +31,13 @@ public interface ThemeService {
     Theme updateTheme(Theme theme);
 
 
-    Organiser addOrganiser(String theme, String curOrg ,String newOrganiser) throws ObjectNotFoundException, UserAlreadyExistsException;;
+    String addOrganiser(String theme, String curOrg ,String newOrganiser) throws ObjectNotFoundException, UserAlreadyExistsException;;
 
     Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException;
 
-    Organiser getOrganiser(String  theme, String username) throws ObjectNotFoundException;
+    String getOrganiser(String  theme, String username) throws ObjectNotFoundException;
 
-    Organiser updateExistingOrganiser(Organiser organiser) throws ObjectNotFoundException;
+    String updateExistingOrganiser(String organiser, String themeId) throws ObjectNotFoundException;
 
-    Organiser deleteOrganiser(String themeId, String username) throws ObjectNotFoundException;
+    String deleteOrganiser(String themeId, String username) throws ObjectNotFoundException;
 }
