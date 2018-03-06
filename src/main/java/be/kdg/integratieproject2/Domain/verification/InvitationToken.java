@@ -11,10 +11,10 @@ import java.util.Date;
 public class InvitationToken extends Token{
 
 
-    private String token;
+
     private String email;
     private String themeId;
-    private Date expiryDate;
+
 
     public InvitationToken(String token, String email, String themeId) {
         super(token);
@@ -26,15 +26,7 @@ public class InvitationToken extends Token{
     }
 
 
-    @Override
-    public String getToken() {
-        return token;
-    }
-
-    @Override
-    public void setToken(String token) {
-        this.token = token;
-    }
+    
 
     public String getEmail() {
         return email;
@@ -52,13 +44,5 @@ public class InvitationToken extends Token{
         this.themeId = themeId;
     }
 
-    @Override
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
 
-    @Override
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
-    }
 }
