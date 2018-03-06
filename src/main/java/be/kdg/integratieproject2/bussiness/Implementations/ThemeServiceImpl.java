@@ -96,15 +96,9 @@ public class ThemeServiceImpl implements ThemeService {
         }
     }
 
-    @Override
-    public Theme updateTheme(Theme theme) {
-        return themeRepository.save(theme);
-    }
-
-
 
     @Override
-    public void addOrganiser (String themeId, Organiser newOrganiser) throws ObjectNotFoundException {
+    public void addOrganiser (String themeId, String newOrganiser) throws ObjectNotFoundException {
         Theme theme = getTheme(themeId);
         if (theme.getOrganisers() != null) {
            /* if (theme.getOrganisers().contains(organiser)) {
