@@ -26,6 +26,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Tim on 08/02/2018.
@@ -48,36 +49,38 @@ public class ThemeController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<ThemeDto> createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException {
+    public ResponseEntity<ThemeDto> createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
+    {
         Theme theme = modelMapper.map(dto, Theme.class);
         ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ResponseEntity<ThemeDto> updateTheme(@RequestBody ThemeDto dto) throws BadRequestException
+    {
+        Theme theme = modelMapper.map(dto, Theme.class);
+        ThemeDto mappedTheme = modelMapper.map(themeService.updateTheme(theme), ThemeDto.class);
+        return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<ThemeDto>> getTheme(Authentication authentication) throws ObjectNotFoundException {
         List<Theme> themes;
         try {
             themes = themeService.getThemesByUser(authentication.getName());
-        } catch (ObjectNotFoundException e) {
+        }
+        catch(ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
-        List<ThemeDto> themeDTOs = new LinkedList<>();
-        for (Theme theme : themes) {
-            themeDTOs.add(modelMapper.map(theme, ThemeDto.class));
-        }
+        List<ThemeDto> themeDTOs = themes.stream().map(t -> modelMapper.map(t, ThemeDto.class)).collect(Collectors.toList());
         return new ResponseEntity<>(themeDTOs, HttpStatus.OK);
     }
 
-    //TODO: GET = DELETE, geen DTO teruggeven
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ThemeDto> deleteTheme(Authentication authentication, @PathVariable String id) throws BadRequestException, ObjectNotFoundException {
-        try {
-            themeService.deleteTheme(id);
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET    )
+    public ResponseEntity<ThemeDto> deleteTheme(@PathVariable String id) throws ObjectNotFoundException{
         themeService.deleteTheme(id);
+
         return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 
