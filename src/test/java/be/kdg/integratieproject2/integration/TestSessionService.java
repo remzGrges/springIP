@@ -104,9 +104,20 @@ public class TestSessionService {
 
     @Test
     public void testDeleteSession() throws ObjectNotFoundException {
+        Session session2 = new Session();
+        session2.setTheme(testTheme1);
+        session2.setAddCardUser(false);
+        session2.setNumberOfRounds(0);
+        user1 = userService.getUserByUsername("leander.coevoet@student.kdg.be");
+        List<ApplicationUser> players = new LinkedList<>();
+        players.add(user1);
+        session2.setPlayers(players);
+        session2.setTimeUserRound(5);
+        session2.setStartTime(new Timestamp(2018, 3, 12, 12, 0, 0, 0));
+        session2.setCanComment(true);
+
         this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
-        session.setCanComment(true);
-        Session postedSession2 = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
+        Session postedSession2 = this.sessionService.addSession(session2, "leander.coevoet@student.kdg.be");
         List<Session> sessions = sessionService.getAllSessionsByUser("leander.coevoet@student.kdg.be");
         Assert.assertTrue(sessions.size() == 2);
         sessionService.deleteSession(postedSession2.getSessionId(), "leander.coevoet@student.kdg.be");
@@ -118,6 +129,15 @@ public class TestSessionService {
     public void testGetSession() throws ObjectNotFoundException {
         this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
         Session session = this.sessionService.getSession(postedSession.getSessionId(), "leander.coevoet@student.kdg.be");
-        Assert.assertTrue(postedSession == session);
+        Assert.assertTrue(postedSession.getNumberOfRounds() == session.getNumberOfRounds());
+        Assert.assertTrue(postedSession.getSessionId().equals(session.getSessionId()));
+        Assert.assertTrue(postedSession.getSessionType() == session.getSessionType());
+        Assert.assertTrue(postedSession.getPlayers().size() == session.getPlayers().size());
+    }
+
+    @Test
+    public void testUpdateSession()throws ObjectNotFoundException{
+        this.postedSession=this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
+
     }
 }

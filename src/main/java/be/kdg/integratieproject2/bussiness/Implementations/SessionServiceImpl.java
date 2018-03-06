@@ -43,11 +43,12 @@ public class SessionServiceImpl implements SessionService {
     public Session getSession(String sessionId, String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
         Session session = sessionRepository.findOne(sessionId);
-        if (session.getPlayers().contains(user)) {
-            return session;
-        } else {
-            throw new ObjectNotFoundException("User not authorized");
+        for (ApplicationUser applicationUser : session.getPlayers()) {
+            if (applicationUser.getId().equals(user.getId())) {
+                return session;
+            }
         }
+        throw new ObjectNotFoundException(sessionId);
     }
 
     @Override
