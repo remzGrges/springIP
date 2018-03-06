@@ -1,13 +1,10 @@
 package be.kdg.integratieproject2.api.dto;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.SessionType;
 import be.kdg.integratieproject2.Domain.Theme;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -23,9 +20,6 @@ public class SessionDto {
     @NotEmpty
     private List<ApplicationUser> players;
     private int numberOfRounds;
-    @NotNull
-    @NotEmpty
-    private SessionType sessionType;
     @NotNull
     @NotEmpty
     private boolean canComment;
@@ -72,14 +66,6 @@ public class SessionDto {
 
     public void setNumberOfRounds(int numberOfRounds) {
         this.numberOfRounds = numberOfRounds;
-    }
-
-    public SessionType getSessionType() {
-        return sessionType;
-    }
-
-    public void setSessionType(SessionType sessionType) {
-        this.sessionType = sessionType;
     }
 
     public boolean isCanComment() {

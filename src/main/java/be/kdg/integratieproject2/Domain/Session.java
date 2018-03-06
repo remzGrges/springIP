@@ -16,7 +16,6 @@ public class Session {
     private List<Card> cards;*/
     private List<ApplicationUser> players;
     private int numberOfRounds;
-    private SessionType sessionType;
     private boolean canComment;
     private boolean addCardUser;
     private int timeUserRound;
@@ -76,14 +75,6 @@ public class Session {
 
     public void setTimeUserRound(int timeUserRound) {
         this.timeUserRound = timeUserRound;
-    }
-
-    public SessionType getSessionType() {
-        return sessionType;
-    }
-
-    public void setSessionType(SessionType sessionType) {
-        this.sessionType = sessionType;
     }
 
     public Date getStartTime() {

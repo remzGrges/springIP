@@ -128,19 +128,15 @@ public class TestSessionService {
         Session session = this.sessionService.getSession(postedSession.getSessionId(), "leander.coevoet@student.kdg.be");
         Assert.assertTrue(postedSession.getNumberOfRounds() == session.getNumberOfRounds());
         Assert.assertTrue(postedSession.getSessionId().equals(session.getSessionId()));
-        Assert.assertTrue(postedSession.getSessionType() == session.getSessionType());
         Assert.assertTrue(postedSession.getPlayers().size() == session.getPlayers().size());
     }
 
     @Test
     public void testUpdateSession() throws ObjectNotFoundException {
         this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
-        Assert.assertTrue(postedSession.getSessionType() == session.getSessionType());
         postedSession.setCanComment(true);
-        postedSession.setSessionType(SessionType.CIRCLE);
         Session updatedSession = this.sessionService.addSession(postedSession, "leander.coevoet@student.kdg.be");
         Assert.assertTrue(postedSession.getSessionId().equals(updatedSession.getSessionId()));
-        Assert.assertTrue(postedSession.getSessionType() == updatedSession.getSessionType());
         Assert.assertTrue(postedSession.isCanComment() == updatedSession.isCanComment());
     }
 

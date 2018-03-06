@@ -32,9 +32,9 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public Session addSession(Session session, String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
-        if (!user.getThemes().contains(session.getTheme().getId())) {
+       /* if (!user.getThemes().contains(session.getTheme().getId())) {
             throw new ObjectNotFoundException("Thema not authorized");
-        }
+        }*/
         Session savedSession = sessionRepository.save(session);
         return savedSession;
     }
