@@ -10,7 +10,6 @@ import java.util.Date;
 public class VerificationToken extends Token {
 
     private ApplicationUser applicationUser;
-    private Date expiryDate;
 
     public VerificationToken(ApplicationUser applicationUser, String token) {
         super(token);
@@ -19,15 +18,8 @@ public class VerificationToken extends Token {
 
     }
 
-    @Override
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
 
-    @Override
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
-    }
+
 
     public ApplicationUser getApplicationUser() {
         return applicationUser;

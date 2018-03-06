@@ -41,12 +41,11 @@ public class InvitationListener implements ApplicationListener<OnInvitationCompl
         String user = event.getUser();
         String themeId = event.getTheme();
         Theme theme = themeService.getTheme(themeId);
-        ApplicationUser applicationUser = userService.getUserByUsername(user);
         String subject = "Je bent uitgenodigd om het thema " + theme.getName() + " te bewerken";
         String token = UUID.randomUUID().toString();
         String confirmationUrl;
         SimpleMailMessage inviteEmail;
-        themeService.createInvitationToken(applicationUser,themeId, token);
+        themeService.createInvitationToken(user,themeId, token);
 
         if (userService.getUserByUsername(user).getPassword() == null) {
             confirmationUrl = event.getAppUrl() + "/themes/startRegister&token=" + token;
