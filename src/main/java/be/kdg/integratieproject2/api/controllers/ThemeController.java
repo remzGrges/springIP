@@ -86,7 +86,7 @@ public class ThemeController {
         return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/inviteOrg/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/inviteOrg", method = RequestMethod.POST)
     public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody String email , @PathVariable String themeId, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
 
 
@@ -117,15 +117,15 @@ public class ThemeController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/acceptOrganiserInvite")
-    public ResponseEntity acceptInvite(Authentication authentication, @RequestParam("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
-        InvitationToken verificationToken = themeService.getInvitationToken(token);
-        if (verificationToken == null) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+    @GetMapping(value = "/acceptOrganiserInvite/{token}")
+    public ResponseEntity  acceptInvite(Authentication authentication, @RequestParam("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
+        InvitationToken invitationToken = themeService.getInvitationToken(token);
+        if (invitationToken == null) {
+           return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        String themeId = verificationToken.getThemeId();
+        String themeId = invitationToken.getThemeId();
 
-        String email = verificationToken.getEmail();
+        String email = invitationToken.getEmail();
 
 
 
@@ -134,7 +134,7 @@ public class ThemeController {
         }
 
         Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+        if ((invitationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 

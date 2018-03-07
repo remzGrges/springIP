@@ -4,6 +4,7 @@ import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
+import be.kdg.integratieproject2.Domain.verification.Token;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,6 @@ import java.util.List;
 @Service
 public interface ThemeService {
 
-    InvitationToken getInvitationToken(String token);
-
-    void createInvitationToken(String email, String themeId, String token);
 
     Theme addTheme(Theme theme, String userId);
 
@@ -36,6 +34,10 @@ public interface ThemeService {
     Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException;
 
     String getOrganiser(String  theme, String username) throws ObjectNotFoundException;
+
+    InvitationToken getInvitationToken(String token);
+
+    void createInvitationToken(String email, String themeId, String token);
 
     String updateExistingOrganiser(String organiser, String themeId) throws ObjectNotFoundException;
 
