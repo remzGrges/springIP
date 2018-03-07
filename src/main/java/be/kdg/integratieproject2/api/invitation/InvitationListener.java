@@ -50,7 +50,7 @@ public class InvitationListener implements ApplicationListener<OnInvitationCompl
         if (userService.getUserByUsername(user).getPassword() == null) {
             confirmationUrl = event.getAppUrl() + "/themes/startRegister&token=" + token;
         } else {
-            confirmationUrl = event.getAppUrl() + "/acceptOrganiserInvite&token=" + token;
+            confirmationUrl = event.getAppUrl() + "/acceptInvite&token=" + token;
         }
 
         inviteEmail = new SimpleMailMessage();

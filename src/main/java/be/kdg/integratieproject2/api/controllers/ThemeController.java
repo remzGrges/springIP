@@ -86,8 +86,8 @@ public class ThemeController {
         return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/inviteOrg", method = RequestMethod.POST)
-    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody OrganiserDto themeInvitationDto, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
+    @RequestMapping(value = "/inviteOrg/{id}", method = RequestMethod.POST)
+    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody String email , @PathVariable String themeId, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
 
 
         //Organiser organiser = modelMapper.map(themeInvitationDto, Organiser.class);
@@ -96,14 +96,14 @@ public class ThemeController {
         String appUrl = request.getContextPath();
 
         try {
-            user = userService.getUserByUsername(themeInvitationDto.getEmail());
+            user = userService.getUserByUsername(email);
             if (user.getEmail() != null) {
-                eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.getEmail()), request.getLocale(), appUrl, themeInvitationDto.getThemeID()));
+                eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(email), request.getLocale(), appUrl, themeId));
             }
         } catch (UsernameNotFoundException a) {
             ApplicationUser newUser = new ApplicationUser();
-            newUser.setEmail(themeInvitationDto.getEmail());
-            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(newUser), request.getLocale(), appUrl, themeInvitationDto.getThemeID()));
+            newUser.setEmail(email);
+            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(newUser), request.getLocale(), appUrl, themeId));
 
         }
 /*
