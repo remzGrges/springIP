@@ -112,7 +112,7 @@ public class ThemeController {
         //Theme theme = themeService.getTheme(themaId);
         //themeService.addOrganiser(themaId, userName, email);
 
-   
+
 
         return new ResponseEntity(HttpStatus.OK);
     }
