@@ -1,5 +1,6 @@
 package be.kdg.integratieproject2.api.controllers;
 
+import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
@@ -19,6 +20,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -90,33 +92,33 @@ public class ThemeController {
 
         //Organiser organiser = modelMapper.map(themeInvitationDto, Organiser.class);
         //OrganiserDto mappedOrganiser = modelMapper.map(themeService.addOrganiser(organiser.getThemeID(), authentication.getName(), organiser.getEmail()) , OrganiserDto.class);
+        ApplicationUser user;
+        String appUrl = request.getContextPath();
 
-        String newOrganiser = themeService.addOrganiser(themeInvitationDto.getThemeID(), authentication.getName(), themeInvitationDto.getEmail());
+        try {
+            user = userService.getUserByUsername(themeInvitationDto.getEmail());
+            if (user.getEmail() != null) {
+                eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.getEmail()), request.getLocale(), appUrl, themeInvitationDto.getThemeID()));
+            }
+        } catch (UsernameNotFoundException a) {
+            ApplicationUser newUser = new ApplicationUser();
+            newUser.setEmail(themeInvitationDto.getEmail());
+            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(newUser), request.getLocale(), appUrl, themeInvitationDto.getThemeID()));
+
+        }
 /*
         String userName = authentication.getName();
 */
         //Theme theme = themeService.getTheme(themaId);
         //themeService.addOrganiser(themaId, userName, email);
-        String appUrl = request.getContextPath();
 
-        try {
-
-            if (newOrganiser != null) {
-                eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.getEmail()), request.getLocale(), appUrl, themeInvitationDto.getThemeID()));
-            }
-        } catch (Exception e) {
-            ApplicationUser user = new ApplicationUser();
-            user.setEmail(themeInvitationDto.getEmail());
-            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(user), request.getLocale(), appUrl, themeInvitationDto.getThemeID()));
-
-        }
-
+   
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping(value = "/acceptOrganiserInvite")
-    public ResponseEntity acceptInvite(Authentication authentication, @RequestParam("token") String token) throws ObjectNotFoundException {
+    public ResponseEntity acceptInvite(Authentication authentication, @RequestParam("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
         InvitationToken verificationToken = themeService.getInvitationToken(token);
         if (verificationToken == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
@@ -126,20 +128,25 @@ public class ThemeController {
         String email = verificationToken.getEmail();
 
 
+
+        if (email.equals(authentication.getName())) {
+             themeService.addOrganiser(themeId, authentication.getName(), email);
+        }
+
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        String organiser = themeService.getOrganiser(themeId, authentication.getName());
+        //String organiser = themeService.getOrganiser(themeId, authentication.getName());
 
 
 
-        if (organiser.equals(email)) {
+       /* if (organiser.equals(email)) {
             themeService.updateExistingOrganiser(organiser, verificationToken.getThemeId());
         } else {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
-        }
+        }*/
 
 
         return new ResponseEntity(HttpStatus.OK);
