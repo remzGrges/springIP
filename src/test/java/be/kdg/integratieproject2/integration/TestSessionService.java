@@ -94,6 +94,10 @@ public class TestSessionService {
         this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
         List<Session> sessions = sessionService.getAllSessionsByUser("leander.coevoet@student.kdg.be");
         Assert.assertTrue(sessions.size() == 1);
+        Session ses = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
+       sessions = sessionService.getAllSessionsByUser("leander.coevoet@student.kdg.be");
+        Assert.assertTrue(sessions.size() == 2);
+        sessionService.deleteSession(ses.getSessionId(), "leander.coevoet@student.kdg.be");
         Assert.assertTrue(sessions.get(0).getSessionId().equals(postedSession.getSessionId()));
         Assert.assertTrue(sessions.get(0).getTheme().getId().equals(postedSession.getTheme().getId()));
         Assert.assertTrue(sessions.get(0).getNumberOfRounds() == postedSession.getNumberOfRounds());

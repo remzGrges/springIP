@@ -32,6 +32,11 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public Session addSession(Session session, String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
+        if ( session.getPlayers() ==null){
+            List<ApplicationUser> users = new LinkedList<>();
+            users.add(user);
+            session.setPlayers(users);
+        }
        /* if (!user.getThemes().contains(session.getTheme().getId())) {
             throw new ObjectNotFoundException("Thema not authorized");
         }*/
@@ -65,6 +70,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public List<Session> getAllSessionsByUser(String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
+
         List<Session> sessions = sessionRepository.findSessionsByPlayersContaining(user);
         if (sessions == null || sessions.size() == 0) {
             return new LinkedList<>();

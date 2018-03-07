@@ -15,6 +15,9 @@ public class SessionDto {
     private String sessionId;
     @NotNull
     @NotEmpty
+    private String sessionName;
+    @NotNull
+    @NotEmpty
     private Theme theme;
     @NotNull
     @NotEmpty
@@ -34,6 +37,14 @@ public class SessionDto {
     private Date startTime;
 
     public SessionDto() {
+    }
+
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public void setSessionName(String sessionName) {
+        this.sessionName = sessionName;
     }
 
     public String getSessionId() {

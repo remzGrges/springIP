@@ -11,15 +11,22 @@ import java.util.List;
 public class Session {
     @Id
     private String sessionId;
+    private String sessionName;
     private Theme theme;
-   /* private List<SubTheme> subThemes;
-    private List<Card> cards;*/
     private List<ApplicationUser> players;
     private int numberOfRounds;
     private boolean canComment;
     private boolean addCardUser;
     private int timeUserRound;
     private Date startTime;
+
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public void setSessionName(String sessionName) {
+        this.sessionName = sessionName;
+    }
 
     public String getSessionId() {
         return sessionId;
