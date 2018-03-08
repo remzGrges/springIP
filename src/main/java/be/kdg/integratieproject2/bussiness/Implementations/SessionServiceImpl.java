@@ -16,15 +16,11 @@ import java.util.List;
 public class SessionServiceImpl implements SessionService {
 
     ThemeService themeService;
-    SubThemeService subThemeService;
-    CardService cardService;
     UserService userService;
     SessionRepository sessionRepository;
 
-    public SessionServiceImpl(ThemeService themeService, SubThemeService subThemeService, CardService cardService, UserService userService, SessionRepository sessionRepository) {
+    public SessionServiceImpl(ThemeService themeService, UserService userService, SessionRepository sessionRepository) {
         this.themeService = themeService;
-        this.subThemeService = subThemeService;
-        this.cardService = cardService;
         this.userService = userService;
         this.sessionRepository = sessionRepository;
     }
