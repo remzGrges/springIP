@@ -151,10 +151,6 @@ public class ThemeServiceImpl implements ThemeService {
                     user.setEmail(newOrganiser);
                     user.setEnabled(false);
 
-
-
-
-
                     return newOrganiser;
 
 

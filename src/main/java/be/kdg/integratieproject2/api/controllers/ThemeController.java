@@ -117,8 +117,8 @@ public class ThemeController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/acceptOrganiserInvite")
-    public ResponseEntity  acceptInvite(Authentication authentication, @RequestParam("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
+    @GetMapping(value = "/acceptOrganiserInvite/{token}")
+    public ResponseEntity  acceptInvite(Authentication authentication, @PathVariable("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
         InvitationToken invitationToken = themeService.getInvitationToken(token);
         if (invitationToken == null) {
            return new ResponseEntity(HttpStatus.FORBIDDEN);
