@@ -1,7 +1,6 @@
 package be.kdg.integratieproject2.api.dto;
 
 import be.kdg.integratieproject2.Domain.Card;
-import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.SubTheme;
 import org.hibernate.validator.constraints.NotEmpty;
 

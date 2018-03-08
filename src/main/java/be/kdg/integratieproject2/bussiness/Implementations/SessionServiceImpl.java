@@ -1,8 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Session;
 import be.kdg.integratieproject2.bussiness.Interfaces.*;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
@@ -55,9 +53,9 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void deleteSession(String sessionId, String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
-        List<Organiser> organisers = sessionRepository.findOne(sessionId).getTheme().getOrganisers();
-        for (Organiser organiser : organisers) {
-            if (organiser.getEmail().equals(user.getEmail()) && organiser.getEnabled()) {
+        List<String> organisers = sessionRepository.findOne(sessionId).getTheme().getOrganisers();
+        for (String organiser : organisers) {
+            if (organiser.equals(user.getEmail())){
                 sessionRepository.delete(sessionId);
             }
         }
