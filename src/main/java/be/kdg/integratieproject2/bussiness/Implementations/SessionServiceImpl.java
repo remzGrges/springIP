@@ -53,7 +53,8 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void deleteSession(String sessionId, String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
-        List<String> organisers = sessionRepository.findOne(sessionId).getTheme().getOrganisers();
+        Session session =sessionRepository.findOne(sessionId);
+        List<String> organisers = themeService.getTheme(session.getThemeId()).getOrganisers();
         for (String organiser : organisers) {
             if (organiser.equals(user.getEmail())){
                 sessionRepository.delete(sessionId);

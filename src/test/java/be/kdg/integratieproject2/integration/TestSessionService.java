@@ -41,20 +41,12 @@ public class TestSessionService {
 
     @Before
     public void setup() {
-        this.testTheme1 = new Theme();
-        testTheme1.setDescription("Test");
-        testTheme1.setName("testTheme1");
-        List<String> organisers1 = new ArrayList<>();
-        organisers1.add("leander.coevoet@student.kdg.be");
-        this.testTheme1.setOrganisers(organisers1);
-        this.testTheme1 = this.themeService.addTheme(testTheme1, "leander.coevoet@student.kdg.be");
-
         user1 = userService.getUserByUsername("leander.coevoet@student.kdg.be");
         List<String> players = new LinkedList<>();
         players.add(user1.getEmail());
 
         session = new Session();
-        session.setTheme(testTheme1);
+        session.setThemeId("");
         session.setAddCardUser(false);
         session.setCanComment(false);
         session.setNumberOfRounds(0);
@@ -83,7 +75,6 @@ public class TestSessionService {
         Assert.assertTrue(postedSession.getNumberOfRounds() == session.getNumberOfRounds());
         Assert.assertTrue(postedSession.getPlayers().size() == session.getPlayers().size());
         Assert.assertTrue(postedSession.getStartTime() == session.getStartTime());
-        Assert.assertTrue(postedSession.getTheme() == session.getTheme());
         Assert.assertTrue(postedSession.getTimeUserRound() == session.getTimeUserRound());
     }
 

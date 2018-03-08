@@ -18,7 +18,7 @@ public class SessionDto {
     private String sessionName;
     @NotNull
     @NotEmpty
-    private Theme theme;
+    private String themeId;
     @NotNull
     @NotEmpty
     private List<String> players;
@@ -55,12 +55,12 @@ public class SessionDto {
         this.sessionId = sessionId;
     }
 
-    public Theme getTheme() {
-        return theme;
+    public String getThemeId() {
+        return themeId;
     }
 
-    public void setTheme(Theme theme) {
-        this.theme = theme;
+    public void setThemeId(String themeId) {
+        this.themeId = themeId;
     }
 
     public List<String> getPlayers() {

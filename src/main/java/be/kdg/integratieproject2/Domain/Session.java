@@ -12,7 +12,7 @@ public class Session {
     @Id
     private String sessionId;
     private String sessionName;
-    private Theme theme;
+    private String themeId;
     private List<String> players;
     private int numberOfRounds;
     private boolean canComment;
@@ -36,12 +36,12 @@ public class Session {
         this.sessionId = sessionId;
     }
 
-    public Theme getTheme() {
-        return theme;
+    public String getThemeId() {
+        return themeId;
     }
 
-    public void setTheme(Theme theme) {
-        this.theme = theme;
+    public void setThemeId(String themeId) {
+        this.themeId = themeId;
     }
 
     public List<String> getPlayers() {
