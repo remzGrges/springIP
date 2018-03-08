@@ -86,7 +86,7 @@ public class ThemeController {
         return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/inviteOrg", method = RequestMethod.POST)
+    @RequestMapping(value = "/inviteOrg/{themeId}", method = RequestMethod.POST)
     public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody String email , @PathVariable String themeId, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
 
 
@@ -117,7 +117,7 @@ public class ThemeController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/acceptOrganiserInvite/{token}")
+    @GetMapping(value = "/acceptOrganiserInvite")
     public ResponseEntity  acceptInvite(Authentication authentication, @RequestParam("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
         InvitationToken invitationToken = themeService.getInvitationToken(token);
         if (invitationToken == null) {
