@@ -53,8 +53,8 @@ public class TestThemeServices {
     private Theme postedTheme1;
     private Theme postedTheme2;
     private Theme postedTheme3;
-    private Organiser organiser1;
-    private Organiser organiser2;
+    private String organiser1;
+    private String organiser2;
 
     //private Object o;
 
@@ -66,8 +66,8 @@ public class TestThemeServices {
         this.testTheme1 = new Theme();
         this.testTheme1.setName("testTheme1");
         this.testTheme1.setDescription("This is a test class");
-        List<Organiser> organisers1 = new ArrayList<>();
-        organiser1 = new Organiser(true,"tim.vanaelst@student.kdg.be", testTheme1.getId());
+        List<String> organisers1 = new ArrayList<>();
+        organiser1 = "tim.vanaelst@student.kdg.be";
         organisers1.add(organiser1);
         this.testTheme1.setOrganisers(organisers1);
 
@@ -79,8 +79,8 @@ public class TestThemeServices {
         this.testTheme3 = new Theme();
         this.testTheme3.setName("testTheme3");
         this.testTheme3.setDescription("This is a third test class");
-        List<Organiser> organisers2 = new ArrayList<>();
-        organiser2 = new Organiser(true , "indy.dewacker@student.kdg.be", testTheme3.getId());
+        List<String> organisers2 = new ArrayList<>();
+        organiser2 = "indy.dewacker@student.kdg.be";
         organisers2.add(organiser2);
         this.testTheme3.setOrganisers(organisers2);
 
@@ -112,7 +112,7 @@ public class TestThemeServices {
 
     @Test
     public void testCreateTheme() throws ObjectNotFoundException {
-        Theme postedTheme = this.themeService.addTheme(testTheme1, organiser1.getEmail());
+        Theme postedTheme = this.themeService.addTheme(testTheme1, organiser1);
         Assert.assertTrue(postedTheme.getName().equals(testTheme1.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme1.getDescription()));
         this.postedTheme1 = postedTheme;
@@ -120,10 +120,10 @@ public class TestThemeServices {
         Theme postedTheme1 = this.themeService.getTheme(this.postedTheme1.getId());
         Assert.assertTrue(postedTheme1.getName().equals(this.postedTheme1.getName()));
         Assert.assertTrue(postedTheme1.getDescription().equals(this.postedTheme1.getDescription()));
-        for (Organiser po : postedTheme1.getOrganisers()) {
+        for (String o : postedTheme1.getOrganisers()) {
 
 
-            Assert.assertTrue(po.getEmail().equals(organiser1.getEmail()));
+            Assert.assertTrue(o.equals(organiser1));
 
 
         }
@@ -131,7 +131,7 @@ public class TestThemeServices {
 
     @Test
     public void testCreateSecondTheme() throws ObjectNotFoundException {
-        Theme postedTheme = this.themeService.addTheme(testTheme2, organiser1.getEmail());
+        Theme postedTheme = this.themeService.addTheme(testTheme2, organiser1);
         Assert.assertTrue(postedTheme.getName().equals(testTheme2.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme2.getDescription()));
         this.postedTheme2 = postedTheme;
@@ -141,8 +141,8 @@ public class TestThemeServices {
         Assert.assertTrue(postedTheme2.getName().equals(this.postedTheme2.getName()));
         Assert.assertTrue(postedTheme2.getDescription().equals(this.postedTheme2.getDescription()));
        // Assert.assertTrue(postedTheme2.getOrganisers().contains(new Organiser(true , "tim.vanaelst@student.kdg.be", testTheme3.getId())));
-        for (Organiser po : postedTheme2.getOrganisers()) {
-            Assert.assertTrue(po.getEmail().equals(organiser1.getEmail()));
+        for (String o : postedTheme2.getOrganisers()) {
+            Assert.assertTrue(o.equals(organiser1));
 
 
         }
@@ -153,7 +153,7 @@ public class TestThemeServices {
     @Test()
     public void testCreateThemeNoOrganisers() throws ObjectNotFoundException {
         testTheme1.setOrganisers(new LinkedList<>());
-        Theme postedTheme = this.themeService.addTheme(testTheme1, organiser1.getEmail());
+        Theme postedTheme = this.themeService.addTheme(testTheme1, organiser1);
         Assert.assertTrue(postedTheme.getName().equals(testTheme1.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme1.getDescription()));
         this.postedTheme1 = postedTheme;
@@ -166,7 +166,7 @@ public class TestThemeServices {
 
     @Test
     public void testSeperateUser() throws ObjectNotFoundException {
-        Theme postedTheme = this.themeService.addTheme(testTheme3, organiser2.getEmail());
+        Theme postedTheme = this.themeService.addTheme(testTheme3, organiser2);
         Assert.assertTrue(postedTheme.getName().equals(testTheme3.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme3.getDescription()));
         this.postedTheme3 = postedTheme;
@@ -177,10 +177,10 @@ public class TestThemeServices {
         Assert.assertTrue(postedTheme3.getDescription().equals(this.postedTheme3.getDescription()));
 
         //Organiser organiser = new Organiser(true , "indy.dewacker@student.kdg.be", testTheme3.getId());
-        for (Organiser po : postedTheme3.getOrganisers()) {
+        for (String o : postedTheme3.getOrganisers()) {
 
 
-            Assert.assertTrue(po.getEmail().equals(organiser2.getEmail()));
+            Assert.assertTrue(o.equals(organiser2));
 
 
         }
@@ -190,7 +190,7 @@ public class TestThemeServices {
     @Test(expected = UsernameNotFoundException.class)
     public void testWrongUserName()
     {
-        this.themeService.addTheme(testTheme1, new Organiser(false, "rezm@stud.kdg.be", testTheme1.getId()).getEmail());
+        this.themeService.addTheme(testTheme1, new Organiser(false, "rezm@stud.kdg.be").getEmail());
     }
 
     /*@Test

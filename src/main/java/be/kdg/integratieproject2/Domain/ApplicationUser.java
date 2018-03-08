@@ -14,9 +14,6 @@ public class ApplicationUser {
     private String lastName;
     private String password;
     private Boolean enabled;
-    private List<String> themes;
-
-
 
     public ApplicationUser() {
         this.enabled = false;
@@ -25,7 +22,6 @@ public class ApplicationUser {
     public String getId() {
         return id;
     }
-
 
     public String getEmail() {
         return email;
@@ -61,16 +57,5 @@ public class ApplicationUser {
 
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    public List<String> getThemes() {
-        return themes;
-    }
-
-    public void setThemes(List<String> themes) {
-        this.themes = themes;
     }
 }
