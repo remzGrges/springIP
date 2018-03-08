@@ -13,7 +13,7 @@ public class Session {
     private String sessionId;
     private String sessionName;
     private Theme theme;
-    private List<ApplicationUser> players;
+    private List<String> players;
     private int numberOfRounds;
     private boolean canComment;
     private boolean addCardUser;
@@ -44,11 +44,11 @@ public class Session {
         this.theme = theme;
     }
 
-    public List<ApplicationUser> getPlayers() {
+    public List<String> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<ApplicationUser> players) {
+    public void setPlayers(List<String> players) {
         this.players = players;
     }
 

@@ -21,7 +21,7 @@ public class SessionDto {
     private Theme theme;
     @NotNull
     @NotEmpty
-    private List<ApplicationUser> players;
+    private List<String> players;
     private int numberOfRounds;
     @NotNull
     @NotEmpty
@@ -63,11 +63,11 @@ public class SessionDto {
         this.theme = theme;
     }
 
-    public List<ApplicationUser> getPlayers() {
+    public List<String> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<ApplicationUser> players) {
+    public void setPlayers(List<String> players) {
         this.players = players;
     }
 

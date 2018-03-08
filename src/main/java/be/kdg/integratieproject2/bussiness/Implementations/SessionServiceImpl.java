@@ -27,8 +27,8 @@ public class SessionServiceImpl implements SessionService {
     public Session addSession(Session session, String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
         if ( session.getPlayers() ==null){
-            List<ApplicationUser> users = new LinkedList<>();
-            users.add(user);
+            List<String> users = new LinkedList<>();
+            users.add(user.getEmail());
             session.setPlayers(users);
         }
        /* if (!user.getThemes().contains(session.getTheme().getId())) {
@@ -42,8 +42,8 @@ public class SessionServiceImpl implements SessionService {
     public Session getSession(String sessionId, String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
         Session session = sessionRepository.findOne(sessionId);
-        for (ApplicationUser applicationUser : session.getPlayers()) {
-            if (applicationUser.getId().equals(user.getId())) {
+        for (String s : session.getPlayers()) {
+            if (s.equals(userId)){
                 return session;
             }
         }
@@ -65,7 +65,7 @@ public class SessionServiceImpl implements SessionService {
     public List<Session> getAllSessionsByUser(String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
 
-        List<Session> sessions = sessionRepository.findSessionsByPlayersContaining(user);
+        List<Session> sessions = sessionRepository.findSessionsByPlayersContaining(userId);
         if (sessions == null || sessions.size() == 0) {
             return new LinkedList<>();
         }
