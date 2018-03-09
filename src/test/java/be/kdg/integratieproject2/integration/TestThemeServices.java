@@ -1,6 +1,5 @@
 package be.kdg.integratieproject2.integration;
 
-import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.controllers.ThemeController;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
@@ -196,7 +195,7 @@ public void getTheme() throws ObjectNotFoundException {
     @Test(expected = UsernameNotFoundException.class)
     public void testWrongUserName()
     {
-        this.themeService.addTheme(testTheme1, new Organiser(false, "rezm@stud.kdg.be").getEmail());
+        this.themeService.addTheme(testTheme1,"rezm@stud.kdg.be");
     }
 
     /*@Test
