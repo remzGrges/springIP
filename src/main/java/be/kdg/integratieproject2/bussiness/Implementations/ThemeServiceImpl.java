@@ -1,7 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.Domain.verification.Token;
@@ -12,6 +11,8 @@ import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import sun.rmi.runtime.Log;
 
 import java.io.Console;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -38,7 +40,7 @@ public class ThemeServiceImpl implements ThemeService {
     public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender, TokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
         this.themeRepository = themeRepository;
-        this.userService=userService;
+        this.userService = userService;
     }
 
     @Override
@@ -64,7 +66,8 @@ public class ThemeServiceImpl implements ThemeService {
         if (theme.getOrganisers() != null) {
             if (getThemesByUser(loggedInUser).contains(theme)) {
                 return true;
-            };
+            }
+            ;
         }
         return false;
 
@@ -72,7 +75,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public void createInvitationToken(String email, String themeId, String token) {
-        tokenRepository.save(new InvitationToken(token,email,themeId));
+        tokenRepository.save(new InvitationToken(token, email, themeId));
     }
 
     @Override
@@ -104,21 +107,32 @@ public class ThemeServiceImpl implements ThemeService {
 
 
     @Override
-    public String addOrganiser (String themeId, String currentOrganiser, String newOrganiser) throws ObjectNotFoundException, UsernameNotFoundException {
+    public String addOrganiser(String ingelogdeGebruiker, String token) throws ObjectNotFoundException, UsernameNotFoundException {
+        InvitationToken invitationToken = this.getInvitationToken(token);
+        if (invitationToken == null) {
+            throw new ObjectNotFoundException("");
+        }
+        String themeId = invitationToken.getThemeId();
+        String toegevoegdeGebruiker = invitationToken.getEmail();
         Theme theme = getTheme(themeId);
 
+
+        Calendar cal = Calendar.getInstance();
+        if ((invitationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            throw new ObjectNotFoundException("token vervallen");
+        }
+
+
         if (theme.getOrganisers() != null) {
-            if (theme.getOrganisers().contains(currentOrganiser) ) {
+            if (ingelogdeGebruiker.equals(toegevoegdeGebruiker)) {
                 List<String> organisers = theme.getOrganisers();
 
                 try {
                     /*if (userService.getUserByUsername(newOrganiser) == null) {
                         throw new UsernameNotFoundException("bestaat niet");
                     }*/
-                    ApplicationUser newOrganiserUser = userService.getUserByUsername(newOrganiser);
-
-
-                    List<Theme> themes = getThemesByUser(newOrganiser);
+                    ApplicationUser newOrganiserUser = userService.getUserByUsername(toegevoegdeGebruiker);
+                    List<Theme> themes = getThemesByUser(toegevoegdeGebruiker);
 
 
                     if (themes == null) {
@@ -126,32 +140,25 @@ public class ThemeServiceImpl implements ThemeService {
                     }
                     for (Theme s : themes) {
                         if (s.getId().equals(themeId)) {
-
-                            //throw new OrganiserAlreadyExistException("Organiser bestaat al");
                             return null;
-
                         }
                     }
                     themes.add(theme);
-                    /*newOrganiserUser.setThemes(themes);*/
-
-
-                    if (organisers.contains(newOrganiser)) {
-                        //throw new OrganiserAlreadyExistException("Organiser bestaal al");
+                    if (organisers.contains(toegevoegdeGebruiker)) {
                         return null;
                     }
-                    organisers.add(newOrganiser);
+                    organisers.add(toegevoegdeGebruiker);
                     userService.updateRegisteredUser(newOrganiserUser);
                     updateTheme(theme);
 
-                    return newOrganiser;
+                    return toegevoegdeGebruiker;
                 } catch (UsernameNotFoundException e) {
                     //email sturen
-                    ApplicationUser user = new ApplicationUser();
-                    user.setEmail(newOrganiser);
-                    user.setEnabled(false);
+                /*    ApplicationUser user = new ApplicationUser();
+                    user.setEmail(toegevoegdeGebruiker);
+                    user.setEnabled(false);*/
 
-                    return newOrganiser;
+                    return null;
 
 
                 }
@@ -165,7 +172,7 @@ public class ThemeServiceImpl implements ThemeService {
     public String getOrganiser(String theme, String username) throws ObjectNotFoundException {
         String currentOrganiser = null;
         List<Theme> themes = getThemesByUser(username);
-        Theme theme1  = getTheme(theme);
+        Theme theme1 = getTheme(theme);
 
         if (theme1 == null) {
             throw new ObjectNotFoundException(theme);
@@ -176,7 +183,6 @@ public class ThemeServiceImpl implements ThemeService {
                 currentOrganiser = organiser;
             }
         }
-
 
 
         return currentOrganiser;
@@ -225,13 +231,12 @@ public class ThemeServiceImpl implements ThemeService {
        repository.save(organiser);*/
 
 
-
     }
 
     @Override
     public String deleteOrganiser(String themeId, String username) throws ObjectNotFoundException {
         Theme theme = getTheme(themeId);
-        String organiser= getOrganiser(themeId, username);
+        String organiser = getOrganiser(themeId, username);
         theme.getOrganisers().remove(organiser);
         ApplicationUser user = userService.getUserByUsername(username);
 

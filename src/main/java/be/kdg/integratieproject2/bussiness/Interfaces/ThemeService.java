@@ -1,7 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.Domain.verification.Token;
@@ -29,7 +28,8 @@ public interface ThemeService {
     Theme updateTheme(Theme theme);
 
 
-    String addOrganiser(String theme, String curOrg ,String newOrganiser) throws ObjectNotFoundException, UserAlreadyExistsException;;
+
+    String addOrganiser(String ingelogdeGebruiker ,String token) throws ObjectNotFoundException, UserAlreadyExistsException;;
 
     Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException;
 

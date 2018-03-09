@@ -46,6 +46,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                     .antMatchers("/users/registrationConfirm").permitAll()
+                    .antMatchers("/themes/acceptOrganiserInviteNon/{token}").permitAll()
                     .antMatchers("/login").permitAll()
                     .anyRequest()
                     .authenticated()
