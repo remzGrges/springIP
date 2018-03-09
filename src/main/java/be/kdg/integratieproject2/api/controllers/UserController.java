@@ -82,7 +82,7 @@ public class UserController {
     public UserInfoDto changeName(Authentication authentication, @Valid @RequestBody UserInfoDto dto ) {
         String username = authentication.getName();
 
-        ApplicationUser user = userService.updateRegisteredUserName(username, dto.getFirstName());
+        ApplicationUser user = userService.updateRegisteredUserName(username, dto.getFirstName(),dto.getPictureId());
         dto = modelMapper.map(user, UserInfoDto.class);
 
         return dto;
@@ -97,7 +97,7 @@ public class UserController {
         return dto;
     }
 
-    @PostMapping(value = "/uploadProfilePicture")
+   /* @PostMapping(value = "/uploadProfilePicture")
     public PictureDto uploadProfilePicture(Authentication authentication, @Valid @RequestBody PictureDto dto ) {
         String username = authentication.getName();
         ProfilePicture profilePicture = modelMapper.map(dto, ProfilePicture.class);
@@ -116,5 +116,5 @@ public class UserController {
             return null;
         }
         return modelMapper.map(profilePicture, PictureDto.class);
-    }
+    }*/
 }

@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.Picture;
 import be.kdg.integratieproject2.bussiness.Interfaces.PictureService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.PictureRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,13 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
-    public Picture getPicture(String pictureId) {
-        return pictureRepository.findOne(pictureId);
+    public Picture getPicture(String pictureId) throws ObjectNotFoundException {
+        if (pictureId != null){
+            return pictureRepository.findOne(pictureId);
+        }else{
+            throw new ObjectNotFoundException("null");
+        }
+
     }
 
     @Override
