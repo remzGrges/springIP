@@ -64,7 +64,7 @@ public class UserTest {
     public void testChangeName() throws Exception {
 
 
-        this.userService.updateRegisteredUserName(user.getEmail(), "superAdmin");
+        this.userService.updateRegisteredUserName(user.getEmail(), "superAdmin", null);
 
         Assert.assertTrue(this.userService.getUserByUsername("indy.dewacker@student.kdg.be").getFirstName().equals("superAdmin"));
 

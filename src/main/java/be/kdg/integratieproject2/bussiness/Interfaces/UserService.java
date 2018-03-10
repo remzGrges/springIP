@@ -32,4 +32,5 @@ public interface UserService {
     ProfilePicture getProfilePicture(String username) throws NoProfilePictureFoundException;
 
     List<ApplicationUser> getAllUsers();
+    ApplicationUser updateRegisteredUserName(String user, String s, String picId);
 }

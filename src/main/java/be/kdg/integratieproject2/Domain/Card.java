@@ -9,8 +9,17 @@ public class Card {
     @Id
     private String id;
     private String text;
+    private String pictureId;
 
     public Card() {
+    }
+
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
     }
 
     public String getId() {

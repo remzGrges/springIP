@@ -58,12 +58,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public VerificationToken getVerificationToken(String token) { return (VerificationToken) tokenRepository.findByToken(token);
+    public VerificationToken getVerificationToken(String token) {
+        return (VerificationToken) tokenRepository.findByToken(token);
     }
 
     @Override
-    public ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException
-    {
+    public ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException {
         ApplicationUser applicationUser = userRepository.findByEmail(s);
         if (applicationUser == null)
             throw new UsernameNotFoundException(s);
@@ -72,9 +72,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public ApplicationUser updateRegisteredUserName(String username, String voornaam) {
+    public ApplicationUser updateRegisteredUserName(String username, String voornaam, String pictureId) {
         ApplicationUser user = this.getUserByUsername(username);
         user.setFirstName(voornaam);
+        user.setPictureId(pictureId);
         return userRepository.save(user);
     }
 

@@ -85,7 +85,7 @@ public class UserController {
     public UserInfoDto changeName(Authentication authentication, @Valid @RequestBody UserInfoDto dto ) {
         String username = authentication.getName();
 
-        ApplicationUser user = userService.updateRegisteredUserName(username, dto.getFirstName());
+        ApplicationUser user = userService.updateRegisteredUserName(username, dto.getFirstName(),dto.getPictureId());
         dto = modelMapper.map(user, UserInfoDto.class);
 
         return dto;
@@ -100,24 +100,4 @@ public class UserController {
         return dto;
     }
 
-    @PostMapping(value = "/uploadProfilePicture")
-    public PictureDto uploadProfilePicture(Authentication authentication, @Valid @RequestBody PictureDto dto ) {
-        String username = authentication.getName();
-        ProfilePicture profilePicture = modelMapper.map(dto, ProfilePicture.class);
-        profilePicture = userService.uploadProfilePicture(username, profilePicture);
-        dto = modelMapper.map(profilePicture, PictureDto.class);
-        return dto;
-    }
-
-    @GetMapping(value = "/getProfilePicture")
-    public PictureDto getProfilePicture(Authentication authentication){
-        String username = authentication.getName();
-        ProfilePicture profilePicture = null;
-        try {
-            profilePicture = userService.getProfilePicture(username);
-        } catch (NoProfilePictureFoundException e) {
-            return null;
-        }
-        return modelMapper.map(profilePicture, PictureDto.class);
-    }
 }
