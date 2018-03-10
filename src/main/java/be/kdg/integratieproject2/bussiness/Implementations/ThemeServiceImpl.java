@@ -59,6 +59,17 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
+    public List<String> getOrganisersByThemeId(String themeId) {
+        try {
+            Theme theme = getTheme(themeId);
+            return theme.getOrganisers();
+        } catch (ObjectNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException {
         Theme theme = getTheme(themeId);
         ApplicationUser user = userService.getUserByUsername(loggedInUser);

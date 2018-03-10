@@ -13,4 +13,5 @@ import java.util.List;
 public interface ThemeRepository extends MongoRepository<Theme, String> {
     List<Theme> getAllByOrganisersContaining(String username);
 
+
 }

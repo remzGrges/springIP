@@ -2,9 +2,11 @@ package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Session;
+import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.*;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.SessionRepository;
+import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -16,10 +18,12 @@ public class SessionServiceImpl implements SessionService {
     ThemeService themeService;
     UserService userService;
     SessionRepository sessionRepository;
+    TokenRepository tokenRepository;
 
-    public SessionServiceImpl(ThemeService themeService, UserService userService, SessionRepository sessionRepository) {
+    public SessionServiceImpl(ThemeService themeService, UserService userService, SessionRepository sessionRepository, TokenRepository repository) {
         this.themeService = themeService;
         this.userService = userService;
+        this.tokenRepository= repository;
         this.sessionRepository = sessionRepository;
     }
 
@@ -30,6 +34,7 @@ public class SessionServiceImpl implements SessionService {
             List<String> users = new LinkedList<>();
             users.add(user.getEmail());
             session.setPlayers(users);
+            session.setOrganiser(userId);
         }
        /* if (!user.getThemes().contains(session.getTheme().getId())) {
             throw new ObjectNotFoundException("Thema not authorized");
@@ -43,7 +48,7 @@ public class SessionServiceImpl implements SessionService {
         ApplicationUser user = userService.getUserByUsername(userId);
         Session session = sessionRepository.findOne(sessionId);
         for (String s : session.getPlayers()) {
-            if (s.equals(userId)){
+            if (s.equals(user.getEmail())){
                 return session;
             }
         }
@@ -71,5 +76,37 @@ public class SessionServiceImpl implements SessionService {
             return new LinkedList<>();
         }
         return sessions;
+    }
+
+    @Override
+    public void addPlayer(String ingelogdeUser, String token) throws ObjectNotFoundException {
+        SessionInvitationToken invitationToken = this.getSessionInvitationToken(token);
+        if (invitationToken == null) {
+            throw new ObjectNotFoundException("");
+        }
+        String sessionId = invitationToken.getSessionId();
+        String userId = invitationToken.getUserId();
+        String organiser = invitationToken.getOrganiser();
+
+        Session session = getSession(sessionId, organiser);
+        List<String> users = session.getPlayers();
+
+        if (userId.equals(ingelogdeUser)) {
+            users.add(userId);
+
+            sessionRepository.save(session);
+        }
+    }
+
+    @Override
+    public SessionInvitationToken getSessionInvitationToken(String token) {
+        return (SessionInvitationToken) tokenRepository.findByToken(token);
+    }
+
+
+    @Override
+    public void createSessionInvitationToken(String email, String sessionId, String token, String organiser) {
+        tokenRepository.save(new SessionInvitationToken(token, sessionId,email, organiser));
+
     }
 }

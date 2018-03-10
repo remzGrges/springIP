@@ -36,6 +36,10 @@ public class SessionDto {
     @NotEmpty
     private Date startTime;
 
+    @NotNull
+    @NotEmpty
+    private String organiser;
+
     public SessionDto() {
     }
 

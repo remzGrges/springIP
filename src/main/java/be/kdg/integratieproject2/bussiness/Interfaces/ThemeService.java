@@ -37,6 +37,8 @@ public interface ThemeService {
 
     InvitationToken getInvitationToken(String token);
 
+    List<String> getOrganisersByThemeId(String themeId);
+
     void createInvitationToken(String email, String themeId, String token);
 
     String updateExistingOrganiser(String organiser, String themeId) throws ObjectNotFoundException;

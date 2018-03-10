@@ -1,18 +1,15 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
-import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.*;
-import be.kdg.integratieproject2.api.invitation.OnInvitationCompleteEvent;
+import be.kdg.integratieproject2.api.themeInvitation.OnInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
-import jdk.net.SocketFlow;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -23,9 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.websocket.server.PathParam;
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 

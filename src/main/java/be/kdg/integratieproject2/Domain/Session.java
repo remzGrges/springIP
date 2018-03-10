@@ -13,6 +13,10 @@ public class Session {
     private String sessionId;
     private String sessionName;
     private String themeId;
+    private String organiser;
+
+
+
     private List<String> players;
     private int numberOfRounds;
     private boolean canComment;
@@ -26,6 +30,14 @@ public class Session {
 
     public void setSessionName(String sessionName) {
         this.sessionName = sessionName;
+    }
+
+    public String getOrganiser() {
+        return organiser;
+    }
+
+    public void setOrganiser(String organiser) {
+        this.organiser = organiser;
     }
 
     public String getSessionId() {

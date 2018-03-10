@@ -1,9 +1,8 @@
-package be.kdg.integratieproject2.api.invitation;
+package be.kdg.integratieproject2.api.themeInvitation;
 
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.SimpleMailMessage;
@@ -13,13 +12,13 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class InvitationListener implements ApplicationListener<OnInvitationCompleteEvent> {
+public class ThemeInvitationListener implements ApplicationListener<OnInvitationCompleteEvent> {
     private UserService userService;
     private ThemeService themeService;
     private JavaMailSender mailSender;
 
 
-    public InvitationListener(UserService userService, ThemeService themeService, JavaMailSender mailSender) {
+    public ThemeInvitationListener(UserService userService, ThemeService themeService, JavaMailSender mailSender) {
         this.userService = userService;
         this.themeService = themeService;
         this.mailSender = mailSender;

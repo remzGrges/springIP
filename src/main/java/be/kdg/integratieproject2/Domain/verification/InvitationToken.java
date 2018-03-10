@@ -15,7 +15,6 @@ public class InvitationToken extends Token{
     private String email;
     private String themeId;
 
-
     public InvitationToken(String token, String email, String themeId) {
         super(token);
         this.email = email;
