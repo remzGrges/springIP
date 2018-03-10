@@ -5,7 +5,7 @@ public class SessionInvitationToken extends Token {
     String userId;
     private String organiser;
 
-    
+
     public SessionInvitationToken(String token, String sessionId, String userId, String organiser) {
         super(token);
         this.sessionId = sessionId;
