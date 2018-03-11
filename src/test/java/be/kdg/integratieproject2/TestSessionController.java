@@ -6,7 +6,9 @@ import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.dto.SessionDto;
 import be.kdg.integratieproject2.api.dto.ThemeDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
+import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.SessionRepository;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;
@@ -30,6 +32,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +61,7 @@ public class TestSessionController {
     private ModelMapper modelMapper;
 
     @Autowired
-    private UserService userService;
+    private SessionService sessionService;
 
     private MockMvc mvc;
 
@@ -111,5 +114,7 @@ public class TestSessionController {
                         .content(json))
                         .andExpect(status().isCreated());
     }*/
+
+
 
 }
