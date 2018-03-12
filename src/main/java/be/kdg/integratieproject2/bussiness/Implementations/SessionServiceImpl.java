@@ -39,8 +39,7 @@ public class SessionServiceImpl implements SessionService {
        /* if (!user.getThemes().contains(session.getTheme().getId())) {
             throw new ObjectNotFoundException("Thema not authorized");
         }*/
-        Session savedSession = sessionRepository.save(session);
-        return savedSession;
+        return sessionRepository.save(session);
     }
 
     @Override
@@ -82,7 +81,7 @@ public class SessionServiceImpl implements SessionService {
     public void addPlayer(String ingelogdeUser, String token) throws ObjectNotFoundException {
         SessionInvitationToken invitationToken = this.getSessionInvitationToken(token);
         if (invitationToken == null) {
-            throw new ObjectNotFoundException("");
+            throw new ObjectNotFoundException("geen invitationToken");
         }
         String sessionId = invitationToken.getSessionId();
         String userId = invitationToken.getUserId();

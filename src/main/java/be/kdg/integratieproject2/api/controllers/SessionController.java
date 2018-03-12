@@ -162,6 +162,13 @@ public class SessionController {
 
     }
 
+    @RequestMapping(value = "/acceptSessionInviteNon/{token}", method = RequestMethod.GET)
+    public ResponseEntity acceptInviteNon(@RequestParam("email") String email, @PathVariable("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
+
+        sessionService.addPlayer(email, token);
+        return new ResponseEntity(HttpStatus.OK);
+
+    }
 
 
 

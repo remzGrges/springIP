@@ -47,15 +47,15 @@ public class ThemeInvitationListener implements ApplicationListener<OnInvitation
         themeService.createInvitationToken(user,themeId, token);
 
         if (userService.getUserByUsername(user).getPassword() == null) {
-            confirmationUrl = event.getAppUrl() + "/themes/startRegister&token=" + token;
+            confirmationUrl = event.getAppUrl() + "/register/" + token;
         } else {
-            confirmationUrl = event.getAppUrl() + "/acceptInvite&token=" + token;
+            confirmationUrl = event.getAppUrl() + "/acceptOrganiserInvite/" + token;
         }
 
         inviteEmail = new SimpleMailMessage();
         inviteEmail.setTo(user);
         inviteEmail.setSubject(subject);
-        inviteEmail.setText("http://localhost:8080" + confirmationUrl);
+        inviteEmail.setText("http://localhost:4200" + confirmationUrl);
         mailSender.send(inviteEmail);
     }
 

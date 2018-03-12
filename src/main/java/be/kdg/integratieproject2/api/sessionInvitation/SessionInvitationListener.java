@@ -46,9 +46,9 @@ public class SessionInvitationListener implements ApplicationListener<OnSessionI
         sessionService.createSessionInvitationToken(user,sessionId, token, event.getCurrentUser());
 
         if (userService.getUserByUsername(user).getPassword() == null) {
-            confirmationUrl = event.getAppUrl() + "/themes/startRegister&token=" + token;
+            confirmationUrl = event.getAppUrl() + "/register/" + token;
         } else {
-            confirmationUrl = event.getAppUrl() + "/joinSession&token=" + token;
+            confirmationUrl = event.getAppUrl() + "/acceptSessionInvite/" + token;
         }
 
         inviteEmail = new SimpleMailMessage();
