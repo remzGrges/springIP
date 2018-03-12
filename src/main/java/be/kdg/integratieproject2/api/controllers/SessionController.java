@@ -1,7 +1,5 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Session;
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.api.dto.SessionDto;
@@ -29,7 +27,7 @@ public class SessionController {
         this.sessionService = sessionService;
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public ResponseEntity<SessionDto> updateSession(Authentication authentication, @Valid @RequestBody SessionDto dto) throws BadRequestException {
         Session session = modelMapper.map(dto, Session.class);
         SessionDto mappedSession = null;
@@ -73,7 +71,7 @@ public class SessionController {
         return new ResponseEntity<SessionDto>(sessionDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete/{sessionId]", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/{sessionId}", method = RequestMethod.GET)
     public ResponseEntity deleteCard(Authentication authentication, @PathVariable String sessionId) {
         try {
             sessionService.deleteSession(sessionId, authentication.getName());
@@ -83,7 +81,7 @@ public class SessionController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getAllSessionsByUser", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<SessionDto>> getAllSessionsByUser(Authentication authentication) {
         List<Session> sessions;
 

@@ -1,10 +1,7 @@
 package be.kdg.integratieproject2.Domain;
 
 import org.springframework.data.annotation.Id;
-import springfox.documentation.swagger2.mappers.LicenseMapper;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -13,12 +10,15 @@ public class Session {
     private String sessionId;
     private String sessionName;
     private String themeId;
+    private String organiser;
     private List<String> players;
     private int numberOfRounds;
     private boolean canComment;
     private boolean addCardUser;
     private int timeUserRound;
     private Date startTime;
+    private List<SubTheme> subThemes;
+    private List<Card> cards;
 
     public String getSessionName() {
         return sessionName;
@@ -90,5 +90,29 @@ public class Session {
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
+    }
+
+    public List<SubTheme> getSubThemes() {
+        return subThemes;
+    }
+
+    public void setSubThemes(List<SubTheme> subThemes) {
+        this.subThemes = subThemes;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public String getOrganiser() {
+        return organiser;
+    }
+
+    public void setOrganiser(String organiser) {
+        this.organiser = organiser;
     }
 }

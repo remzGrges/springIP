@@ -2,7 +2,9 @@ package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Session;
-import be.kdg.integratieproject2.bussiness.Interfaces.*;
+import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
+import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
+import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.SessionRepository;
 import org.springframework.stereotype.Service;
@@ -25,12 +27,10 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public Session addSession(Session session, String userId) throws ObjectNotFoundException {
-        ApplicationUser user = userService.getUserByUsername(userId);
-        if ( session.getPlayers() ==null){
             List<String> users = new LinkedList<>();
-            users.add(user.getEmail());
+            users.add(userId);
             session.setPlayers(users);
-        }
+            session.setOrganiser(userId);
        /* if (!user.getThemes().contains(session.getTheme().getId())) {
             throw new ObjectNotFoundException("Thema not authorized");
         }*/
@@ -40,7 +40,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public Session getSession(String sessionId, String userId) throws ObjectNotFoundException {
-        ApplicationUser user = userService.getUserByUsername(userId);
         Session session = sessionRepository.findOne(sessionId);
         for (String s : session.getPlayers()) {
             if (s.equals(userId)){
@@ -53,19 +52,14 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void deleteSession(String sessionId, String userId) throws ObjectNotFoundException {
         ApplicationUser user = userService.getUserByUsername(userId);
-        Session session =sessionRepository.findOne(sessionId);
-        List<String> organisers = themeService.getTheme(session.getThemeId()).getOrganisers();
-        for (String organiser : organisers) {
-            if (organiser.equals(user.getEmail())){
+        Session session = sessionRepository.findOne(sessionId);
+            if (session.getOrganiser().equals(user.getEmail())){
                 sessionRepository.delete(sessionId);
             }
-        }
     }
 
     @Override
     public List<Session> getAllSessionsByUser(String userId) throws ObjectNotFoundException {
-        ApplicationUser user = userService.getUserByUsername(userId);
-
         List<Session> sessions = sessionRepository.findSessionsByPlayersContaining(userId);
         if (sessions == null || sessions.size() == 0) {
             return new LinkedList<>();

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +47,18 @@ public class ThemeController {
     {
         Theme theme = modelMapper.map(dto, Theme.class);
         ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);
+        return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/get/{id}", method = RequestMethod.GET)
+    public ResponseEntity<ThemeDto> getTheme(@PathVariable String id, Authentication authentication) throws BadRequestException
+    {
+        ThemeDto mappedTheme = null;
+        try {
+            mappedTheme = modelMapper.map(themeService.getTheme(id), ThemeDto.class);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
 

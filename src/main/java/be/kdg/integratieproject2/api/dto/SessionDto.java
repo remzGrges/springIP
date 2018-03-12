@@ -1,7 +1,7 @@
 package be.kdg.integratieproject2.api.dto;
 
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.Domain.SubTheme;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -22,19 +22,20 @@ public class SessionDto {
     @NotNull
     @NotEmpty
     private List<String> players;
+    @NotNull
+    @NotEmpty
+    private String organiser;
     private int numberOfRounds;
     @NotNull
-    @NotEmpty
     private boolean canComment;
     @NotNull
-    @NotEmpty
     private boolean addCardUser;
     @NotNull
-    @NotEmpty
     private int timeUserRound;
     @NotNull
-    @NotEmpty
     private Date startTime;
+    private List<SubTheme> subThemes;
+    private List<Card> cards;
 
     public SessionDto() {
     }
@@ -109,5 +110,29 @@ public class SessionDto {
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
+    }
+
+    public List<SubTheme> getSubThemes() {
+        return subThemes;
+    }
+
+    public void setSubThemes(List<SubTheme> subThemes) {
+        this.subThemes = subThemes;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public String getOrganiser() {
+        return organiser;
+    }
+
+    public void setOrganiser(String organiser) {
+        this.organiser = organiser;
     }
 }
