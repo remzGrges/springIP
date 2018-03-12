@@ -118,10 +118,10 @@ public class SessionController {
 
         ApplicationUser user;
         String appUrl = request.getContextPath();
-        Session session = sessionService.getSession(sessionId, authentication.getName());
+        //Session session = sessionService.getSession(sessionId, authentication.getName());
 
 
-        if (session.getOrganiser().equals(authentication.getName())) {
+       // if (session.getOrganiser().equals(authentication.getName())) {
             for (String player : players) {
                 try {
                     user = userService.getUserByUsername(player);
@@ -136,7 +136,7 @@ public class SessionController {
 
                 }
             }
-        }
+        //}
 
 
 
