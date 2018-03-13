@@ -11,6 +11,7 @@ import java.util.List;
 public class Theme {
     @Id
     private String id;
+
     private String name;
     private String description;
     private List<String> tags;

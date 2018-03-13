@@ -1,6 +1,5 @@
 package be.kdg.integratieproject2.integration;
 
-import be.kdg.integratieproject2.Domain.Organiser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.controllers.ThemeController;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
@@ -58,7 +57,7 @@ public class TestThemeServices {
 
     //private Object o;
 
-    @Before
+   @Before
     public void setup()
     {
         MockitoAnnotations.initMocks(this);
@@ -88,6 +87,12 @@ public class TestThemeServices {
        // this.gson = new Gson();
         //this.o = new StringBuilder();
     }
+
+@Test
+public void getTheme() throws ObjectNotFoundException {
+    Theme theme = themeService.getTheme("5a9ee28a8e56602cb4889fce");
+    Assert.assertTrue(theme.getName().equals("Muziek"));
+}
     /*@Test
     public void testControllerCreateTheme() throws Exception {
        MvcResult result = mvc.perform(post("/themes/create")
@@ -190,7 +195,7 @@ public class TestThemeServices {
     @Test(expected = UsernameNotFoundException.class)
     public void testWrongUserName()
     {
-        this.themeService.addTheme(testTheme1, new Organiser(false, "rezm@stud.kdg.be").getEmail());
+        this.themeService.addTheme(testTheme1,"rezm@stud.kdg.be");
     }
 
     /*@Test
@@ -227,6 +232,7 @@ public class TestThemeServices {
         Assert.assertTrue(themes.stream().anyMatch(x -> x.getId().equals(themeId)));
         Assert.assertTrue(themeService.getTheme(themeId).getOrganisers().contains(new Organiser(true , "indy.dewacker@student.kdg.be", testTheme3.getId())));
     }*/
+
 
 
     @After

@@ -1,8 +1,11 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
-import be.kdg.integratieproject2.Domain.Organiser;
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.verification.InvitationToken;
+import be.kdg.integratieproject2.Domain.verification.Token;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +15,8 @@ import java.util.List;
  */
 @Service
 public interface ThemeService {
+
+
     Theme addTheme(Theme theme, String userId);
 
     Theme getTheme(String id) throws ObjectNotFoundException;
@@ -21,4 +26,22 @@ public interface ThemeService {
     void deleteTheme(String id) throws ObjectNotFoundException;
 
     Theme updateTheme(Theme theme);
+
+
+
+    String addOrganiser(String ingelogdeGebruiker ,String token) throws ObjectNotFoundException, UserAlreadyExistsException;;
+
+    Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException;
+
+    String getOrganiser(String  theme, String username) throws ObjectNotFoundException;
+
+    InvitationToken getInvitationToken(String token);
+
+    List<String> getOrganisersByThemeId(String themeId);
+
+    void createInvitationToken(String email, String themeId, String token);
+
+    String updateExistingOrganiser(String organiser, String themeId) throws ObjectNotFoundException;
+
+    String deleteOrganiser(String themeId, String username) throws ObjectNotFoundException;
 }

@@ -1,30 +1,27 @@
-package be.kdg.integratieproject2.api.dto;
+package be.kdg.integratieproject2.Domain;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.NotNull;
+public class Picture {
 
-public class PictureDto {
+    @Id
+    private String id;
 
-    private String pictureId;
-    @NotNull
-    @NotEmpty
     private String filename;
 
-    @NotNull
-    @NotEmpty
     private String filetype;
 
-    @NotNull
-    @NotEmpty
     private String value;
 
-    public String getPictureId() {
-        return pictureId;
+    public Picture() {
     }
 
-    public void setPictureId(String pictureId) {
-        this.pictureId = pictureId;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFilename() {
