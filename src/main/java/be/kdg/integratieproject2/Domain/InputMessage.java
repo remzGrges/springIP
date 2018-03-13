@@ -1,13 +1,13 @@
 package be.kdg.integratieproject2.Domain;
 
-public class Message {
+public class InputMessage {
     private String from;
     private String text;
 
-    public Message() {
+    public InputMessage() {
     }
 
-    public Message(String from, String text) {
+    public InputMessage(String from, String text) {
         this.from = from;
         this.text = text;
     }

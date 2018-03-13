@@ -1,8 +1,10 @@
 package be.kdg.integratieproject2.api.security.config;
 
+import be.kdg.integratieproject2.api.config.WebSocketConfiguration;
 import be.kdg.integratieproject2.api.security.filters.JWTAuthenticationFilter;
 import be.kdg.integratieproject2.api.security.filters.JWTAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,8 +49,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                     .antMatchers("/users/registrationConfirm").permitAll()
                     .antMatchers("/login").permitAll()
-                    .anyRequest()
-                    .authenticated()
+                    .antMatchers("/socket/**").permitAll()
+                    .anyRequest().authenticated()
                 .and()
                     .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                     .addFilter(new JWTAuthorizationFilter(authenticationManager()))
