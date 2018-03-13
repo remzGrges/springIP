@@ -35,7 +35,6 @@ public class TestSessionService {
     UserService userService;
 
     Session session;
-    private Theme testTheme1;
     private ApplicationUser user1;
     private Session postedSession = null;
 
@@ -58,7 +57,7 @@ public class TestSessionService {
     @After
     public void delete() {
         try {
-            themeService.deleteTheme(this.testTheme1.getId());
+            //themeService.deleteTheme(this.testTheme1.getId());
 
             if (postedSession != null) {
                 sessionService.deleteSession(postedSession.getSessionId(), "leander.coevoet@student.kdg.be");

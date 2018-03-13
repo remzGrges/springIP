@@ -91,6 +91,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public Theme addTheme(Theme theme, String username) {
+        userService.getUserByUsername(username); //throws exception
         LinkedList<String> organisers = new LinkedList<>();
         organisers.add(username);
         theme.setOrganisers(organisers);
