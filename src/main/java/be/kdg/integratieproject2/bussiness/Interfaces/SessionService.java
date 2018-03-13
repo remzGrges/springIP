@@ -10,6 +10,8 @@ import java.util.List;
 public interface SessionService {
     Session addSession(Session session, String userId) throws ObjectNotFoundException;
 
+    Session updateSession(Session session, String userId) throws ObjectNotFoundException;
+
     Session getSession(String sessionId, String userId) throws ObjectNotFoundException;
 
     void deleteSession(String sessionId, String userId) throws ObjectNotFoundException;

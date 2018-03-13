@@ -19,6 +19,7 @@ public class Session {
     private Date startTime;
     private List<SubTheme> subThemes;
     private List<Card> cards;
+    private List<Card> suggestedCards;
 
     public String getSessionName() {
         return sessionName;
@@ -114,5 +115,13 @@ public class Session {
 
     public void setOrganiser(String organiser) {
         this.organiser = organiser;
+    }
+
+    public List<Card> getSuggestedCards() {
+        return suggestedCards;
+    }
+
+    public void setSuggestedCards(List<Card> suggestedCards) {
+        this.suggestedCards = suggestedCards;
     }
 }

@@ -37,7 +37,7 @@ public class SessionController {
             if (getSes == null) {
                 throw new BadRequestException("No valid Session");
             }
-            mappedSession = modelMapper.map(sessionService.addSession(session, authentication.getName()), SessionDto.class);
+            mappedSession = modelMapper.map(sessionService.updateSession(session, authentication.getName()), SessionDto.class);
         } catch (ObjectNotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
