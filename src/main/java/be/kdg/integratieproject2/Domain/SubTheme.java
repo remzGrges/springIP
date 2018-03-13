@@ -10,8 +10,17 @@ public class SubTheme {
     private String id;
     private String text;
     private List<Card> cards;
+    private String pictureId;
 
     public SubTheme() {
+    }
+
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
     }
 
     public String getText() {

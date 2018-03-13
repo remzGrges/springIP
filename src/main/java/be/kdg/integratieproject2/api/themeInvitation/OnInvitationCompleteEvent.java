@@ -1,7 +1,6 @@
-package be.kdg.integratieproject2.api.invitation;
+package be.kdg.integratieproject2.api.themeInvitation;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;

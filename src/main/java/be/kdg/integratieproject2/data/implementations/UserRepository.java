@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends MongoRepository<ApplicationUser, String> {
-    ApplicationUser findByEmail(String s);
+    ApplicationUser findByEmail(String email);
+
     void deleteByEmail(String s);
 }

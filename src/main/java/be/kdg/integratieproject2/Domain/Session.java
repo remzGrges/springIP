@@ -1,7 +1,10 @@
 package be.kdg.integratieproject2.Domain;
 
 import org.springframework.data.annotation.Id;
+import springfox.documentation.swagger2.mappers.LicenseMapper;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 

@@ -6,7 +6,6 @@ import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.NoProfilePictureFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
-import be.kdg.integratieproject2.data.implementations.ProfilePictureRepository;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;
 import org.springframework.security.core.userdetails.User;
@@ -16,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -23,12 +23,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private TokenRepository tokenRepository;
 
-    private ProfilePictureRepository profilePictureRepository;
-
-    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, ProfilePictureRepository profilePictureRepository) {
+    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
-        this.profilePictureRepository = profilePictureRepository;
     }
 
     @Override
@@ -57,12 +54,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public VerificationToken getVerificationToken(String token) {
-        return tokenRepository.findByToken(token);
+        return (VerificationToken) tokenRepository.findByToken(token);
     }
 
     @Override
-    public ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException
-    {
+    public ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException {
         ApplicationUser applicationUser = userRepository.findByEmail(s);
         if (applicationUser == null)
             throw new UsernameNotFoundException(s);
@@ -70,42 +66,32 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return applicationUser;
     }
 
-    @Override
-    public ApplicationUser updateRegisteredUserName(String username, String voornaam) {
-        ApplicationUser user = this.getUserByUsername(username);
-        user.setFirstName(voornaam);
-        return userRepository.save(user);
+    /*@Override
+    public ApplicationUser updateRegisteredUserName(String user, String s) {
+        return null;
     }
 
     @Override
     public ProfilePicture uploadProfilePicture(String username, ProfilePicture profilePicture) {
-        ApplicationUser user = this.getUserByUsername(username);
-        ProfilePicture existingProfilePicture = profilePictureRepository.findByUserId(user.getId());
-
-        if (existingProfilePicture != null){
-            existingProfilePicture.setFilename(profilePicture.getFilename());
-            existingProfilePicture.setFiletype(profilePicture.getFiletype());
-            existingProfilePicture.setValue(profilePicture.getValue());
-            existingProfilePicture = profilePictureRepository.save(existingProfilePicture);
-        } else {
-            profilePicture.setUserId(user.getId());
-            existingProfilePicture = profilePictureRepository.save(profilePicture);
-        }
-
-        return existingProfilePicture;
+        return null;
     }
 
     @Override
     public ProfilePicture getProfilePicture(String username) throws NoProfilePictureFoundException {
+        return null;
+    }
+
+    @Override
+    public List<ApplicationUser> getAllUsers() {
+        return null;
+    }*/
+
+    @Override
+    public ApplicationUser updateRegisteredUserName(String username, String voornaam, String pictureId) {
         ApplicationUser user = this.getUserByUsername(username);
-
-        ProfilePicture existingProfilePicture = profilePictureRepository.findByUserId(user.getId());
-        if (existingProfilePicture == null) {
-            throw new NoProfilePictureFoundException("This user does not have a profile picture.");
-        }
-
-        return existingProfilePicture;
-
+        user.setFirstName(voornaam);
+        user.setPictureId(pictureId);
+        return userRepository.save(user);
     }
 
     @Override

@@ -38,6 +38,10 @@ public class SessionDto {
     private List<Card> cards;
     private List<Card> suggestedCards;
 
+    @NotNull
+    @NotEmpty
+    private String organiser;
+
     public SessionDto() {
     }
 

@@ -14,6 +14,7 @@ public class ApplicationUser {
     private String lastName;
     private String password;
     private Boolean enabled;
+    private String pictureId;
 
     public ApplicationUser() {
         this.enabled = false;
@@ -57,5 +58,13 @@ public class ApplicationUser {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
     }
 }

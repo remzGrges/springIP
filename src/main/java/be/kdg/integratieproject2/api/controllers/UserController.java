@@ -1,6 +1,7 @@
 package be.kdg.integratieproject2.api.controllers;
 
 
+import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.Domain.ProfilePicture;
@@ -59,30 +60,32 @@ public class UserController {
     }
 
     @GetMapping("/registrationConfirm")
-    public String confirmRegistration(@RequestParam("token") String token) {
+    public UserInfoDto confirmRegistration(@RequestParam("token") String token) {
 
        VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
-            return "No Such Token";
+            return new UserInfoDto();
         }
 
         ApplicationUser applicationUser = verificationToken.getApplicationUser();
+        UserInfoDto dto = modelMapper.map(applicationUser, UserInfoDto.class);
+
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return "Token expired";
+            return new UserInfoDto();
         }
 
         applicationUser.setEnabled(true);
         userService.updateRegisteredUser(applicationUser);
         userService.deleteToken(verificationToken);
-        return "User verified";
+        return dto;
     }
 
     @PostMapping(value = "/update")
     public UserInfoDto changeName(Authentication authentication, @Valid @RequestBody UserInfoDto dto ) {
         String username = authentication.getName();
 
-        ApplicationUser user = userService.updateRegisteredUserName(username, dto.getFirstName());
+        ApplicationUser user = userService.updateRegisteredUserName(username, dto.getFirstName(),dto.getPictureId());
         dto = modelMapper.map(user, UserInfoDto.class);
 
         return dto;
@@ -97,24 +100,4 @@ public class UserController {
         return dto;
     }
 
-    @PostMapping(value = "/uploadProfilePicture")
-    public PictureDto uploadProfilePicture(Authentication authentication, @Valid @RequestBody PictureDto dto ) {
-        String username = authentication.getName();
-        ProfilePicture profilePicture = modelMapper.map(dto, ProfilePicture.class);
-        profilePicture = userService.uploadProfilePicture(username, profilePicture);
-        dto = modelMapper.map(profilePicture, PictureDto.class);
-        return dto;
-    }
-
-    @GetMapping(value = "/getProfilePicture")
-    public PictureDto getProfilePicture(Authentication authentication){
-        String username = authentication.getName();
-        ProfilePicture profilePicture = null;
-        try {
-            profilePicture = userService.getProfilePicture(username);
-        } catch (NoProfilePictureFoundException e) {
-            return null;
-        }
-        return modelMapper.map(profilePicture, PictureDto.class);
-    }
 }

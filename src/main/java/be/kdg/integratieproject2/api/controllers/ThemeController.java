@@ -2,9 +2,10 @@ package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.api.BadRequestException;
-import be.kdg.integratieproject2.api.dto.ThemeDto;
-import be.kdg.integratieproject2.api.invitation.OnInvitationCompleteEvent;
+import be.kdg.integratieproject2.api.dto.*;
+import be.kdg.integratieproject2.api.themeInvitation.OnInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -90,26 +92,44 @@ public class ThemeController {
         return new ResponseEntity<ThemeDto>(new ThemeDto(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/inviteOrg" , method = RequestMethod.POST)
-    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody HashMap<String, String> themeInvitationDto, BindingResult result, WebRequest request) throws UserAlreadyExistsException {
+    @RequestMapping(value = "/inviteOrg/{themeId}", method = RequestMethod.POST)
+    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody String email , @PathVariable String themeId, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
 
-
-        String userName = authentication.getName();
-        //Theme theme = themeService.getTheme(themaId);
-        //themeService.addOrganiser(themaId, userName, email);
+        ApplicationUser user;
         String appUrl = request.getContextPath();
 
         try {
-            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(themeInvitationDto.get("username")), request.getLocale(), appUrl, themeInvitationDto.get("themaId")));
-
-        } catch (Exception e) {
-            ApplicationUser user = new ApplicationUser();
-            user.setEmail(themeInvitationDto.get("username"));
-            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(user), request.getLocale(), appUrl, themeInvitationDto.get("themaId")));
+            user = userService.getUserByUsername(email);
+            if (user.getEmail() != null) {
+                eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(email), request.getLocale(), appUrl, themeId));
+            }
+        } catch (UsernameNotFoundException a) {
+            ApplicationUser newUser = new ApplicationUser();
+            newUser.setEmail(email);
+            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(newUser), request.getLocale(), appUrl, themeId));
 
         }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/acceptOrganiserInvite/{token}")
+    public ResponseEntity acceptInvite(Authentication authentication, @PathVariable("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
+
+        themeService.addOrganiser(authentication.getName(), token);
+        return new ResponseEntity(HttpStatus.OK);
+
+    }
+
+    @GetMapping(value = "/acceptOrganiserInviteNon/{token}")
+    public ResponseEntity register( @RequestParam("email") String email,@PathVariable("token") String token) throws UserAlreadyExistsException, ObjectNotFoundException {
+        InvitationToken invitationToken = themeService.getInvitationToken(token);
+        themeService.addOrganiser(email, token);
 
 
         return new ResponseEntity(HttpStatus.OK);
     }
+
+
+
+
 }
