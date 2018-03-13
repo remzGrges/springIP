@@ -1,5 +1,7 @@
 package be.kdg.integratieproject2.api.dto;
 
+
+//TODO Moet dit?
 public class ThemeInvitationDto {
     private String themeId;
     private String username;

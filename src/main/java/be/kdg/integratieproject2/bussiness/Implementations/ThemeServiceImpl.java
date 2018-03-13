@@ -62,7 +62,9 @@ public class ThemeServiceImpl implements ThemeService {
     public List<String> getOrganisersByThemeId(String themeId) {
         try {
             Theme theme = getTheme(themeId);
-            return theme.getOrganisers();
+            if (theme != null) {
+                return theme.getOrganisers();
+            }
         } catch (ObjectNotFoundException e) {
             e.printStackTrace();
         }
@@ -75,13 +77,11 @@ public class ThemeServiceImpl implements ThemeService {
         ApplicationUser user = userService.getUserByUsername(loggedInUser);
 
         if (theme.getOrganisers() != null) {
-            if (getThemesByUser(loggedInUser).contains(theme)) {
+            if (theme.getOrganisers().contains(loggedInUser)) {
                 return true;
             }
-            ;
         }
         return false;
-
     }
 
     @Override
@@ -100,9 +100,10 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public Theme getTheme(String id) throws ObjectNotFoundException {
-        try {
-            return themeRepository.findOne(id);
-        } catch (Exception e) {
+        Theme theme = themeRepository.findOne(id);
+        if (theme != null) {
+            return theme;
+        } else {
             throw new ObjectNotFoundException(id);
         }
     }

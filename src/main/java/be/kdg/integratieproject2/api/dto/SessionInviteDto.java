@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.api.dto;
 
 import java.util.List;
 
+//TODO Moet dit?
 public class SessionInviteDto {
     List<String> users;
 

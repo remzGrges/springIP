@@ -21,10 +21,10 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     public Picture getPicture(String pictureId) throws ObjectNotFoundException {
-        if (pictureId != null){
-            return pictureRepository.findOne(pictureId);
-        }else{
+        if ( pictureId == null ||pictureId.equals("null")){
             throw new ObjectNotFoundException("null");
+        }else{
+            return pictureRepository.findOne(pictureId);
         }
 
     }

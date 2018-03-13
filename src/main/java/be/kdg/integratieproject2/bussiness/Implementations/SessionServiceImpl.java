@@ -106,6 +106,5 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void createSessionInvitationToken(String email, String sessionId, String token, String organiser) {
         tokenRepository.save(new SessionInvitationToken(token, sessionId,email, organiser));
-
     }
 }

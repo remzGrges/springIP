@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.integration;
+package be.kdg.integratieproject2.integration.service;
 
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.api.controllers.ThemeController;
@@ -30,18 +30,6 @@ import java.util.List;
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath*:testcontext.xml"})
 public class TestThemeServices {
-    @Autowired
-    private ThemeController themeController;
-
-    @Autowired
-    private WebApplicationContext wac;
-
-    /*
-    private MockMvc mvc;
-    private Gson gson;
-    @Autowired
-    private ModelMapper modelMapper;
-    */
 
     @Autowired
     private ThemeService themeService;
@@ -57,9 +45,8 @@ public class TestThemeServices {
 
     //private Object o;
 
-   @Before
-    public void setup()
-    {
+    @Before
+    public void setup() {
         MockitoAnnotations.initMocks(this);
         //this.mvc = MockMvcBuilders.webAppContextSetup(wac).build();
         this.testTheme1 = new Theme();
@@ -84,36 +71,22 @@ public class TestThemeServices {
         this.testTheme3.setOrganisers(organisers2);
 
 
-       // this.gson = new Gson();
+        // this.gson = new Gson();
         //this.o = new StringBuilder();
     }
 
-@Test
-public void getTheme() throws ObjectNotFoundException {
-    Theme theme = themeService.getTheme("5a9ee28a8e56602cb4889fce");
-    Assert.assertTrue(theme.getName().equals("Muziek"));
-}
-    /*@Test
-    public void testControllerCreateTheme() throws Exception {
-       MvcResult result = mvc.perform(post("/themes/create")
-                .content(gson.toJson(testTheme1))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-        Theme postedTheme = gson.fromJson(result.getResponse().getContentAsString(), Theme.class);
-        Assert.assertTrue(this.testTheme1.getName().equals(themeService.getTheme(postedTheme.getId()).getName()));
+    @Test
+    public void getTheme() throws ObjectNotFoundException {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        Theme theme = themeService.getTheme(postedTheme1.getId());
+        Assert.assertTrue(theme.getName().equals("testTheme1"));
     }
 
-    @Test
-    public void testControllerWrongClass() throws Exception
-    {
-        mvc.perform(post("/themes/create")
-                .content(gson.toJson(o))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }*/
-
-
+    @Test(expected = ObjectNotFoundException.class)
+    public void getThemeBadId() throws ObjectNotFoundException {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        Theme theme = themeService.getTheme("WAHt");
+    }
 
     @Test
     public void testCreateTheme() throws ObjectNotFoundException {
@@ -145,7 +118,7 @@ public void getTheme() throws ObjectNotFoundException {
         Theme postedTheme2 = this.themeService.getTheme(this.postedTheme2.getId());
         Assert.assertTrue(postedTheme2.getName().equals(this.postedTheme2.getName()));
         Assert.assertTrue(postedTheme2.getDescription().equals(this.postedTheme2.getDescription()));
-       // Assert.assertTrue(postedTheme2.getOrganisers().contains(new Organiser(true , "tim.vanaelst@student.kdg.be", testTheme3.getId())));
+        // Assert.assertTrue(postedTheme2.getOrganisers().contains(new Organiser(true , "tim.vanaelst@student.kdg.be", testTheme3.getId())));
         for (String o : postedTheme2.getOrganisers()) {
             Assert.assertTrue(o.equals(organiser1));
 
@@ -153,7 +126,6 @@ public void getTheme() throws ObjectNotFoundException {
         }
 
     }
-
 
     @Test()
     public void testCreateThemeNoOrganisers() throws ObjectNotFoundException {
@@ -193,55 +165,68 @@ public void getTheme() throws ObjectNotFoundException {
     }
 
     @Test(expected = UsernameNotFoundException.class)
-    public void testWrongUserName()
-    {
-        this.themeService.addTheme(testTheme1,"rezm@stud.kdg.be");
-    }
-
-    /*@Test
-    public void testGetAllThemes()
-    {
-        List<Theme> themes = this.themeService.getThemesByUser("test@student.kdg.be");
-        Assert.assertTrue(themes.size() == 2);
-        Theme theme1 = themes.get(0);
-        Theme theme2 = themes.get(1);
-        Assert.assertTrue(theme1.getName().equals("PermanentTheme2"));
-        Assert.assertTrue(theme1.getDescription().equals("This is a permanent testTheme DO NOT DELETE"));
-
-        Assert.assertTrue(theme2.getName().equals("PermanentTheme"));
-        Assert.assertTrue(theme2.getDescription().equals("This is a permanent testTheme DO NOT DELETE"));
-    }*/
-
-
-
-  /*  @Test
-    public void testAddOrganiser() {
-        String themeId = "5a8d51c51525a03170a20be8";
-        themeService.addOrganiser(themeId,new Organiser(true , "indy.dewacker@student.kdg.be", testTheme3.getId()));
-        List<Theme>  themes = themeService.getThemesByUser("indy.dewacker@student.kdg.be");
-        Assert.assertTrue(themes.stream().anyMatch(x -> x.getId().equals(themeId)));
-        Assert.assertTrue(themeService.getTheme(themeId).getOrganisers().contains(new Organiser(true , "indy.dewacker@student.kdg.be", testTheme3.getId())));
-
+    public void testWrongUserName() {
+        this.themeService.addTheme(testTheme1, "rezm@stud.kdg.be");
     }
 
     @Test
-    public void testAddOrganiser2() {
-        String themeId = "5a8d51c51525a03170a20be8";
-        themeService.addOrganiser(themeId,new Organiser(true , "indy.dewacker@student.kdg.be", testTheme3.getId()) );
-        List<Theme>  themes = themeService.getThemesByUser("tim.vanaelst@student.kdg.be");
-        Assert.assertTrue(themes.stream().anyMatch(x -> x.getId().equals(themeId)));
-        Assert.assertTrue(themeService.getTheme(themeId).getOrganisers().contains(new Organiser(true , "indy.dewacker@student.kdg.be", testTheme3.getId())));
-    }*/
+    public void getOrganisersByThemeId() {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        List<String> organisers = themeService.getOrganisersByThemeId(postedTheme1.getId());
+        Assert.assertTrue(organisers.size() == 1);
+    }
 
+    @Test
+    public void getOrganisersByThemeIdBadId() {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        List<String> organisers = themeService.getOrganisersByThemeId("no");
+        Assert.assertTrue(organisers == null);
+    }
+
+    @Test
+    public void isOrganiser() throws ObjectNotFoundException {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        boolean isOrg = themeService.isOrganiser("tim.vanaelst@student.kdg.be", this.postedTheme1.getId());
+        Assert.assertTrue(isOrg);
+    }
+
+    @Test
+    public void isNotOrganiser() throws ObjectNotFoundException {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        boolean isOrg = themeService.isOrganiser("leander.coevoet@student.kdg.be", this.postedTheme1.getId());
+        Assert.assertFalse(isOrg);
+    }
+
+    @Test
+    public void getOrganiser() throws ObjectNotFoundException {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        String organiser = themeService.getOrganiser(postedTheme1.getId(), organiser1);
+        Assert.assertTrue(organiser.equals(organiser1));
+    }
+
+    //TODO Is dit juist??
+    @Test
+    public void updateExistingOrganiser() throws ObjectNotFoundException {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        String organiser = themeService.updateExistingOrganiser( organiser1, postedTheme1.getId());
+        Assert.assertTrue(organiser.equals(organiser1));
+    }
+
+    @Test
+    public void deleteOrganiser() throws ObjectNotFoundException {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        String organiser = themeService.deleteOrganiser(postedTheme1.getId(),organiser1);
+        Assert.assertTrue(organiser.equals(organiser1));
+    }
 
 
     @After
     public void deleteThemes() throws ObjectNotFoundException {
-        if(this.postedTheme1 != null) themeService.deleteTheme(this.postedTheme1.getId());
-        if(this.postedTheme2 != null) themeService.deleteTheme(this.postedTheme2.getId());
-        if(this.postedTheme3 != null) themeService.deleteTheme(this.postedTheme3.getId());
+        if (this.postedTheme1 != null) themeService.deleteTheme(this.postedTheme1.getId());
+        if (this.postedTheme2 != null) themeService.deleteTheme(this.postedTheme2.getId());
+        if (this.postedTheme3 != null) themeService.deleteTheme(this.postedTheme3.getId());
 
-        if(this.postedTheme1 != null && this.postedTheme2 != null && this.postedTheme3 != null) {
+        if (this.postedTheme1 != null && this.postedTheme2 != null && this.postedTheme3 != null) {
             List<Theme> themes = this.themeService.getThemesByUser("tim.vanaelst@student.kdg.be");
             Assert.assertTrue(themes.size() == 0);
 

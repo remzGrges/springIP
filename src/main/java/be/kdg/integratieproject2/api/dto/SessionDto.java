@@ -2,6 +2,9 @@ package be.kdg.integratieproject2.api.dto;
 
 import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.SubTheme;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -32,8 +35,8 @@ public class SessionDto {
     private boolean addCardUser;
     @NotNull
     private int timeUserRound;
-    @NotNull
-    private Date startTime;
+    @JsonIgnore
+    private Date startTime = new Date();
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;

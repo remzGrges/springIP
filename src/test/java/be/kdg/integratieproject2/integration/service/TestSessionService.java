@@ -1,11 +1,15 @@
-package be.kdg.integratieproject2.integration;
+package be.kdg.integratieproject2.integration.service;
 
 
 import be.kdg.integratieproject2.Domain.*;
+import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
+import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.data.implementations.TokenRepository;
+import be.kdg.integratieproject2.data.implementations.UserRepository;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,6 +33,10 @@ import java.util.List;
 public class TestSessionService {
     @Autowired
     SessionService sessionService;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    TokenRepository tokenRepository;
     @Autowired
     ThemeService themeService;
     @Autowired
@@ -56,9 +64,9 @@ public class TestSessionService {
 
     @After
     public void delete() {
+        tokenRepository.deleteAll();
+        userRepository.deleteByEmail("fake@mail.be");
         try {
-            //themeService.deleteTheme(this.testTheme1.getId());
-
             if (postedSession != null) {
                 sessionService.deleteSession(postedSession.getSessionId(), "leander.coevoet@student.kdg.be");
             }
@@ -77,43 +85,6 @@ public class TestSessionService {
         Assert.assertTrue(postedSession.getTimeUserRound() == session.getTimeUserRound());
     }
 
-    /*@Test
-    public void testGetAllSessionsUser() throws ObjectNotFoundException {
-        this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
-        List<Session> sessions = sessionService.getAllSessionsByUser("leander.coevoet@student.kdg.be");
-        Assert.assertTrue(sessions.size() == 1);
-        Session ses = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
-        sessions = sessionService.getAllSessionsByUser("leander.coevoet@student.kdg.be");
-        //Assert.assertTrue(sessions.size() == 2); //TODO: sessions gaan niet altijd 2 zijn
-        sessionService.deleteSession(ses.getSessionId(), "leander.coevoet@student.kdg.be");
-        Assert.assertTrue(sessions.get(0).getSessionId().equals(postedSession.getSessionId()));
-        Assert.assertTrue(sessions.get(0).getTheme().getId().equals(postedSession.getTheme().getId()));
-        Assert.assertTrue(sessions.get(0).getNumberOfRounds() == postedSession.getNumberOfRounds());
-    } */
-
-  /*  @Test
-    public void testDeleteSession() throws ObjectNotFoundException {
-        Session session2 = new Session();
-        session2.setTheme(testTheme1);
-        session2.setAddCardUser(false);
-        session2.setNumberOfRounds(0);
-        user1 = userService.getUserByUsername("leander.coevoet@student.kdg.be");
-        List<String> players = new LinkedList<>();
-        players.add(user1.getEmail());
-        session2.setPlayers(players);
-        session2.setTimeUserRound(5);
-        session2.setStartTime(new Timestamp(2018, 3, 12, 12, 0, 0, 0));
-        session2.setCanComment(true);
-
-        this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
-        Session postedSession2 = this.sessionService.addSession(session2, "leander.coevoet@student.kdg.be");
-        List<Session> sessions = sessionService.getAllSessionsByUser("leander.coevoet@student.kdg.be");
-        Assert.assertTrue(sessions.size() == 2);
-        sessionService.deleteSession(postedSession2.getSessionId(), "leander.coevoet@student.kdg.be");
-        sessions = sessionService.getAllSessionsByUser("leander.coevoet@student.kdg.be");
-        Assert.assertTrue(sessions.size() == 1);
-    }*/
-
     @Test
     public void testGetSession() throws ObjectNotFoundException {
         this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
@@ -130,6 +101,13 @@ public class TestSessionService {
         Session updatedSession = this.sessionService.addSession(postedSession, "leander.coevoet@student.kdg.be");
         Assert.assertTrue(postedSession.getSessionId().equals(updatedSession.getSessionId()));
         Assert.assertTrue(postedSession.isCanComment() == updatedSession.isCanComment());
+    }
+
+    @Test
+    public void createSessionInvitationToken() throws ObjectNotFoundException {
+        this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
+        this.sessionService.createSessionInvitationToken("fake@mail.be", postedSession.getSessionId(), "bla", "leander.coevoet@student.kdg.be");
+       Assert.assertTrue(tokenRepository.findByToken("bla") != null);
     }
 
 

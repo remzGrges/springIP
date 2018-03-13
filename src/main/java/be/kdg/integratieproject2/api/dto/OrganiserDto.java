@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 
+//TODO Moet dit?
 public class OrganiserDto {
 
     @NotNull

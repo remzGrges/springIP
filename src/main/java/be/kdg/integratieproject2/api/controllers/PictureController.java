@@ -40,9 +40,6 @@ public class PictureController {
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     public PictureDto getPicture(@PathVariable String id) throws ObjectNotFoundException {
-        if (id == null) {
-            throw new ObjectNotFoundException("null");
-        }
         Picture picture = pictureService.getPicture(id);
         return modelMapper.map(picture, PictureDto.class);
     }
