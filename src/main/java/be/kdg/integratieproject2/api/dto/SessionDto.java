@@ -2,7 +2,6 @@ package be.kdg.integratieproject2.api.dto;
 
 import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.SubTheme;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -35,7 +34,6 @@ public class SessionDto {
     private int timeUserRound;
     @NotNull
     private Date startTime;
-
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;

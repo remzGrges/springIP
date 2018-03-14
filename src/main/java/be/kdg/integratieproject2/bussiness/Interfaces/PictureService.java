@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PictureService {
 
-    Picture addPicture(Picture picture);
+    Picture addPicture(Picture picture, String userName);
 
-    Picture getPicture(String pictureId) throws ObjectNotFoundException;
+    Picture getPicture(String pictureId, String userName) throws ObjectNotFoundException;
 
-    void deletePicture(String pictureId);
+    void deletePicture(String pictureId, String userName) throws ObjectNotFoundException;
 
     Picture getPictureByUsername(String username) throws ObjectNotFoundException;
 }

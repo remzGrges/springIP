@@ -31,14 +31,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Session addSession(Session session, String userId) throws ObjectNotFoundException {
+    public Session addSession(Session session, String userId)  {
         List<String> users = new LinkedList<>();
         users.add(userId);
         session.setPlayers(users);
         session.setOrganiser(userId);
-       /* if (!user.getThemes().contains(session.getTheme().getId())) {
-            throw new ObjectNotFoundException("Thema not authorized");
-        }*/
        return sessionRepository.save(session);
     }
 
@@ -106,6 +103,5 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void createSessionInvitationToken(String email, String sessionId, String token, String organiser) {
         tokenRepository.save(new SessionInvitationToken(token, sessionId,email, organiser));
-
     }
 }

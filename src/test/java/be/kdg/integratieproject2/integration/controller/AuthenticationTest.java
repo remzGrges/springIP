@@ -1,5 +1,6 @@
-package be.kdg.integratieproject2.integration;
+package be.kdg.integratieproject2.integration.controller;
 
+import be.kdg.integratieproject2.api.dto.UserInfoDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,9 +57,12 @@ public class AuthenticationTest {
     private UserRegistrationDto userRegistrationDto;
     private ApplicationUser user;
     private LoginDto loginDto;
+    private HttpHeaders httpHeaders = new HttpHeaders();
 
     @Before
-    public void setup(){
+    public void setup() {
+        httpHeaders.add("Authorization", "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZWFuZGVyLmNvZXZvZXRAc3R1ZGVudC5rZGcuYmUiLCJleHAiOjE1MjE4MTc4OTR9._1V6c2QlsNEc_OmhL4GvxYlFucGSZ6kZWGoSsdCABst9VoJQFKo4CkYYyU4rGJpWVCNWwRh-CKR92PNFERjXXg");
+
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .alwaysDo(print())
@@ -76,9 +82,68 @@ public class AuthenticationTest {
     }
 
     @After
-    public void teardown(){
+    public void teardown() {
         userRepository.deleteByEmail(user.getEmail());
         tokenRepository.deleteAll();
+    }
+
+    @Test
+    public void registrationConfirm() throws Exception {
+        mvc.perform(get("/users/registrationConfirm")
+                .param("token", "blabla"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateUser() throws Exception {
+        Gson gson = new Gson();
+        UserInfoDto userInfoDto = new UserInfoDto();
+        userInfoDto.setEmail("leander.coevoet@student.kdg.be");
+        userInfoDto.setFirstName("Leander");
+        userInfoDto.setLastName("Coevoet");
+        userInfoDto.setPictureId("5aa25cb7c671850ef0492fc2");
+        String json = gson.toJson(userInfoDto, UserInfoDto.class);
+
+        mvc.perform(post("/users/update")
+                .headers(httpHeaders)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void currentUser() throws Exception {
+        mvc.perform(get("/users/currentuser")
+                .headers(httpHeaders))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void createSessieToken() throws Exception {
+        mvc.perform(get("/token/create/Sessie")
+                .headers(httpHeaders))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void createOrganiserToken() throws Exception {
+        mvc.perform(get("/token/create/organiser")
+                .headers(httpHeaders))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void createVerificatieToken() throws Exception {
+        mvc.perform(get("/token/create/verificatie")
+                .headers(httpHeaders))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void createBadToken() throws Exception {
+        mvc.perform(get("/token/create/blabla")
+                .headers(httpHeaders))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -88,11 +153,10 @@ public class AuthenticationTest {
 
         ResultActions result =
                 mvc.perform(post("/users/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Succes"));
-
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string("Succes"));
     }
 
     @Test

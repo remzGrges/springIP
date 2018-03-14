@@ -1,10 +1,8 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.ProfilePicture;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.bussiness.exceptions.NoProfilePictureFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;
@@ -15,7 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -65,26 +62,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         return applicationUser;
     }
-
-    /*@Override
-    public ApplicationUser updateRegisteredUserName(String user, String s) {
-        return null;
-    }
-
-    @Override
-    public ProfilePicture uploadProfilePicture(String username, ProfilePicture profilePicture) {
-        return null;
-    }
-
-    @Override
-    public ProfilePicture getProfilePicture(String username) throws NoProfilePictureFoundException {
-        return null;
-    }
-
-    @Override
-    public List<ApplicationUser> getAllUsers() {
-        return null;
-    }*/
 
     @Override
     public ApplicationUser updateRegisteredUserName(String username, String voornaam, String pictureId) {

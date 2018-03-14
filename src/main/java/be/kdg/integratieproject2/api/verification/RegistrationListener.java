@@ -32,12 +32,12 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         String email = user.getEmail();
         String subject = "Confirm registration";
-        String confirmationUrl = event.getAppUrl() + "/users/registrationConfirm?token=" + token;
+        String confirmationUrl = event.getAppUrl() + "/registrationConfirmation?token=" + token;
 
         SimpleMailMessage verificationEmail = new SimpleMailMessage();
         verificationEmail.setTo(email);
         verificationEmail.setSubject(subject);
-        verificationEmail.setText("http://localhost:8080" + confirmationUrl);
+        verificationEmail.setText("https://kandoe-webclient.herokuapp.com" + confirmationUrl);
         mailSender.send(verificationEmail);
 
     }

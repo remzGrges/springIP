@@ -105,8 +105,8 @@ public class ThemeController {
             }
         } catch (UsernameNotFoundException a) {
             ApplicationUser newUser = new ApplicationUser();
-            newUser.setEmail(email);
-            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(newUser), request.getLocale(), appUrl, themeId));
+            newUser.setEmail(email)
+;            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(newUser), request.getLocale(), appUrl, themeId));
 
         }
         return new ResponseEntity(HttpStatus.OK);
@@ -124,12 +124,6 @@ public class ThemeController {
     public ResponseEntity register( @RequestParam("email") String email,@PathVariable("token") String token) throws UserAlreadyExistsException, ObjectNotFoundException {
         InvitationToken invitationToken = themeService.getInvitationToken(token);
         themeService.addOrganiser(email, token);
-
-
         return new ResponseEntity(HttpStatus.OK);
     }
-
-
-
-
 }
