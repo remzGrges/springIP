@@ -32,7 +32,7 @@ public class SessionDto {
     private boolean addCardUser;
     @NotNull
     private int timeUserRound;
-    @NotNull
+
     private Date startTime;
     private List<SubTheme> subThemes;
     private List<Card> cards;
