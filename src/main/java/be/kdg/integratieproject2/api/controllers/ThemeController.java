@@ -126,8 +126,4 @@ public class ThemeController {
         themeService.addOrganiser(email, token);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-
-
-
 }

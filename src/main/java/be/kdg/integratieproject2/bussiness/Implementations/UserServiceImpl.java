@@ -63,26 +63,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return applicationUser;
     }
 
-    /*@Override
-    public ApplicationUser updateRegisteredUserName(String user, String s) {
-        return null;
-    }
-
-    @Override
-    public ProfilePicture uploadProfilePicture(String username, ProfilePicture profilePicture) {
-        return null;
-    }
-
-    @Override
-    public ProfilePicture getProfilePicture(String username) throws NoProfilePictureFoundException {
-        return null;
-    }
-
-    @Override
-    public List<ApplicationUser> getAllUsers() {
-        return null;
-    }*/
-
     @Override
     public ApplicationUser updateRegisteredUserName(String username, String voornaam, String pictureId) {
         ApplicationUser user = this.getUserByUsername(username);

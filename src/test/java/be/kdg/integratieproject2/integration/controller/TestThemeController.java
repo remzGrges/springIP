@@ -103,6 +103,23 @@ public class TestThemeController {
     }
 
     @Test
+    public void getThemeBadTheme() throws Exception {
+        Gson gson = new Gson();
+        String json = gson.toJson(themeDto, ThemeDto.class);
+
+        mvc.perform(post("/themes/create")
+                .headers(httpHeaders)
+                .accept("application/json;charset=UTF-8")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(json));
+
+        mvc.perform(get("/themes/get/lolol")
+                .headers(httpHeaders))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
     public void updateTheme() throws Exception {
         Gson gson = new Gson();
         String json = gson.toJson(themeDto, ThemeDto.class);

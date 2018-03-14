@@ -60,15 +60,10 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto dto, Authentication authentication) throws BadRequestException {
+    public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto dto, Authentication authentication) throws BadRequestException, ObjectNotFoundException {
         Session session = modelMapper.map(dto, Session.class);
         SessionDto mappedSession = null;
-
-        try {
-            mappedSession = modelMapper.map(sessionService.addSession(session, authentication.getName()), SessionDto.class);
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        mappedSession = modelMapper.map(sessionService.addSession(session, authentication.getName()), SessionDto.class);
         return new ResponseEntity<>(mappedSession, HttpStatus.OK);
     }
 

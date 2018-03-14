@@ -35,8 +35,8 @@ public class SessionDto {
     private boolean addCardUser;
     @NotNull
     private int timeUserRound;
-    @JsonIgnore
-    private Date startTime = new Date();
+
+    private Date startTime;
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;

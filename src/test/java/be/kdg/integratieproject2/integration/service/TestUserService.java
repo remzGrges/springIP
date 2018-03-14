@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -27,6 +29,8 @@ public class TestUserService {
     private ApplicationUser applicationUser;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Before
     public void setup() {
@@ -59,5 +63,10 @@ public class TestUserService {
         userService.deleteToken(verificationToken);
         verificationToken = userService.getVerificationToken("bla");
         Assert.assertTrue(verificationToken == null);
+    }
+
+    @Test(expected = UsernameNotFoundException.class)
+    public void loadUserByUsernameBadMail(){
+       userDetailsService.loadUserByUsername("fake@mail.be");
     }
 }

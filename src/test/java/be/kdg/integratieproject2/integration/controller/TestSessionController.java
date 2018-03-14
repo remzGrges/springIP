@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class TestSessionController {
         mvc.perform(get("/sessions/getSession/" + sessionDto.getSessionId())
                 .headers(httpHeaders))
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"sessionId\":\"1\",\"sessionName\":\"add\",\"themeId\":\"45454\",\"players\":[\"leander.coevoet@student.kdg.be\"],\"organiser\":\"leander.coevoet@student.kdg.be\",\"numberOfRounds\":0,\"canComment\":false,\"addCardUser\":false,\"timeUserRound\":24,\"subThemes\":null,\"cards\":null,\"suggestedCards\":null}"));
+                .andExpect(content().string("{\"sessionId\":\"1\",\"sessionName\":\"add\",\"themeId\":\"45454\",\"players\":[\"leander.coevoet@student.kdg.be\"],\"organiser\":\"leander.coevoet@student.kdg.be\",\"numberOfRounds\":0,\"canComment\":false,\"addCardUser\":false,\"timeUserRound\":24,\"startTime\":null,\"subThemes\":null,\"cards\":null,\"suggestedCards\":null}"));
     }
 
     @Test

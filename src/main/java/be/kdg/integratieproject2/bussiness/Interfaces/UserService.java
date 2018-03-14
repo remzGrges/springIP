@@ -20,12 +20,5 @@ public interface UserService {
 
     ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException;
 
-//    ApplicationUser updateRegisteredUserName(String user, String s);
-//
-//    ProfilePicture uploadProfilePicture(String username, ProfilePicture profilePicture);
-//
-//    ProfilePicture getProfilePicture(String username) throws NoProfilePictureFoundException;
-//
-//    List<ApplicationUser> getAllUsers();
     ApplicationUser updateRegisteredUserName(String user, String s, String picId);
 }

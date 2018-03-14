@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,10 +42,11 @@ public class TestPictureController {
 
     @Before
     public void setup() {
-        httpHeaders.add("Authorization", "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZWFuZGVyLmNvZXZvZXRAc3R1ZGVudC5rZGcuYmUiLCJleHAiOjE1MjA5MzIxNzN9.L8CUUmPR7Ceok1W8UMBc9X97n9dKunypzMRpoG_AxuM6ghcKbh5pZ9-juJ7Iy1SM_qi-GHdvuwmW-_Uu5PzSEA");
+        httpHeaders.add("Authorization", "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZWFuZGVyLmNvZXZvZXRAc3R1ZGVudC5rZGcuYmUiLCJleHAiOjE1MjE4MTc4OTR9._1V6c2QlsNEc_OmhL4GvxYlFucGSZ6kZWGoSsdCABst9VoJQFKo4CkYYyU4rGJpWVCNWwRh-CKR92PNFERjXXg");
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .alwaysDo(print())
+                .apply(springSecurity())
                 .build();
 
         pictureDto = new PictureDto();
@@ -61,12 +63,14 @@ public class TestPictureController {
 
     @Test
     public void createPicture() throws Exception {
+
         Gson gson = new Gson();
         String json = gson.toJson(pictureDto, PictureDto.class);
 
         mvc.perform(post("/pictures/create")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .headers(httpHeaders)
+                .accept("application/json;charset=UTF-8")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(json))
                 .andExpect(status().isOk());
     }
@@ -78,8 +82,9 @@ public class TestPictureController {
         String json = gson.toJson(pictureDto, PictureDto.class);
 
         mvc.perform(post("/pictures/create")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .headers(httpHeaders)
+                .accept("application/json;charset=UTF-8")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(json))
                 .andExpect(status().isBadRequest());
     }
@@ -90,14 +95,13 @@ public class TestPictureController {
         String json = gson.toJson(pictureDto, PictureDto.class);
 
         mvc.perform(post("/pictures/create")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .headers(httpHeaders)
+                .accept("application/json;charset=UTF-8")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(json));
 
         mvc.perform(get("/pictures/delete/" + pictureDto.getPictureId())
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .headers(httpHeaders)
-                .content(json))
+                .headers(httpHeaders))
                 .andExpect(status().isOk());
     }
 
@@ -107,12 +111,12 @@ public class TestPictureController {
         String json = gson.toJson(pictureDto, PictureDto.class);
 
         mvc.perform(post("/pictures/create")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .headers(httpHeaders)
+                .accept("application/json;charset=UTF-8")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(json));
 
         mvc.perform(get("/pictures/delete/" + 500)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .headers(httpHeaders)
                 .content(json))
                 .andExpect(status().isOk());
@@ -124,11 +128,13 @@ public class TestPictureController {
         String json = gson.toJson(pictureDto, PictureDto.class);
 
         mvc.perform(post("/pictures/create")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .headers(httpHeaders)
+                .accept("application/json;charset=UTF-8")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(json));
 
-        mvc.perform(get("/pictures/get/" + pictureDto.getPictureId()))
+        mvc.perform(get("/pictures/get/" + pictureDto.getPictureId())
+                .headers(httpHeaders))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"pictureId\":\"1\",\"filename\":\"test\",\"filetype\":\"png\",\"value\":\"sdqfdsfs\"}"));
     }
@@ -139,11 +145,13 @@ public class TestPictureController {
         String json = gson.toJson(pictureDto, PictureDto.class);
 
         mvc.perform(post("/pictures/create")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .headers(httpHeaders)
+                .accept("application/json;charset=UTF-8")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(json));
 
-        mvc.perform(get("/pictures/get/" + null))
+        mvc.perform(get("/pictures/get/" + null)
+                .headers(httpHeaders))
                 .andExpect(status().isNotFound());
     }
 }

@@ -204,7 +204,12 @@ public class TestThemeServices {
         Assert.assertTrue(organiser.equals(organiser1));
     }
 
-    //TODO Is dit juist??
+    @Test(expected = ObjectNotFoundException.class)
+    public void getOrganiserBadTheme() throws ObjectNotFoundException {
+        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
+        String organiser = themeService.getOrganiser("555", organiser1);
+    }
+
     @Test
     public void updateExistingOrganiser() throws ObjectNotFoundException {
         this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
