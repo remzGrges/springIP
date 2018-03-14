@@ -13,4 +13,5 @@ public interface PictureService {
 
     void deletePicture(String pictureId);
 
+    Picture getPictureByUsername(String username) throws ObjectNotFoundException;
 }
