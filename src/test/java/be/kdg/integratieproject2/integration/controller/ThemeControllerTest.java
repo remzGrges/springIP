@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath*:testcontext.xml"})
-public class TestThemeController {
+public class ThemeControllerTest {
     @Autowired
     private WebApplicationContext context;
 

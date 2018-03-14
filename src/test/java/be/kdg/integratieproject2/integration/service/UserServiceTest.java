@@ -22,7 +22,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath*:testcontext.xml"})
-public class TestUserService {
+public class UserServiceTest {
 
     @Autowired
     private UserService userService;

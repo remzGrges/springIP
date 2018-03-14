@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath*:testcontext.xml"})
-public class TestSessionController {
+public class SessionControllerTest {
     @Autowired
     private WebApplicationContext context;
 

@@ -29,7 +29,7 @@ import java.util.List;
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath*:testcontext.xml"})
-public class TestThemeServices {
+public class ThemeServicesTest {
 
     @Autowired
     private ThemeService themeService;

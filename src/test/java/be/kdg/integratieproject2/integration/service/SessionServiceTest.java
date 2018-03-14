@@ -30,7 +30,7 @@ import java.util.List;
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath*:testcontext.xml"})
-public class TestSessionService {
+public class SessionServiceTest {
     @Autowired
     SessionService sessionService;
     @Autowired
