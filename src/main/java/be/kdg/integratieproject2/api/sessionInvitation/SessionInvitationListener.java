@@ -54,7 +54,7 @@ public class SessionInvitationListener implements ApplicationListener<OnSessionI
         inviteEmail = new SimpleMailMessage();
         inviteEmail.setTo(user);
         inviteEmail.setSubject(subject);
-        inviteEmail.setText("https://kandoe-webclient.herokuapp.com" + confirmationUrl);
+        inviteEmail.setText("https://kandoe-webclient.herokuapp.com/#/" + confirmationUrl);
         mailSender.send(inviteEmail);
 
     }
