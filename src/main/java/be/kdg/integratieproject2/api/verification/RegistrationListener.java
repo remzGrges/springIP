@@ -37,7 +37,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         SimpleMailMessage verificationEmail = new SimpleMailMessage();
         verificationEmail.setTo(email);
         verificationEmail.setSubject(subject);
-        verificationEmail.setText("https://kandoe-webclient.herokuapp.com" + confirmationUrl);
+        verificationEmail.setText("https://kandoe-webclient.herokuapp.com/#/" + confirmationUrl);
         mailSender.send(verificationEmail);
 
     }

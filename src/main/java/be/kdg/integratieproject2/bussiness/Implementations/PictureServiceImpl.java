@@ -1,22 +1,25 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
+import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Picture;
 import be.kdg.integratieproject2.bussiness.Interfaces.PictureService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.PictureRepository;
-import org.springframework.security.core.userdetails.User;
+import be.kdg.integratieproject2.data.implementations.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PictureServiceImpl implements PictureService {
     private PictureRepository pictureRepository;
+    private UserRepository userRepository;
     private UserService userService;
 
-    public PictureServiceImpl(PictureRepository pictureRepository, UserService userService) {
+    public PictureServiceImpl(PictureRepository pictureRepository, UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.pictureRepository = pictureRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -53,5 +56,11 @@ public class PictureServiceImpl implements PictureService {
         }else{
             throw new ObjectNotFoundException(pictureId);
         }
+    }
+
+    @Override
+    public Picture getPictureByUsername(String username) throws ObjectNotFoundException {
+        ApplicationUser user = userRepository.findByEmail(username);
+        return pictureRepository.findOne(user.getPictureId());
     }
 }

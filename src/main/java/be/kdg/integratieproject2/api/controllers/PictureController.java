@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/pictures")
-public class PictureController {
+public class    PictureController {
     ModelMapper modelMapper;
     PictureService pictureService;
 
@@ -41,6 +41,12 @@ public class PictureController {
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     public PictureDto getPicture(@PathVariable String id, Authentication authentication) throws ObjectNotFoundException {
         Picture picture = pictureService.getPicture(id, authentication.getName());
+        return modelMapper.map(picture, PictureDto.class);
+    }
+
+    @RequestMapping(value = "/getByUsername/{username:.+}", method = RequestMethod.GET)
+    public PictureDto getPictureByUsername(@PathVariable String username) throws ObjectNotFoundException {
+        Picture picture = pictureService.getPictureByUsername(username);
         return modelMapper.map(picture, PictureDto.class);
     }
 }
