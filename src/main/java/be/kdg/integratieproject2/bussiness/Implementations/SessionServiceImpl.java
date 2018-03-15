@@ -2,8 +2,8 @@ package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Session;
+import be.kdg.integratieproject2.Domain.SessionState;
 import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
-import be.kdg.integratieproject2.bussiness.Interfaces.*;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
@@ -106,6 +106,11 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void createSessionInvitationToken(String email, String sessionId, String token, String organiser) {
         tokenRepository.save(new SessionInvitationToken(token, sessionId,email, organiser));
+    }
+
+    @Override
+    public SessionState getSessionState(String username, String sessionId)
+    {
 
     }
 }

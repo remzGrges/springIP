@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.api.dto;
 
 import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.SubTheme;
+import be.kdg.integratieproject2.Domain.Turn;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -37,6 +38,10 @@ public class SessionDto {
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;
+    @NotNull
+    private boolean active;
+
+    private List<Turn> turns;
 
     public SessionDto() {
     }
@@ -143,5 +148,21 @@ public class SessionDto {
 
     public void setSuggestedCards(List<Card> suggestedCards) {
         this.suggestedCards = suggestedCards;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public List<Turn> getTurns() {
+        return turns;
+    }
+
+    public void setTurns(List<Turn> turns) {
+        this.turns = turns;
     }
 }
