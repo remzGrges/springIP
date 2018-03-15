@@ -8,6 +8,7 @@ public class Review {
     private String userid;
     private String text;
 
+
     public Review() {
 
     }
@@ -35,4 +36,5 @@ public class Review {
     public void setText(String text) {
         this.text = text;
     }
+
 }
