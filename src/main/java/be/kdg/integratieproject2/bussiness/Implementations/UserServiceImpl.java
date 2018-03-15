@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public ApplicationUser registerUser(ApplicationUser applicationUser) throws UserAlreadyExistsException {
-        ApplicationUser result = userRepository.findByEmail(applicationUser.getEmail());
+        ApplicationUser result = userRepository.findByEmailIgnoreCase(applicationUser.getEmail());
         if (result != null) {
             throw new UserAlreadyExistsException("User Already Exists");
         }
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public ApplicationUser getUserByUsername(String s) throws UsernameNotFoundException {
-        ApplicationUser applicationUser = userRepository.findByEmail(s);
+        ApplicationUser applicationUser = userRepository.findByEmailIgnoreCase(s);
         if (applicationUser == null)
             throw new UsernameNotFoundException(s);
 
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        ApplicationUser applicationUser = userRepository.findByEmail(s);
+        ApplicationUser applicationUser = userRepository.findByEmailIgnoreCase(s);
         if (applicationUser == null)
             throw new UsernameNotFoundException(s);
 
