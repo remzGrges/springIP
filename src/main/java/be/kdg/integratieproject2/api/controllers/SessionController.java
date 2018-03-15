@@ -176,7 +176,8 @@ public class SessionController {
     @RequestMapping(value = "/getSessionState/{sessionId}", method = RequestMethod.GET)
     public ResponseEntity<SessionStateDto> getSessionState(@PathVariable String sessionId, Authentication authentication) throws ObjectNotFoundException
     {
-
+        SessionStateDto dto = modelMapper.map(sessionService.getSessionState(authentication.getName(), sessionId), SessionStateDto.class);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
 

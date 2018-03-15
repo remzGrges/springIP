@@ -109,8 +109,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionState getSessionState(String username, String sessionId)
-    {
-
+    public SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException {
+        return new SessionState(getSession(sessionId,username));
     }
 }

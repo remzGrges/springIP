@@ -15,8 +15,8 @@ public class SessionStateDto {
     @NotNull
     @NotEmpty
     private String sessionId;
-    private String lastPlayer;
-    private String nextPlayer;
+    private String lastPlayer, nextPlayer;
+    private int passedRounds;
     private Map<String, Integer> votes;
 
     public String getId() {
@@ -57,5 +57,13 @@ public class SessionStateDto {
 
     public void setVotes(Map<String, Integer> votes) {
         this.votes = votes;
+    }
+
+    public int getPassedRounds() {
+        return passedRounds;
+    }
+
+    public void setPassedRounds(int passedRounds) {
+        this.passedRounds = passedRounds;
     }
 }
