@@ -31,6 +31,8 @@ public class SessionDto {
     @NotNull
     private boolean addCardUser;
     @NotNull
+    private boolean active;
+    @NotNull
     private int timeUserRound;
 
     private Date startTime;
@@ -143,5 +145,13 @@ public class SessionDto {
 
     public void setSuggestedCards(List<Card> suggestedCards) {
         this.suggestedCards = suggestedCards;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -2,8 +2,6 @@ package be.kdg.integratieproject2.Domain;
 
 import org.springframework.data.annotation.Id;
 
-import java.util.List;
-
 public class ApplicationUser {
 
     @Id
@@ -58,6 +56,10 @@ public class ApplicationUser {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPictureId() {

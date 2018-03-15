@@ -1,10 +1,7 @@
 package be.kdg.integratieproject2.Domain;
 
 import org.springframework.data.annotation.Id;
-import springfox.documentation.swagger2.mappers.LicenseMapper;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +20,7 @@ public class Session {
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;
+    private boolean active;
 
     public String getSessionName() {
         return sessionName;
@@ -126,5 +124,13 @@ public class Session {
 
     public void setSuggestedCards(List<Card> suggestedCards) {
         this.suggestedCards = suggestedCards;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
