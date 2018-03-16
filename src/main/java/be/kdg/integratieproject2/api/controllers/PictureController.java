@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/pictures")
-public class PictureController {
+public class    PictureController {
     ModelMapper modelMapper;
     PictureService pictureService;
 
@@ -26,24 +26,27 @@ public class PictureController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public PictureDto createPicture(@Valid @RequestBody PictureDto dto, Authentication authentication) {
         Picture picture = modelMapper.map(dto, Picture.class);
-        picture = pictureService.addPicture(picture);
+        picture = pictureService.addPicture(picture, authentication.getName());
         dto = modelMapper.map(picture, PictureDto.class);
         return dto;
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public ResponseEntity<PictureDto> deleteTheme(@PathVariable String id) throws ObjectNotFoundException {
-        pictureService.deletePicture(id);
+    public ResponseEntity<PictureDto> deleteTheme(@PathVariable String id, Authentication authentication) throws ObjectNotFoundException {
+        pictureService.deletePicture(id, authentication.getName());
         return new ResponseEntity<PictureDto>(new PictureDto(), HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
-    public PictureDto getPicture(@PathVariable String id) throws ObjectNotFoundException {
-        if (id == null) {
-            throw new ObjectNotFoundException("null");
-        }
-        Picture picture = pictureService.getPicture(id);
+    public PictureDto getPicture(@PathVariable String id, Authentication authentication) throws ObjectNotFoundException {
+        Picture picture = pictureService.getPicture(id, authentication.getName());
+        return modelMapper.map(picture, PictureDto.class);
+    }
+
+    @RequestMapping(value = "/getByUsername/{username:.+}", method = RequestMethod.GET)
+    public PictureDto getPictureByUsername(@PathVariable String username) throws ObjectNotFoundException {
+        Picture picture = pictureService.getPictureByUsername(username);
         return modelMapper.map(picture, PictureDto.class);
     }
 }

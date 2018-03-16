@@ -10,6 +10,7 @@ public class Card {
     private String id;
     private String text;
     private String pictureId;
+    private List<Review> reviews;
 
     public Card() {
     }
@@ -38,5 +39,11 @@ public class Card {
         this.text = text;
     }
 
+    public List<Review> getReviews() {
+        return reviews;
+    }
 
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
 }

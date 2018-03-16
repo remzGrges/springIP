@@ -2,29 +2,29 @@ package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.api.BadRequestException;
 import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.modelmapper.ModelMapper;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/token")
 public class TokenController {
 
     TokenService service;
+    ModelMapper modelMapper;
 
-    public TokenController(TokenService service) {
+    public TokenController(TokenService service, ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
         this.service = service;
     }
 
-    @RequestMapping(value = "/create/{token}", method = RequestMethod.GET)
-    public ResponseEntity<String> getToken( Authentication authentication, @PathVariable("token") String token ) throws BadRequestException
+    @RequestMapping(value = "/create/{token}", method = RequestMethod.GET, produces = "text/plain")
+    public String getToken(@PathVariable("token") String token ) throws BadRequestException
     {
-
         String soort = service.getTokenSort(token);
-        return new ResponseEntity<String>( soort, HttpStatus.OK);
-
+        return String.format("\"%s\"", soort);
     }
 }
 

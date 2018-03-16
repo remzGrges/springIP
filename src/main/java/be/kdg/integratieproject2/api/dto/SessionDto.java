@@ -32,15 +32,14 @@ public class SessionDto {
     @NotNull
     private boolean addCardUser;
     @NotNull
-    private int timeUserRound;
+    private boolean active;
     @NotNull
+    private int timeUserRound;
+
     private Date startTime;
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;
-    @NotNull
-    private boolean active;
-
     private List<Turn> turns;
 
     public SessionDto() {
@@ -157,7 +156,6 @@ public class SessionDto {
     public void setActive(boolean active) {
         this.active = active;
     }
-
     public List<Turn> getTurns() {
         return turns;
     }

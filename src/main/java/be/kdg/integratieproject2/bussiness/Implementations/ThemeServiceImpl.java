@@ -35,7 +35,6 @@ public class ThemeServiceImpl implements ThemeService {
     private ThemeRepository themeRepository;
     private UserService userService;
     private TokenRepository tokenRepository;
-    private JavaMailSender mailSender;
 
     public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender, TokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
@@ -62,7 +61,9 @@ public class ThemeServiceImpl implements ThemeService {
     public List<String> getOrganisersByThemeId(String themeId) {
         try {
             Theme theme = getTheme(themeId);
-            return theme.getOrganisers();
+            if (theme != null) {
+                return theme.getOrganisers();
+            }
         } catch (ObjectNotFoundException e) {
             e.printStackTrace();
         }
@@ -75,13 +76,11 @@ public class ThemeServiceImpl implements ThemeService {
         ApplicationUser user = userService.getUserByUsername(loggedInUser);
 
         if (theme.getOrganisers() != null) {
-            if (getThemesByUser(loggedInUser).contains(theme)) {
+            if (theme.getOrganisers().contains(loggedInUser)) {
                 return true;
             }
-            ;
         }
         return false;
-
     }
 
     @Override
@@ -100,9 +99,10 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public Theme getTheme(String id) throws ObjectNotFoundException {
-        try {
-            return themeRepository.findOne(id);
-        } catch (Exception e) {
+        Theme theme = themeRepository.findOne(id);
+        if (theme != null) {
+            return theme;
+        } else {
             throw new ObjectNotFoundException(id);
         }
     }
@@ -117,7 +117,6 @@ public class ThemeServiceImpl implements ThemeService {
         themeRepository.delete(id);
     }
 
-
     @Override
     public String addOrganiser(String ingelogdeGebruiker, String token) throws ObjectNotFoundException, UsernameNotFoundException {
         InvitationToken invitationToken = this.getInvitationToken(token);
@@ -128,24 +127,17 @@ public class ThemeServiceImpl implements ThemeService {
         String toegevoegdeGebruiker = invitationToken.getEmail();
         Theme theme = getTheme(themeId);
 
-
         Calendar cal = Calendar.getInstance();
         if ((invitationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             throw new ObjectNotFoundException("token vervallen");
         }
 
-
         if (theme.getOrganisers() != null) {
             if (ingelogdeGebruiker.equals(toegevoegdeGebruiker)) {
                 List<String> organisers = theme.getOrganisers();
-
                 try {
-                    /*if (userService.getUserByUsername(newOrganiser) == null) {
-                        throw new UsernameNotFoundException("bestaat niet");
-                    }*/
                     ApplicationUser newOrganiserUser = userService.getUserByUsername(toegevoegdeGebruiker);
                     List<Theme> themes = getThemesByUser(toegevoegdeGebruiker);
-
 
                     if (themes == null) {
                         themes = new ArrayList<>();
@@ -162,17 +154,9 @@ public class ThemeServiceImpl implements ThemeService {
                     organisers.add(toegevoegdeGebruiker);
                     userService.updateRegisteredUser(newOrganiserUser);
                     updateTheme(theme);
-
                     return toegevoegdeGebruiker;
                 } catch (UsernameNotFoundException e) {
-                    //email sturen
-                /*    ApplicationUser user = new ApplicationUser();
-                    user.setEmail(toegevoegdeGebruiker);
-                    user.setEnabled(false);*/
-
                     return null;
-
-
                 }
 
             }
@@ -202,47 +186,13 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public String updateExistingOrganiser(String organiser, String themeId) throws ObjectNotFoundException {
-
-     /*   Theme theme = getTheme(themeId);
-
-        Organiser existingOrganiser = getOrganiser(themeId,username);
-
-
-
-
-            //themeRepository.save(theme);
-        if (existingOrganiser == null) {
-            throw new ObjectNotFoundException(themeId);
-
-        }
-        existingOrganiser.setEnabled(true);
-
-        if (!existingOrganiser.getEnabled()) {
-            throw new ObjectNotFoundException(themeId);
-        }*/
         Theme theme = getTheme(themeId);
-
         List<String> organiserList = theme.getOrganisers();
-
-        //.removeIf();
         organiserList.removeIf(x -> x.equals(organiser));
         organiserList.add(organiser);
         theme.setOrganisers(organiserList);
         updateTheme(theme);
         return organiser;
-        /* themeRepository.save(theme);*/
-        // Theme theme = getThemeBySubThemeId(subThemePosted.getId(), userName);
-     /*
-        List<SubTheme> subThemes = theme.getSubThemes();
-        subThemes.removeIf(x -> x.getId().equals(subThemePosted.getId()));
-        subThemes.add(subThemePosted);
-        theme.setSubThemes(subThemes);
-        themeService.updateTheme(theme);
-        return subThemePosted;
-
-       repository.save(organiser);*/
-
-
     }
 
     @Override

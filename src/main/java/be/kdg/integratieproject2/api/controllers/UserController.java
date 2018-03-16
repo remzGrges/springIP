@@ -1,17 +1,12 @@
 package be.kdg.integratieproject2.api.controllers;
 
 
-import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
-import be.kdg.integratieproject2.Domain.ProfilePicture;
-import be.kdg.integratieproject2.api.dto.PictureDto;
 import be.kdg.integratieproject2.api.dto.UserRegistrationDto;
-import be.kdg.integratieproject2.Domain.verification.*;
 import be.kdg.integratieproject2.api.dto.UserInfoDto;
 import be.kdg.integratieproject2.api.verification.OnRegistrationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import be.kdg.integratieproject2.bussiness.exceptions.NoProfilePictureFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
@@ -39,6 +34,8 @@ public class UserController {
         this.modelMapper = modelMapper;
         this.eventPublisher = eventPublisher;
     }
+
+
 
     @PostMapping("/register")
     public String register(@Valid @RequestBody UserRegistrationDto dto, BindingResult result, WebRequest request) throws UserAlreadyExistsException {

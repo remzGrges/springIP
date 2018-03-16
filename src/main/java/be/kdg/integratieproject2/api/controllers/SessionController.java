@@ -62,15 +62,10 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto dto,  Authentication authentication) throws BadRequestException {
+    public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto dto, Authentication authentication) throws BadRequestException, ObjectNotFoundException {
         Session session = modelMapper.map(dto, Session.class);
         SessionDto mappedSession = null;
-
-        try {
-            mappedSession = modelMapper.map(sessionService.addSession(session, authentication.getName()), SessionDto.class);
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        mappedSession = modelMapper.map(sessionService.addSession(session, authentication.getName()), SessionDto.class);
         return new ResponseEntity<>(mappedSession, HttpStatus.OK);
     }
 
@@ -113,32 +108,28 @@ public class SessionController {
         return new ResponseEntity<>(sessionDtos, HttpStatus.OK);
     }
 
-
-
     @RequestMapping(value = "/invitePlayers/{sessionId}", method = RequestMethod.POST)
-    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody List<String> players , @PathVariable("sessionId") String sessionId ,BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
-
-
+    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody List<String> players, @PathVariable("sessionId") String sessionId, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
         ApplicationUser user;
         String appUrl = request.getContextPath();
         //Session session = sessionService.getSession(sessionId, authentication.getName());
 
 
-       // if (session.getOrganiser().equals(authentication.getName())) {
-            for (String player : players) {
-                try {
-                    user = userService.getUserByUsername(player);
-                    if (user.getEmail() != null) {
-                        eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(user, appUrl, request.getLocale(), player, authentication.getName(), sessionId));
-
-                    }
-                } catch (UsernameNotFoundException a) {
-                    ApplicationUser newUser = new ApplicationUser();
-                    newUser.setEmail(player);
-                    eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(userService.registerUser(newUser), appUrl, request.getLocale(), authentication.getName(), player, sessionId));
+        // if (session.getOrganiser().equals(authentication.getName())) {
+        for (String player : players) {
+            try {
+                user = userService.getUserByUsername(player);
+                if (user.getEmail() != null) {
+                    eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(user, appUrl, request.getLocale(), player, authentication.getName(), sessionId));
 
                 }
+            } catch (UsernameNotFoundException a) {
+                ApplicationUser newUser = new ApplicationUser();
+                newUser.setEmail(player);
+                eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(userService.registerUser(newUser), appUrl, request.getLocale(), authentication.getName(), player, sessionId));
+
             }
+        }
         //}
 
 
@@ -162,7 +153,6 @@ public class SessionController {
         String name = authentication.getName();
         sessionService.addPlayer(authentication.getName(), token);
         return new ResponseEntity(HttpStatus.OK);
-
     }
 
     @RequestMapping(value = "/acceptSessionInviteNon/{token}", method = RequestMethod.GET)
