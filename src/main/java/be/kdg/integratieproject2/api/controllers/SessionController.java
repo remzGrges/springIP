@@ -2,11 +2,9 @@ package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Session;
-import be.kdg.integratieproject2.Domain.SessionState;
-import be.kdg.integratieproject2.api.BadRequestException;
+import be.kdg.integratieproject2.api.error.BadRequestException;
 import be.kdg.integratieproject2.api.dto.SessionDto;
 import be.kdg.integratieproject2.api.dto.SessionStateDto;
-import be.kdg.integratieproject2.api.sessionInvitation.OnSessionInvitationCompleteEvent;
 import be.kdg.integratieproject2.api.sessionInvitation.OnSessionInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
@@ -169,7 +167,4 @@ public class SessionController {
         SessionStateDto dto = modelMapper.map(sessionService.getSessionState(authentication.getName(), sessionId), SessionStateDto.class);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-
-
-
     }

@@ -1,6 +1,6 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.api.BadRequestException;
+import be.kdg.integratieproject2.api.error.BadRequestException;
 import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;

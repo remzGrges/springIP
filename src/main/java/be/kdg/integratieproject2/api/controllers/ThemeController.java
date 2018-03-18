@@ -3,7 +3,7 @@ package be.kdg.integratieproject2.api.controllers;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
-import be.kdg.integratieproject2.api.BadRequestException;
+import be.kdg.integratieproject2.api.error.BadRequestException;
 import be.kdg.integratieproject2.api.dto.*;
 import be.kdg.integratieproject2.api.themeInvitation.OnInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
@@ -20,7 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.HashMap;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +45,7 @@ public class ThemeController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<ThemeDto> createTheme(@RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
+    public ResponseEntity<ThemeDto> createTheme(@Valid @RequestBody ThemeDto dto, Authentication authentication) throws BadRequestException
     {
         Theme theme = modelMapper.map(dto, Theme.class);
         ThemeDto mappedTheme = modelMapper.map(themeService.addTheme(theme, authentication.getName()), ThemeDto.class);

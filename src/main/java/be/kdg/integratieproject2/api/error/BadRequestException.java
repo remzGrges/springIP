@@ -1,4 +1,4 @@
-package be.kdg.integratieproject2.api;
+package be.kdg.integratieproject2.api.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
