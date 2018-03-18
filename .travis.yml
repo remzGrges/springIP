@@ -17,4 +17,4 @@ branches:
   only:
     - master
 env:
-    - 'Dspring.profiles.active'="prod"
+    - "Dspring.profiles.active"=prod
