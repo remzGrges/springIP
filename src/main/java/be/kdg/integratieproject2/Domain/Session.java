@@ -21,6 +21,7 @@ public class Session {
     private List<Card> cards;
     private List<Card> suggestedCards;
     private boolean active;
+    private List<Turn> turns;
 
     public String getSessionName() {
         return sessionName;
@@ -132,5 +133,13 @@ public class Session {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public List<Turn> getTurns() {
+        return turns;
+    }
+
+    public void setTurns(List<Turn> turns) {
+        this.turns = turns;
     }
 }

@@ -1,6 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
 import be.kdg.integratieproject2.Domain.Session;
+import be.kdg.integratieproject2.Domain.SessionState;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
@@ -26,4 +27,6 @@ public interface SessionService {
 
     void createSessionInvitationToken(String email, String sessionId, String token, String organiser);
     SessionInvitationToken getSessionInvitationToken(String token);
+
+    SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException;
 }
