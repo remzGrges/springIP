@@ -16,5 +16,3 @@ deploy:
 branches:
   only:
     - master
-env:
-    - "Dspring.profiles.active"=prod
