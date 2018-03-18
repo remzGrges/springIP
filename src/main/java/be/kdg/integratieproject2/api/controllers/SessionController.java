@@ -106,6 +106,22 @@ public class SessionController {
         return new ResponseEntity<>(sessionDtos, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/getAllByTheme/{themeId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<SessionDto>> getAllSessionsByUserAndTheme(@PathVariable("themeId") String themeId, Authentication authentication) {
+        List<Session> sessions;
+
+        try {
+            sessions = sessionService.getAllSessionsByUserAndTheme(authentication.getName(),themeId);
+        } catch (ObjectNotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        List<SessionDto> sessionDtos = new LinkedList<>();
+        for (Session session : sessions) {
+            sessionDtos.add(modelMapper.map(session, SessionDto.class));
+        }
+        return new ResponseEntity<>(sessionDtos, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/invitePlayers/{sessionId}", method = RequestMethod.POST)
     public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody List<String> players, @PathVariable("sessionId") String sessionId, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
         ApplicationUser user;

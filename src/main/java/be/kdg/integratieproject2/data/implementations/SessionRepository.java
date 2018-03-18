@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface SessionRepository extends MongoRepository<Session, String> {
-    List<Session> findSessionsByPlayersContaining (String mail);
 
+    List<Session> findSessionsByPlayersContaining (String mail);
+    List<Session> findSessionsByPlayersContainingAndThemeId (String email, String themeId);
 }
