@@ -20,10 +20,29 @@ public class Session {
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;
+    private List<String> readyPlayers;
+    private int fase;
     private boolean active;
 
     public String getSessionName() {
         return sessionName;
+    }
+
+    public List<String> getReadyPlayers() {
+        return readyPlayers;
+    }
+
+    public int getFase() {
+        return fase;
+
+    }
+
+    public void setFase(int fase) {
+        this.fase = fase;
+    }
+
+    public void setReadyPlayers(List<String> readyPlayers) {
+        this.readyPlayers = readyPlayers;
     }
 
     public void setSessionName(String sessionName) {

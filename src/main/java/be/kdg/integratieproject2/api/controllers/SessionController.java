@@ -9,6 +9,7 @@ import be.kdg.integratieproject2.api.sessionInvitation.OnSessionInvitationComple
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.PlayersNotReadyException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
@@ -160,5 +161,21 @@ public class SessionController {
         return new ResponseEntity(HttpStatus.OK);
 
     }
+
+    @RequestMapping(value = "/goReady/{sessionId}", method = RequestMethod.GET)
+    public ResponseEntity goReady(Authentication authentication, @PathVariable("sessionID") String sessionId) throws ObjectNotFoundException {
+        sessionService.setPlayerReady(authentication.getName(), sessionId);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/nextState/{sessionId}", method = RequestMethod.GET)
+    public ResponseEntity nextState(Authentication authentication , @PathVariable("sessionId") String sessionId) throws PlayersNotReadyException, ObjectNotFoundException {
+        sessionService.nextState(authentication.getName(), sessionId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
 
 }
