@@ -20,8 +20,9 @@ public class ThemeDto {
     @NotNull
     @NotEmpty
     private String description;
-    @NotNull
-    @NotEmpty
+
+
+
     private List<String> organisers;
 
     private List<String> tags;
