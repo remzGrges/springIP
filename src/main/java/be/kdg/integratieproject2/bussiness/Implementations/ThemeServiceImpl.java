@@ -1,29 +1,27 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
+import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
-import be.kdg.integratieproject2.Domain.verification.Token;
+import be.kdg.integratieproject2.Domain.verification.VerificationToken;
+import be.kdg.integratieproject2.api.themeInvitation.OnInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
+import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
+import be.kdg.integratieproject2.bussiness.exceptions.InvalidTokenException;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.bson.types.ObjectId;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
-import java.io.Console;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.*;
 
 /**
  * Created by Tim on 08/02/2018.
@@ -34,12 +32,14 @@ public class ThemeServiceImpl implements ThemeService {
 
     private ThemeRepository themeRepository;
     private UserService userService;
-    private TokenRepository tokenRepository;
+    private TokenService tokenService;
+    private ApplicationEventPublisher eventPublisher;
 
-    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender, TokenRepository tokenRepository) {
-        this.tokenRepository = tokenRepository;
+    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender, TokenService tokenService, ApplicationEventPublisher eventPublisher) {
+        this.tokenService = tokenService;
         this.themeRepository = themeRepository;
         this.userService = userService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -52,40 +52,11 @@ public class ThemeServiceImpl implements ThemeService {
         return themeRepository.save(theme);
     }
 
-    @Override
-    public InvitationToken getInvitationToken(String token) {
-        return (InvitationToken) tokenRepository.findByToken(token);
-    }
 
     @Override
-    public List<String> getOrganisersByThemeId(String themeId) {
-        try {
-            Theme theme = getTheme(themeId);
-            if (theme != null) {
-                return theme.getOrganisers();
-            }
-        } catch (ObjectNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException {
-        Theme theme = getTheme(themeId);
-        ApplicationUser user = userService.getUserByUsername(loggedInUser);
-
-        if (theme.getOrganisers() != null) {
-            if (theme.getOrganisers().contains(loggedInUser)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void createInvitationToken(String email, String themeId, String token) {
-        tokenRepository.save(new InvitationToken(token, email, themeId));
+    public Boolean isOrganiser(String username, String themeId) throws ObjectNotFoundException {
+        Theme theme = getThemeNoAuth(themeId);
+        return theme.getOrganisers().stream().anyMatch(s -> s.equalsIgnoreCase(username));
     }
 
     @Override
@@ -98,13 +69,17 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public Theme getTheme(String id) throws ObjectNotFoundException {
-        Theme theme = themeRepository.findOne(id);
-        if (theme != null) {
-            return theme;
-        } else {
-            throw new ObjectNotFoundException(id);
-        }
+    public Theme getTheme(String themeId, String username) throws ObjectNotFoundException, UserNotAuthorizedException {
+        Theme theme = themeRepository.findOne(themeId);
+        if(theme == null) throw new ObjectNotFoundException(themeId);
+        if(!isOrganiser(username, themeId)) throw new UserNotAuthorizedException("User does not have access to this Theme");
+        return theme;
+    }
+
+    private Theme getThemeNoAuth(String themeId) throws ObjectNotFoundException {
+        Theme theme = themeRepository.findOne(themeId);
+        if(theme == null) throw new ObjectNotFoundException(themeId);
+        return theme;
     }
 
     @Override
@@ -113,98 +88,49 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public void deleteTheme(String id) {
-        themeRepository.delete(id);
+    public void deleteTheme(String themeId, String username) throws ObjectNotFoundException, UserNotAuthorizedException {
+        Theme theme = themeRepository.findOne(themeId);
+        if(theme == null) throw new ObjectNotFoundException(themeId);
+        if (!isOrganiser(username, themeId)) throw new UserNotAuthorizedException("User does not have access to this Theme");
+        themeRepository.delete(themeId);
     }
 
     @Override
-    public String addOrganiser(String ingelogdeGebruiker, String token) throws ObjectNotFoundException, UsernameNotFoundException {
-        InvitationToken invitationToken = this.getInvitationToken(token);
-        if (invitationToken == null) {
-            throw new ObjectNotFoundException("");
-        }
+    public void addOrganiser(String username, String token) throws ObjectNotFoundException, InvalidTokenException, UserAlreadyExistsException {
+        InvitationToken invitationToken = tokenService.getInvitationToken(token);
+        tokenService.validateInvitationToken(invitationToken, username);
         String themeId = invitationToken.getThemeId();
-        String toegevoegdeGebruiker = invitationToken.getEmail();
-        Theme theme = getTheme(themeId);
+        String organiserToAdd = invitationToken.getEmail();
 
-        Calendar cal = Calendar.getInstance();
-        if ((invitationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            throw new ObjectNotFoundException("token vervallen");
+        Theme theme = getThemeNoAuth(themeId);
+
+        List<String> organisers;
+        if (theme.getOrganisers() == null) organisers = new ArrayList<>();
+        else {
+            organisers = theme.getOrganisers();
+            if (organisers.contains(organiserToAdd))throw new UserAlreadyExistsException("User is already an Organiser");
         }
 
-        if (theme.getOrganisers() != null) {
-            if (ingelogdeGebruiker.equals(toegevoegdeGebruiker)) {
-                List<String> organisers = theme.getOrganisers();
-                try {
-                    ApplicationUser newOrganiserUser = userService.getUserByUsername(toegevoegdeGebruiker);
-                    List<Theme> themes = getThemesByUser(toegevoegdeGebruiker);
-
-                    if (themes == null) {
-                        themes = new ArrayList<>();
-                    }
-                    for (Theme s : themes) {
-                        if (s.getId().equals(themeId)) {
-                            return null;
-                        }
-                    }
-                    themes.add(theme);
-                    if (organisers.contains(toegevoegdeGebruiker)) {
-                        return null;
-                    }
-                    organisers.add(toegevoegdeGebruiker);
-                    userService.updateRegisteredUser(newOrganiserUser);
-                    updateTheme(theme);
-                    return toegevoegdeGebruiker;
-                } catch (UsernameNotFoundException e) {
-                    return null;
-                }
-
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public String getOrganiser(String theme, String username) throws ObjectNotFoundException {
-        String currentOrganiser = null;
-        List<Theme> themes = getThemesByUser(username);
-        Theme theme1 = getTheme(theme);
-
-        if (theme1 == null) {
-            throw new ObjectNotFoundException(theme);
-        }
-
-        for (String organiser : theme1.getOrganisers()) {
-            if (organiser != null && organiser.equals(username)) {
-                currentOrganiser = organiser;
-            }
-        }
-
-
-        return currentOrganiser;
-    }
-
-    @Override
-    public String updateExistingOrganiser(String organiser, String themeId) throws ObjectNotFoundException {
-        Theme theme = getTheme(themeId);
-        List<String> organiserList = theme.getOrganisers();
-        organiserList.removeIf(x -> x.equals(organiser));
-        organiserList.add(organiser);
-        theme.setOrganisers(organiserList);
+        organisers.add(organiserToAdd);
+        theme.setOrganisers(organisers);
         updateTheme(theme);
-        return organiser;
     }
 
     @Override
-    public String deleteOrganiser(String themeId, String username) throws ObjectNotFoundException {
-        Theme theme = getTheme(themeId);
-        String organiser = getOrganiser(themeId, username);
-        theme.getOrganisers().remove(organiser);
-        ApplicationUser user = userService.getUserByUsername(username);
-
-        getThemesByUser(username).remove(theme);
-
-        return organiser;
-
+    public void inviteOrganiser(String themeId, String currentUser, String userToInvite, String appUrl, Locale locale) throws UserAlreadyExistsException, UserNotAuthorizedException, ObjectNotFoundException {
+        if (!isOrganiser(currentUser, themeId)) throw new UserNotAuthorizedException("User is not authorized to invite new organisers");
+        ApplicationUser user;
+        String themeName = getThemeNoAuth(themeId).getName();
+        try {
+            user = userService.getUserByUsername(userToInvite);
+            if (user.getEmail() != null) {
+                eventPublisher.publishEvent(new OnInvitationCompleteEvent(user, locale, appUrl, themeId, themeName));
+            }
+        } catch (UsernameNotFoundException a) {
+            ApplicationUser newUser = new ApplicationUser();
+            newUser.setEmail(userToInvite);
+            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(newUser), locale, appUrl, themeId, themeName));
+        }
     }
+
 }

@@ -25,6 +25,12 @@ public class ApiError {
         errors = Arrays.asList(error);
     }
 
+    public ApiError(HttpStatus status, String message)
+    {
+        this.status = status;
+        this.message = message;
+    }
+
     public HttpStatus getStatus() {
         return status;
     }
@@ -35,5 +41,14 @@ public class ApiError {
 
     public List<String> getErrors() {
         return errors;
+    }
+
+    @Override
+    public String toString() {
+        return "ApiError{" +
+                "status=" + status +
+                ", message='" + message + '\'' +
+                ", errors=" + errors +
+                '}';
     }
 }
