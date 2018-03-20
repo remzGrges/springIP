@@ -52,6 +52,7 @@ public class PictureServiceImpl implements PictureService {
     @Override
     public Picture getPictureByUsername(String username) throws ObjectNotFoundException {
         ApplicationUser user = userRepository.findByEmailIgnoreCase(username);
+        if(user.getPictureId() == null) throw new ObjectNotFoundException("null"); //TODO: dit moet niet altijd gelogd worden
         return pictureRepository.findOne(user.getPictureId());
     }
 }

@@ -104,12 +104,5 @@ public class SessionServiceTest {
         Assert.assertTrue(postedSession.isCanComment() == updatedSession.isCanComment());
     }
 
-    @Test
-    public void createSessionInvitationToken() throws ObjectNotFoundException {
-        this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
-        this.sessionService.createSessionInvitationToken("fake@mail.be", postedSession.getSessionId(), "bla", "leander.coevoet@student.kdg.be");
-       Assert.assertTrue(tokenRepository.findByToken("bla") != null);
-    }
-
 
 }

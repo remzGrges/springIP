@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -123,7 +124,7 @@ public class SessionServiceImpl implements SessionService {
         SessionState state = getSessionState(username, sessionId);
         if(!state.getNextPlayer().equalsIgnoreCase(username)) throw new UserNotAuthorizedException("It is not your turn");
         Session session = getSession(sessionId, username);
-        List<Turn> turns = session.getTurns();
+        List<Turn> turns = session.getTurns() == null ? new ArrayList<>() :  session.getTurns();
         turns.add(turn);
         session.setTurns(turns);
         return sessionRepository.save(session);

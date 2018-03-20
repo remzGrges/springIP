@@ -48,7 +48,6 @@ public class ThemeServiceImpl implements ThemeService {
         if (theme.getSubThemes() != null && theme.getSubThemes().stream().anyMatch(s -> s.getId() == null)) {
             theme.getSubThemes().stream().filter(s -> s.getId() == null).forEach(s -> s.setId(new ObjectId().toString()));
         }
-
         return themeRepository.save(theme);
     }
 
