@@ -64,11 +64,16 @@ public class ThemeController {
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ResponseEntity<ThemeDto> updateTheme(@RequestBody ThemeDto dto) throws BadRequestException
+    @RequestMapping(value = "/update/{themeId}", method = RequestMethod.POST)
+    public ResponseEntity<ThemeDto> updateTheme(@RequestBody ThemeDto dto, @PathVariable("themeId") String themeId) throws BadRequestException
     {
+
         Theme theme = modelMapper.map(dto, Theme.class);
-        ThemeDto mappedTheme = modelMapper.map(themeService.updateTheme(theme), ThemeDto.class);
+        ThemeDto mappedTheme = null;
+
+        if (themeService.checkThemeExist(themeId)) {
+         mappedTheme =  modelMapper.map(themeService.updateTheme(theme), ThemeDto.class);
+        }
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
 

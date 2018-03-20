@@ -13,8 +13,7 @@ public class OnInvitationCompleteEvent extends ApplicationEvent {
     private String user;
     private String theme;
 
-    @Autowired
-    UserService service;
+
     public String getTheme() {
         return theme;
     }

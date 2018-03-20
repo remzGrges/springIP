@@ -53,6 +53,23 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
+    public boolean checkThemeExist(String themeID) {
+
+        try {
+
+            if (themeID == null) {
+                return false;
+            }
+
+            getTheme(themeID);
+            return true;
+        } catch (ObjectNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public InvitationToken getInvitationToken(String token) {
         return (InvitationToken) tokenRepository.findByToken(token);
     }

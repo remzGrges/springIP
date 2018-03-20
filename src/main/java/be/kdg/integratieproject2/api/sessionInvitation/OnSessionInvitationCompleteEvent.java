@@ -14,8 +14,7 @@ public class OnSessionInvitationCompleteEvent extends ApplicationEvent {
         private String currentUser;
         private String session;
 
-    @Autowired
-    UserService service;
+
 
 
     public OnSessionInvitationCompleteEvent(Object source, String appUrl, Locale locale, String user, String currentUser, String session) {

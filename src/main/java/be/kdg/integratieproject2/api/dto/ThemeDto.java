@@ -11,9 +11,11 @@ import java.util.List;
  * Created by Tim on 09/02/2018.
  */
 public class ThemeDto {
-    @NotNull
-    @NotEmpty
+
+
     private String id;
+
+
     @NotNull
     @NotEmpty
     private String name;

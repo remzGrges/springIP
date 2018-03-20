@@ -27,7 +27,7 @@ public interface ThemeService {
 
     Theme updateTheme(Theme theme);
 
-
+    boolean checkThemeExist(String themeID);
 
     String addOrganiser(String ingelogdeGebruiker ,String token) throws ObjectNotFoundException, UserAlreadyExistsException;;
 
