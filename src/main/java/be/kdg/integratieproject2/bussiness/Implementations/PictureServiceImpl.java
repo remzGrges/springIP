@@ -8,20 +8,19 @@ import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.data.implementations.PictureRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PictureServiceImpl implements PictureService {
+    @Autowired
     private PictureRepository pictureRepository;
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private UserService userService;
 
-    public PictureServiceImpl(PictureRepository pictureRepository, UserService userService, UserRepository userRepository) {
-        this.userService = userService;
-        this.pictureRepository = pictureRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public Picture addPicture(Picture picture, String userName) {

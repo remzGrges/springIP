@@ -6,6 +6,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,14 +17,10 @@ import java.util.Collections;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
+    @Autowired
     private UserRepository userRepository;
-
+    @Autowired
     private TokenRepository tokenRepository;
-
-    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository) {
-        this.userRepository = userRepository;
-        this.tokenRepository = tokenRepository;
-    }
 
     @Override
     public ApplicationUser registerUser(ApplicationUser applicationUser) throws UserAlreadyExistsException {

@@ -16,6 +16,7 @@ import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,17 +31,16 @@ import java.util.*;
 @Service
 public class ThemeServiceImpl implements ThemeService {
 
+    @Autowired
     private ThemeRepository themeRepository;
+    @Autowired
     private UserService userService;
+    @Autowired
     private TokenService tokenService;
+    @Autowired
     private ApplicationEventPublisher eventPublisher;
 
-    public ThemeServiceImpl(ThemeRepository themeRepository, UserService userService, JavaMailSender mailSender, TokenService tokenService, ApplicationEventPublisher eventPublisher) {
-        this.tokenService = tokenService;
-        this.themeRepository = themeRepository;
-        this.userService = userService;
-        this.eventPublisher = eventPublisher;
-    }
+    public ThemeServiceImpl() { }
 
     @Override
     public Theme updateTheme(Theme theme) {
@@ -60,7 +60,6 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     public Theme addTheme(Theme theme, String username) {
-        userService.getUserByUsername(username); //throws exception
         LinkedList<String> organisers = new LinkedList<>();
         organisers.add(username);
         theme.setOrganisers(organisers);
