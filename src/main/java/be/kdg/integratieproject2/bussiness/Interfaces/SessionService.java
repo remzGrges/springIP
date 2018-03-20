@@ -8,6 +8,7 @@ import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +27,8 @@ public interface SessionService {
     void addPlayerByToken(String sessionId, String themeId) throws ObjectNotFoundException, UserNotAuthorizedException, UserAlreadyExistsException;
 
     SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException;
+
+    SessionState getSessionStateByDate(String username, String sessionId, Date date) throws ObjectNotFoundException, UserNotAuthorizedException;
 
     Session addTurnToSession(Turn turn, String username, String sessionId) throws UserNotAuthorizedException, ObjectNotFoundException;
 

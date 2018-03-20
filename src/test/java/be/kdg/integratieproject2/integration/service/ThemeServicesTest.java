@@ -8,9 +8,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
-import be.kdg.integratieproject2.integration.ThemeServiceTestConfig;
 import org.bson.types.ObjectId;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,13 +20,11 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -37,7 +33,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @WebAppConfiguration
-@ContextConfiguration(locations = {"classpath*:testcontext.xml"}, classes = ThemeServiceTestConfig.class)
+@ContextConfiguration(locations = {"classpath*:testcontext.xml"})
 public class ThemeServicesTest {
 
     @Mock

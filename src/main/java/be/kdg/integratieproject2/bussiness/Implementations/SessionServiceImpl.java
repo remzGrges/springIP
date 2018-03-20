@@ -20,10 +20,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SessionServiceImpl implements SessionService {
@@ -115,6 +113,14 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException {
         return new SessionState(getSession(sessionId,username));
+    }
+
+    @Override
+    public SessionState getSessionStateByDate(String username, String sessionId, Date date) throws ObjectNotFoundException, UserNotAuthorizedException {
+        Session session = getSession(sessionId, username);
+        List<Turn> newTurns = session.getTurns().stream().filter(x -> x.getTimestamp().after(date)).collect(Collectors.toList());
+        session.setTurns(newTurns);
+        return new SessionState(session);
     }
 
     @Override
