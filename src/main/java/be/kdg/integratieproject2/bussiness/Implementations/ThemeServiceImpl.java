@@ -51,7 +51,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
-    public boolean checkThemeExist(String themeID) {
+    public boolean checkThemeExist(String themeID, String username) {
 
         try {
 
@@ -59,12 +59,14 @@ public class ThemeServiceImpl implements ThemeService {
                 return false;
             }
 
-            getTheme(themeID);
+            getTheme(themeID, username);
             return true;
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException | UserNotAuthorizedException e) {
             e.printStackTrace();
             return false;
         }
+
+
     }
 
     @Override

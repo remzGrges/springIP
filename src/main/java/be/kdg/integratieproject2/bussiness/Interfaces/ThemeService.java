@@ -28,7 +28,7 @@ public interface ThemeService {
 
     void deleteTheme(String id, String username) throws ObjectNotFoundException, UserNotAuthorizedException;
 
-    boolean checkThemeExist(String themeID);
+    boolean checkThemeExist(String themeID, String theme);
 
     void addOrganiser(String ingelogdeGebruiker, String token) throws ObjectNotFoundException, UserAlreadyExistsException, UserNotAuthorizedException, InvalidTokenException;
 

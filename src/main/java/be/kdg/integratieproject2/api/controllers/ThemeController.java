@@ -61,7 +61,7 @@ public class ThemeController {
         Theme theme = modelMapper.map(dto, Theme.class);
         ThemeDto mappedTheme = null;
 
-        if (themeService.checkThemeExist(themeId)) {
+        if (themeService.checkThemeExist(themeId, authentication.getName())) {
              mappedTheme = modelMapper.map(themeService.updateTheme(theme, authentication.getName()), ThemeDto.class);
         }
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
