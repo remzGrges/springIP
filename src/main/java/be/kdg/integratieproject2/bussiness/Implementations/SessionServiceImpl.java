@@ -2,6 +2,8 @@ package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.InputMessage;
+import be.kdg.integratieproject2.Domain.OutputMessage;
 import be.kdg.integratieproject2.Domain.Session;
 import be.kdg.integratieproject2.Domain.SessionState;
 import be.kdg.integratieproject2.Domain.Turn;
@@ -15,10 +17,13 @@ import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.data.implementations.SessionRepository;
+import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -126,6 +131,21 @@ public class SessionServiceImpl implements SessionService {
     public SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException {
         return new SessionState(getSession(sessionId,username));
     }
+
+    @Override
+    public OutputMessage addMessageToSession(String sessionId, InputMessage message) {
+        OutputMessage oMessage = new OutputMessage(
+                message.getFrom(),
+                message.getText(),
+                new SimpleDateFormat("dd-MM HH:mm").format(new Date()));
+        Session session = sessionRepository.findOne(sessionId);
+        List<OutputMessage> messages = session.getMessages();
+        messages.add(oMessage);
+        session.setMessages(messages);
+        sessionRepository.save(session);
+        return oMessage;
+    }
+
 
     @Override
     public Session addTurnToSession(Turn turn, String username, String sessionId) throws UserNotAuthorizedException, ObjectNotFoundException {
