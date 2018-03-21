@@ -29,6 +29,7 @@ public class SessionServiceImpl implements SessionService {
     UserService userService;
     @Autowired
     TokenService tokenService;
+    @Autowired
     SessionRepository sessionRepository;
     @Autowired
     ApplicationEventPublisher eventPublisher;
