@@ -15,7 +15,6 @@ public class WebSocketController {
     @Autowired
     private SessionService sessionService;
 
-
     @MessageMapping("/socket/{sessionId}")
     @SendTo("/chat/messages/{sessionId}")
     public OutputMessage send(@DestinationVariable String sessionId, InputMessage msg) {
@@ -23,7 +22,7 @@ public class WebSocketController {
     }
 
     @MessageMapping("/session/{sessionId}")
-    @SendTo("/sessionstate/{sessionId}")
+    @SendTo("/chat/sessionstate/{sessionId}")
     public boolean getSate(@DestinationVariable String sessionId)
     {
         return true;

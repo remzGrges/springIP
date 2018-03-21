@@ -29,6 +29,7 @@ public class SessionServiceImpl implements SessionService {
     UserService userService;
     @Autowired
     TokenService tokenService;
+    @Autowired
     SessionRepository sessionRepository;
     @Autowired
     ApplicationEventPublisher eventPublisher;
@@ -97,6 +98,7 @@ public class SessionServiceImpl implements SessionService {
         if (userId.toLowerCase().equals(currentUser.toLowerCase())) {
             if (users.stream().noneMatch(s -> s.equalsIgnoreCase(userId))) {
                 users.add(userId);
+                session.setPlayers(users);
                 sessionRepository.save(session);
             }
             else throw new UserAlreadyExistsException("User already present in Session");
