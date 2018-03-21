@@ -17,6 +17,7 @@ public class Session {
     private boolean addCardUser;
     private int timeUserRound;
     private Date startTime;
+    private List<OutputMessage> messages;
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;
@@ -125,6 +126,14 @@ public class Session {
 
     public void setSuggestedCards(List<Card> suggestedCards) {
         this.suggestedCards = suggestedCards;
+    }
+
+    public List<OutputMessage> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<OutputMessage> messages) {
+        this.messages = messages;
     }
 
     public boolean isActive() {

@@ -1,5 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
+import be.kdg.integratieproject2.Domain.InputMessage;
+import be.kdg.integratieproject2.Domain.OutputMessage;
 import be.kdg.integratieproject2.Domain.Session;
 import be.kdg.integratieproject2.Domain.SessionState;
 import be.kdg.integratieproject2.Domain.Turn;
@@ -33,4 +35,6 @@ public interface SessionService {
     Session addTurnToSession(Turn turn, String username, String sessionId) throws UserNotAuthorizedException, ObjectNotFoundException;
 
     void invitePlayers(List<String> players, String username, String sessionId, String appUrl, Locale locale) throws UserAlreadyExistsException, UserNotAuthorizedException, ObjectNotFoundException;
+
+    OutputMessage addMessageToSession(String sessionId, InputMessage message);
 }

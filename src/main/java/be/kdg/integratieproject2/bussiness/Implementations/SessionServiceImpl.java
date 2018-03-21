@@ -1,10 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.Application;
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.Session;
-import be.kdg.integratieproject2.Domain.SessionState;
-import be.kdg.integratieproject2.Domain.Turn;
+import be.kdg.integratieproject2.Domain.*;
 import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
 import be.kdg.integratieproject2.api.sessionInvitation.OnSessionInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
@@ -20,6 +16,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +29,6 @@ public class SessionServiceImpl implements SessionService {
     UserService userService;
     @Autowired
     TokenService tokenService;
-    @Autowired
     SessionRepository sessionRepository;
     @Autowired
     ApplicationEventPublisher eventPublisher;
@@ -122,6 +118,21 @@ public class SessionServiceImpl implements SessionService {
         session.setTurns(newTurns);
         return new SessionState(session);
     }
+
+    @Override
+    public OutputMessage addMessageToSession(String sessionId, InputMessage message) {
+        OutputMessage oMessage = new OutputMessage(
+                message.getFrom(),
+                message.getText(),
+                new SimpleDateFormat("dd-MM HH:mm").format(new Date()));
+        Session session = sessionRepository.findOne(sessionId);
+        List<OutputMessage> messages = session.getMessages();
+        messages.add(oMessage);
+        session.setMessages(messages);
+        sessionRepository.save(session);
+        return oMessage;
+    }
+
 
     @Override
     public Session addTurnToSession(Turn turn, String username, String sessionId) throws UserNotAuthorizedException, ObjectNotFoundException {
