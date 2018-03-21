@@ -1,34 +1,40 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
+import be.kdg.integratieproject2.Domain.InputMessage;
+import be.kdg.integratieproject2.Domain.OutputMessage;
 import be.kdg.integratieproject2.Domain.Session;
 import be.kdg.integratieproject2.Domain.SessionState;
-import be.kdg.integratieproject2.Domain.verification.InvitationToken;
-import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
+import be.kdg.integratieproject2.Domain.Turn;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
-import be.kdg.integratieproject2.bussiness.exceptions.PlayersNotReadyException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public interface SessionService {
     Session addSession(Session session, String userId) throws ObjectNotFoundException;
 
-    Session updateSession(Session session, String userId) throws ObjectNotFoundException;
+    Session updateSession(Session session, String userId) throws ObjectNotFoundException, UserNotAuthorizedException;
 
-    Session getSession(String sessionId, String userId) throws ObjectNotFoundException;
+    Session getSession(String sessionId, String userId) throws ObjectNotFoundException, UserNotAuthorizedException;
 
-    void deleteSession(String sessionId, String userId) throws ObjectNotFoundException;
+    void deleteSession(String sessionId, String userId) throws ObjectNotFoundException, UserNotAuthorizedException;
 
     List<Session> getAllSessionsByUser(String userId) throws ObjectNotFoundException;
 
-    void addPlayer(String sessionId, String themeId) throws ObjectNotFoundException;
+    void addPlayerByToken(String sessionId, String themeId) throws ObjectNotFoundException, UserNotAuthorizedException, UserAlreadyExistsException;
 
-    void createSessionInvitationToken(String email, String sessionId, String token, String organiser);
-    void setPlayerReady(String email, String sessionId) throws ObjectNotFoundException;
+    SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException;
 
-    void nextState(String username, String session) throws PlayersNotReadyException, ObjectNotFoundException;
-    SessionInvitationToken getSessionInvitationToken(String token);
+    SessionState getSessionStateByDate(String username, String sessionId, Date date) throws ObjectNotFoundException, UserNotAuthorizedException;
 
-    SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException;
+    Session addTurnToSession(Turn turn, String username, String sessionId) throws UserNotAuthorizedException, ObjectNotFoundException;
+
+    void invitePlayers(List<String> players, String username, String sessionId, String appUrl, Locale locale) throws UserAlreadyExistsException, UserNotAuthorizedException, ObjectNotFoundException;
+
+    OutputMessage addMessageToSession(String sessionId, InputMessage message);
 }

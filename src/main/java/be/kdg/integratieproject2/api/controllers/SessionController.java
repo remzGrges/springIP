@@ -2,26 +2,27 @@ package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Session;
-import be.kdg.integratieproject2.api.error.BadRequestException;
+import be.kdg.integratieproject2.Domain.Turn;
 import be.kdg.integratieproject2.api.dto.SessionDto;
 import be.kdg.integratieproject2.api.dto.SessionStateDto;
-import be.kdg.integratieproject2.api.sessionInvitation.OnSessionInvitationCompleteEvent;
+import be.kdg.integratieproject2.api.dto.TurnDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.PlayersNotReadyException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,25 +44,15 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ResponseEntity<SessionDto> updateSession(Authentication authentication, @Valid @RequestBody SessionDto dto) throws BadRequestException {
+    public ResponseEntity<SessionDto> updateSession(Authentication authentication, @Valid @RequestBody SessionDto dto) throws ObjectNotFoundException, UserNotAuthorizedException {
         Session session = modelMapper.map(dto, Session.class);
-        SessionDto mappedSession = null;
-        Session getSes = null;
-        try {
-            getSes = sessionService.getSession(session.getSessionId(), authentication.getName());
-            if (getSes == null) {
-                throw new BadRequestException("No valid Session");
-            }
-            mappedSession = modelMapper.map(sessionService.updateSession(session, authentication.getName()), SessionDto.class);
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-
+        SessionDto mappedSession;
+        mappedSession = modelMapper.map(sessionService.updateSession(session, authentication.getName()), SessionDto.class);
         return new ResponseEntity<>(mappedSession, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto dto, Authentication authentication) throws BadRequestException, ObjectNotFoundException {
+    public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto dto, Authentication authentication) throws ObjectNotFoundException {
         Session session = modelMapper.map(dto, Session.class);
         SessionDto mappedSession = null;
         mappedSession = modelMapper.map(sessionService.addSession(session, authentication.getName()), SessionDto.class);
@@ -69,37 +60,23 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/getSession/{sessionId}", method = RequestMethod.GET)
-    public ResponseEntity<SessionDto> getSession(Authentication authentication, @PathVariable String sessionId) {
+    public ResponseEntity<SessionDto> getSession(Authentication authentication, @PathVariable String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException {
         Session session;
-
-        try {
-            session = sessionService.getSession(sessionId, authentication.getName());
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException("Session not found");
-        }
+        session = sessionService.getSession(sessionId, authentication.getName());
         SessionDto sessionDto = modelMapper.map(session, SessionDto.class);
         return new ResponseEntity<SessionDto>(sessionDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/delete/{sessionId}", method = RequestMethod.GET)
-    public ResponseEntity deleteCard(Authentication authentication, @PathVariable String sessionId) {
-        try {
-            sessionService.deleteSession(sessionId, authentication.getName());
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+    public ResponseEntity deleteCard(Authentication authentication, @PathVariable String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException {
+        sessionService.deleteSession(sessionId, authentication.getName());
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<SessionDto>> getAllSessionsByUser(Authentication authentication) {
+    public ResponseEntity<List<SessionDto>> getAllSessionsByUser(Authentication authentication) throws ObjectNotFoundException {
         List<Session> sessions;
-
-        try {
-            sessions = sessionService.getAllSessionsByUser(authentication.getName());
-        } catch (ObjectNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        sessions = sessionService.getAllSessionsByUser(authentication.getName());
         List<SessionDto> sessionDtos = new LinkedList<>();
         for (Session session : sessions) {
             sessionDtos.add(modelMapper.map(session, SessionDto.class));
@@ -108,56 +85,22 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/invitePlayers/{sessionId}", method = RequestMethod.POST)
-    public ResponseEntity inviteOrganiser(Authentication authentication, @RequestBody List<String> players, @PathVariable("sessionId") String sessionId, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException {
+    public ResponseEntity invitePlayers(Authentication authentication, @RequestBody List<String> players, @PathVariable("sessionId") String sessionId, BindingResult result, WebRequest request) throws UserAlreadyExistsException, ObjectNotFoundException, UserNotAuthorizedException {
         ApplicationUser user;
         String appUrl = request.getContextPath();
-        //Session session = sessionService.getSession(sessionId, authentication.getName());
-
-
-        // if (session.getOrganiser().equals(authentication.getName())) {
-        for (String player : players) {
-            try {
-                user = userService.getUserByUsername(player);
-                if (user.getEmail() != null) {
-                    eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(user, appUrl, request.getLocale(), player, authentication.getName(), sessionId));
-
-                }
-            } catch (UsernameNotFoundException a) {
-                ApplicationUser newUser = new ApplicationUser();
-                newUser.setEmail(player);
-                eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(userService.registerUser(newUser), appUrl, request.getLocale(), authentication.getName(), player, sessionId));
-
-            }
-        }
-        //}
-
-
-
-   /*     try {
-            user = userService.getUserByUsername(email);
-            if (user.getEmail() != null) {
-                eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.getUserByUsername(email), request.getLocale(), appUrl, themeId));
-            }
-        } catch (UsernameNotFoundException a) {
-            ApplicationUser newUser = new ApplicationUser();
-            newUser.setEmail(email);
-            eventPublisher.publishEvent(new OnInvitationCompleteEvent(userService.registerUser(newUser), request.getLocale(), appUrl, themeId));
-
-        }*/
+        sessionService.invitePlayers(players, authentication.getName(), sessionId, appUrl, request.getLocale());
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/acceptInvite/{token}", method = RequestMethod.GET)
-    public ResponseEntity acceptInvite(Authentication authentication, @PathVariable("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
-        String name = authentication.getName();
-        sessionService.addPlayer(authentication.getName(), token);
+    public ResponseEntity acceptInvite(Authentication authentication, @PathVariable("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException, UserNotAuthorizedException {
+        sessionService.addPlayerByToken(authentication.getName(), token);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/acceptSessionInviteNon/{token}", method = RequestMethod.GET)
-    public ResponseEntity acceptInviteNon(@RequestParam("email") String email, @PathVariable("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException {
-
-        sessionService.addPlayer(email, token);
+    public ResponseEntity acceptInviteNon(@RequestParam("email") String email, @PathVariable("token") String token) throws ObjectNotFoundException, UserAlreadyExistsException, UserNotAuthorizedException {
+        sessionService.addPlayerByToken(email, token);
         return new ResponseEntity(HttpStatus.OK);
 
     }
@@ -179,9 +122,20 @@ public class SessionController {
 
 
     @RequestMapping(value = "/getSessionState/{sessionId}", method = RequestMethod.GET)
-    public ResponseEntity<SessionStateDto> getSessionState(@PathVariable String sessionId, Authentication authentication) throws ObjectNotFoundException
-    {
+    public ResponseEntity<SessionStateDto> getSessionState(@PathVariable String sessionId, Authentication authentication) throws ObjectNotFoundException, UserNotAuthorizedException {
         SessionStateDto dto = modelMapper.map(sessionService.getSessionState(authentication.getName(), sessionId), SessionStateDto.class);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @RequestMapping(value ="/getSessionState/{sessionId}/{date}", method = RequestMethod.POST)
+    public ResponseEntity<SessionStateDto> getSessionStateByDate(@PathVariable String sessionId, @RequestBody Date date, Authentication authentication) throws UserNotAuthorizedException, ObjectNotFoundException {
+        SessionStateDto dto = modelMapper.map(sessionService.getSessionStateByDate(authentication.getName(), sessionId, date), SessionStateDto.class);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+    @RequestMapping(value="/addTurn/{sessionId}", method = RequestMethod.POST)
+    public ResponseEntity<SessionDto> addTurnToSession(@Valid @RequestBody TurnDto dto, @PathVariable String sessionId, Authentication authentication) throws UserNotAuthorizedException, ObjectNotFoundException {
+        Turn turn = modelMapper.map(dto, Turn.class);
+         Session session = sessionService.addTurnToSession(turn, authentication.getName(), sessionId);
+        return new ResponseEntity<>(modelMapper.map(session, SessionDto.class), HttpStatus.OK);
+    }
+}

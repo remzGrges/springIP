@@ -1,6 +1,7 @@
 package be.kdg.integratieproject2.api.dto;
 
 import be.kdg.integratieproject2.Domain.Card;
+import be.kdg.integratieproject2.Domain.OutputMessage;
 import be.kdg.integratieproject2.Domain.SubTheme;
 import be.kdg.integratieproject2.Domain.Turn;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -37,6 +38,7 @@ public class SessionDto {
     private int timeUserRound;
 
     private Date startTime;
+    private List<OutputMessage> messages;
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;
@@ -149,6 +151,14 @@ public class SessionDto {
 
     public void setSuggestedCards(List<Card> suggestedCards) {
         this.suggestedCards = suggestedCards;
+    }
+
+    public List<OutputMessage> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<OutputMessage> messages) {
+        this.messages = messages;
     }
 
     public boolean isActive() {

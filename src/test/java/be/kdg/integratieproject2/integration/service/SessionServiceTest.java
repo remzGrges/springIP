@@ -8,6 +8,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import be.kdg.integratieproject2.data.implementations.UserRepository;
 import org.junit.After;
@@ -63,7 +64,7 @@ public class SessionServiceTest {
     }
 
     @After
-    public void delete() {
+    public void delete() throws UserNotAuthorizedException {
         tokenRepository.deleteAll();
         userRepository.deleteByEmail("fake@mail.be");
         try {
@@ -86,7 +87,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void testGetSession() throws ObjectNotFoundException {
+    public void testGetSession() throws ObjectNotFoundException, UserNotAuthorizedException {
         this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
         Session session = this.sessionService.getSession(postedSession.getSessionId(), "leander.coevoet@student.kdg.be");
         Assert.assertTrue(postedSession.getNumberOfRounds() == session.getNumberOfRounds());
@@ -101,13 +102,6 @@ public class SessionServiceTest {
         Session updatedSession = this.sessionService.addSession(postedSession, "leander.coevoet@student.kdg.be");
         Assert.assertTrue(postedSession.getSessionId().equals(updatedSession.getSessionId()));
         Assert.assertTrue(postedSession.isCanComment() == updatedSession.isCanComment());
-    }
-
-    @Test
-    public void createSessionInvitationToken() throws ObjectNotFoundException {
-        this.postedSession = this.sessionService.addSession(session, "leander.coevoet@student.kdg.be");
-        this.sessionService.createSessionInvitationToken("fake@mail.be", postedSession.getSessionId(), "bla", "leander.coevoet@student.kdg.be");
-       Assert.assertTrue(tokenRepository.findByToken("bla") != null);
     }
 
 

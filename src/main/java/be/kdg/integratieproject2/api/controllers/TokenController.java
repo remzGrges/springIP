@@ -1,6 +1,5 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.api.error.BadRequestException;
 import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +20,9 @@ public class TokenController {
     }
 
     @RequestMapping(value = "/create/{token}", method = RequestMethod.GET, produces = "text/plain")
-    public String getToken(@PathVariable("token") String token ) throws BadRequestException
+    public String getToken(@PathVariable("token") String token )
     {
-        String soort = service.getTokenSort(token);
+        String soort = service.getTokenKind(token);
         return String.format("\"%s\"", soort);
     }
 }

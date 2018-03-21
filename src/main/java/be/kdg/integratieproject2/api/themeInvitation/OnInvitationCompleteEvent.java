@@ -1,8 +1,6 @@
 package be.kdg.integratieproject2.api.themeInvitation;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Locale;
@@ -11,23 +9,16 @@ public class OnInvitationCompleteEvent extends ApplicationEvent {
     private String appUrl;
     private Locale locale;
     private String user;
-    private String theme;
+    private String themeId;
+    private String themeName;
 
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
-
-    public OnInvitationCompleteEvent(ApplicationUser user, Locale locale, String appUrl, String  theme) {
+    public OnInvitationCompleteEvent(ApplicationUser user, Locale locale, String appUrl, String  themeId, String themeName) {
         super(user);
         this.appUrl = appUrl;
         this.locale = locale;
         this.user = user.getEmail();
-        this.theme = theme;
+        this.themeId = themeId;
+        this.themeName = themeName;
     }
 
     public String getAppUrl() {
@@ -52,5 +43,21 @@ public class OnInvitationCompleteEvent extends ApplicationEvent {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getThemeId() {
+        return themeId;
+    }
+
+    public void setThemeId(String themeId) {
+        this.themeId = themeId;
+    }
+
+    public String getThemeName() {
+        return themeName;
+    }
+
+    public void setThemeName(String themeName) {
+        this.themeName = themeName;
     }
 }

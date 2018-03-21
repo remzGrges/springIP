@@ -5,23 +5,23 @@ import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
 import be.kdg.integratieproject2.Domain.verification.Token;
 import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
+import be.kdg.integratieproject2.bussiness.exceptions.InvalidTokenException;
+import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
 
 @Service
 public class TokenServiceImpl implements TokenService {
 
-    TokenRepository repository ;
-
-
-    public TokenServiceImpl(TokenRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    TokenRepository tokenRepository;
 
     @Override
-    public String getTokenSort(String token) {
-        Token token1 = repository.findByToken(token);
+    public String getTokenKind(String token) {
+        Token token1 = tokenRepository.findByToken(token);
 
         if (token1 instanceof SessionInvitationToken) {
             return "Sessie";
@@ -33,5 +33,39 @@ public class TokenServiceImpl implements TokenService {
         return "Van geen enkele";
     }
 
+    @Override
+    public boolean validateInvitationToken(InvitationToken token, String username) throws InvalidTokenException {
+        Calendar cal = Calendar.getInstance();
+        if ((token.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            throw new InvalidTokenException(token.getExpiryDate());
+        } else if (!token.getEmail().equalsIgnoreCase(username)){
+            throw new InvalidTokenException(username);
+        }
+        return true;
+    }
 
+    @Override
+    public InvitationToken getInvitationToken(String token) throws ObjectNotFoundException {
+        InvitationToken invitationToken =  (InvitationToken) tokenRepository.findByToken(token);
+        if (invitationToken == null) throw new ObjectNotFoundException(token);
+        return invitationToken;
+    }
+
+    @Override
+    public void createInvitationToken(String email, String themeId, String token) {
+        tokenRepository.save(new InvitationToken(token, email, themeId));
+    }
+
+    @Override
+    public SessionInvitationToken getSessionInvitationToken(String token) throws ObjectNotFoundException {
+        SessionInvitationToken sessionInvitationToken = (SessionInvitationToken) tokenRepository.findByToken(token);
+        if(sessionInvitationToken == null) throw new ObjectNotFoundException(token);
+        return sessionInvitationToken;
+    }
+
+
+    @Override
+    public void createSessionInvitationToken(String email, String sessionId, String token, String organiser) {
+        tokenRepository.save(new SessionInvitationToken(token, sessionId,email, organiser));
+    }
 }

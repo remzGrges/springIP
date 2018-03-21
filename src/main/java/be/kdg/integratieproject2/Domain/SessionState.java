@@ -3,6 +3,7 @@ package be.kdg.integratieproject2.Domain;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
