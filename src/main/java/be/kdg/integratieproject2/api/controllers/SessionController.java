@@ -105,22 +105,6 @@ public class SessionController {
 
     }
 
-    @RequestMapping(value = "/goReady/{sessionId}", method = RequestMethod.GET)
-    public ResponseEntity goReady(Authentication authentication, @PathVariable("sessionID") String sessionId) throws ObjectNotFoundException {
-        sessionService.setPlayerReady(authentication.getName(), sessionId);
-
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-
-    @RequestMapping(value = "/nextState/{sessionId}", method = RequestMethod.GET)
-    public ResponseEntity nextState(Authentication authentication , @PathVariable("sessionId") String sessionId) throws PlayersNotReadyException, ObjectNotFoundException {
-        sessionService.nextState(authentication.getName(), sessionId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-
-
     @RequestMapping(value = "/getSessionState/{sessionId}", method = RequestMethod.GET)
     public ResponseEntity<SessionStateDto> getSessionState(@PathVariable String sessionId, Authentication authentication) throws ObjectNotFoundException, UserNotAuthorizedException {
         SessionStateDto dto = modelMapper.map(sessionService.getSessionState(authentication.getName(), sessionId), SessionStateDto.class);
