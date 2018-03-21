@@ -1,37 +1,49 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
+import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.InputMessage;
 import be.kdg.integratieproject2.Domain.OutputMessage;
 import be.kdg.integratieproject2.Domain.Session;
+import be.kdg.integratieproject2.Domain.SessionState;
+import be.kdg.integratieproject2.Domain.Turn;
 import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
-import be.kdg.integratieproject2.bussiness.Interfaces.*;
+import be.kdg.integratieproject2.api.sessionInvitation.OnSessionInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
+import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.data.implementations.SessionRepository;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class SessionServiceImpl implements SessionService {
 
     ThemeService themeService;
     UserService userService;
+    TokenService tokenService;
     SessionRepository sessionRepository;
-    TokenRepository tokenRepository;
+    ApplicationEventPublisher eventPublisher;
 
-    public SessionServiceImpl(ThemeService themeService, UserService userService, SessionRepository sessionRepository, TokenRepository repository) {
+    public SessionServiceImpl(ThemeService themeService, UserService userService, SessionRepository sessionRepository, TokenService tokenService, ApplicationEventPublisher eventPublisher) {
         this.themeService = themeService;
         this.userService = userService;
-        this.tokenRepository= repository;
         this.sessionRepository = sessionRepository;
+        this.tokenService = tokenService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -40,37 +52,43 @@ public class SessionServiceImpl implements SessionService {
         users.add(userId);
         session.setPlayers(users);
         session.setOrganiser(userId);
-       return sessionRepository.save(session);
-    }
-
-    @Override
-    public Session updateSession(Session session, String userId)
-    {
         return sessionRepository.save(session);
     }
 
     @Override
-    public Session getSession(String sessionId, String userId) throws ObjectNotFoundException {
+    public Session updateSession(Session session, String userId) throws ObjectNotFoundException, UserNotAuthorizedException {
+        Session oldSession = getSession(session.getSessionId(), userId);
+        if (oldSession.getOrganiser().equalsIgnoreCase(userId)){
+            return sessionRepository.save(session);
+        }
+        else throw new UserNotAuthorizedException("User not authorized to update session");
+    }
+
+    @Override
+    public Session getSession(String sessionId, String userId) throws ObjectNotFoundException, UserNotAuthorizedException {
         Session session = sessionRepository.findOne(sessionId);
+        if(session == null) throw new ObjectNotFoundException(sessionId);
         for (String s : session.getPlayers()) {
             if (s.equals(userId)){
                 return session;
             }
         }
-        throw new ObjectNotFoundException(sessionId);
+        throw new UserNotAuthorizedException("User not authorized to view this session");
     }
 
     @Override
-    public void deleteSession(String sessionId, String userId) throws ObjectNotFoundException {
-        ApplicationUser user = userService.getUserByUsername(userId);
-        Session session = sessionRepository.findOne(sessionId);
-            if (session.getOrganiser().equals(user.getEmail())){
-                sessionRepository.delete(sessionId);
-            }
+    public void deleteSession(String sessionId, String userId) throws ObjectNotFoundException, UserNotAuthorizedException {
+        Session session = getSession(sessionId, userId);
+        if (session.getOrganiser().equalsIgnoreCase(userId)){
+            sessionRepository.delete(sessionId);
+        }
+        else{
+            throw new UserNotAuthorizedException("User is not authorized to delete this Session");
+        }
     }
 
     @Override
-    public List<Session> getAllSessionsByUser(String userId) throws ObjectNotFoundException {
+    public List<Session> getAllSessionsByUser(String userId) {
         List<Session> sessions = sessionRepository.findSessionsByPlayersContaining(userId);
         if (sessions == null || sessions.size() == 0) {
             return new LinkedList<>();
@@ -79,11 +97,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public void addPlayer(String ingelogdeUser, String token) throws ObjectNotFoundException {
-        SessionInvitationToken invitationToken = this.getSessionInvitationToken(token);
-        if (invitationToken == null) {
-            throw new ObjectNotFoundException("geen invitationToken");
-        }
+    public void addPlayerByToken(String currentUser, String token) throws ObjectNotFoundException, UserNotAuthorizedException, UserAlreadyExistsException {
+        SessionInvitationToken invitationToken = tokenService.getSessionInvitationToken(token);
         String sessionId = invitationToken.getSessionId();
         String userId = invitationToken.getUserId();
         String organiser = invitationToken.getOrganiser();
@@ -91,16 +106,21 @@ public class SessionServiceImpl implements SessionService {
         Session session = getSession(sessionId, organiser);
         List<String> users = session.getPlayers();
 
-        if (userId.equals(ingelogdeUser)) {
-            users.add(userId);
-
-            sessionRepository.save(session);
+        if (userId.toLowerCase().equals(currentUser.toLowerCase())) {
+            if (users.stream().noneMatch(s -> s.equalsIgnoreCase(userId))) {
+                users.add(userId);
+                sessionRepository.save(session);
+            }
+            else throw new UserAlreadyExistsException("User already present in Session");
+        }
+        else {
+            throw new UserNotAuthorizedException("User does not have access to this token");
         }
     }
 
     @Override
-    public SessionInvitationToken getSessionInvitationToken(String token) {
-        return (SessionInvitationToken) tokenRepository.findByToken(token);
+    public SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException {
+        return new SessionState(getSession(sessionId,username));
     }
 
     @Override
@@ -119,7 +139,34 @@ public class SessionServiceImpl implements SessionService {
 
 
     @Override
-    public void createSessionInvitationToken(String email, String sessionId, String token, String organiser) {
-        tokenRepository.save(new SessionInvitationToken(token, sessionId,email, organiser));
+    public Session addTurnToSession(Turn turn, String username, String sessionId) throws UserNotAuthorizedException, ObjectNotFoundException {
+        if(!turn.getUserId().equalsIgnoreCase(username)) throw new UserNotAuthorizedException("Unable to add turn for another user");
+        SessionState state = getSessionState(username, sessionId);
+        if(!state.getNextPlayer().equalsIgnoreCase(username)) throw new UserNotAuthorizedException("It is not your turn");
+        Session session = getSession(sessionId, username);
+        List<Turn> turns = session.getTurns() == null ? new ArrayList<>() :  session.getTurns();
+        turns.add(turn);
+        session.setTurns(turns);
+        return sessionRepository.save(session);
+    }
+
+    @Override
+    public void invitePlayers(List<String> players, String username, String sessionId, String appUrl, Locale locale) throws UserAlreadyExistsException, UserNotAuthorizedException, ObjectNotFoundException {
+        Session session = getSession(sessionId, username);
+        if (!session.getOrganiser().equalsIgnoreCase(username)) throw new UserNotAuthorizedException("User is not authorized to invite players");
+        ApplicationUser user;
+        for (String player : players) {
+            try {
+                user = userService.getUserByUsername(player);
+                if (user.getEmail() != null) {
+                    eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(user, appUrl, locale, player, username, sessionId, session.getSessionName()));
+
+                }
+            } catch (UsernameNotFoundException a) {
+                ApplicationUser newUser = new ApplicationUser();
+                newUser.setEmail(player);
+                eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(userService.registerUser(newUser), appUrl, locale, username, player, sessionId, session.getSessionName()));
+            }
+        }
     }
 }

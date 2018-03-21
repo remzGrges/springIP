@@ -12,19 +12,17 @@ public class OnSessionInvitationCompleteEvent extends ApplicationEvent {
         private Locale locale;
         private String newUser;
         private String currentUser;
-        private String session;
+        private String sessionId;
+        private String sessionName;
 
-    @Autowired
-    UserService service;
-
-
-    public OnSessionInvitationCompleteEvent(Object source, String appUrl, Locale locale, String user, String currentUser, String session) {
+    public OnSessionInvitationCompleteEvent(Object source, String appUrl, Locale locale, String user, String currentUser, String sessionId, String sessionName) {
         super(source);
         this.appUrl = appUrl;
         this.locale = locale;
         this.newUser = user;
         this.currentUser = currentUser;
-        this.session = session;
+        this.sessionId = sessionId;
+        this.sessionName = sessionName;
     }
 
     public String getAppUrl() {
@@ -67,11 +65,19 @@ public class OnSessionInvitationCompleteEvent extends ApplicationEvent {
         this.newUser = user;
     }
 
-    public String getSession() {
-        return session;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setSession(String session) {
-        this.session = session;
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public void setSessionName(String sessionName) {
+        this.sessionName = sessionName;
     }
 }

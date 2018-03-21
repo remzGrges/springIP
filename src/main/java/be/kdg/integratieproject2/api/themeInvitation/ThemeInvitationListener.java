@@ -2,6 +2,7 @@ package be.kdg.integratieproject2.api.themeInvitation;
 
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
+import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import org.springframework.context.ApplicationListener;
@@ -15,14 +16,15 @@ import java.util.UUID;
 public class ThemeInvitationListener implements ApplicationListener<OnInvitationCompleteEvent> {
     private UserService userService;
     private ThemeService themeService;
+    private TokenService tokenService;
     private JavaMailSender mailSender;
 
 
-    public ThemeInvitationListener(UserService userService, ThemeService themeService, JavaMailSender mailSender) {
+    public ThemeInvitationListener(UserService userService, ThemeService themeService, JavaMailSender mailSender, TokenService tokenService) {
         this.userService = userService;
         this.themeService = themeService;
         this.mailSender = mailSender;
-        // this.themeId = themeId;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -38,13 +40,13 @@ public class ThemeInvitationListener implements ApplicationListener<OnInvitation
 
     private void confirmInvitation(OnInvitationCompleteEvent event) throws ObjectNotFoundException {
         String user = event.getUser();
-        String themeId = event.getTheme();
-        Theme theme = themeService.getTheme(themeId);
-        String subject = "Je bent uitgenodigd om het thema " + theme.getName() + " te bewerken";
+        String themeId = event.getThemeId();
+        String themeName = event.getThemeName();
+        String subject = "Je bent uitgenodigd om het thema " + themeName + " te bewerken";
         String token = UUID.randomUUID().toString();
         String confirmationUrl;
         SimpleMailMessage inviteEmail;
-        themeService.createInvitationToken(user,themeId, token);
+        tokenService.createInvitationToken(user,themeId, token);
 
         if (userService.getUserByUsername(user).getPassword() == null) {
             confirmationUrl = event.getAppUrl() + "/register/" + token;

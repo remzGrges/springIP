@@ -11,6 +11,7 @@ public class SubTheme {
     private String text;
     private List<Card> cards;
     private String pictureId;
+    private List<Review> reviews;
 
     public SubTheme() {
     }
@@ -45,5 +46,13 @@ public class SubTheme {
 
     public void setCards(List<Card> cards) {
         this.cards = cards;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

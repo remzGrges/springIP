@@ -35,8 +35,10 @@ public class UserController {
         this.eventPublisher = eventPublisher;
     }
 
+
+
     @PostMapping("/register")
-    public String register(@Valid @RequestBody UserRegistrationDto dto, BindingResult result, WebRequest request) throws UserAlreadyExistsException {
+    public String register(@Valid @RequestBody UserRegistrationDto dto, BindingResult result, WebRequest request) {
         if (result.hasErrors()){
             return "Body not valid";
         }

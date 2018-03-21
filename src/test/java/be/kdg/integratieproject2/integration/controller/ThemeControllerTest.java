@@ -115,7 +115,7 @@ public class ThemeControllerTest {
 
         mvc.perform(get("/themes/get/lolol")
                 .headers(httpHeaders))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
 
