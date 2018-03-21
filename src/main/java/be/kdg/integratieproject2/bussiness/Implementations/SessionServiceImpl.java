@@ -177,7 +177,7 @@ public class SessionServiceImpl implements SessionService {
             } catch (UsernameNotFoundException a) {
                 ApplicationUser newUser = new ApplicationUser();
                 newUser.setEmail(player);
-                eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(userService.registerUser(newUser), appUrl, locale, username, player, sessionId, session.getSessionName()));
+                eventPublisher.publishEvent(new OnSessionInvitationCompleteEvent(userService.registerUser(newUser), appUrl, locale, player,username, sessionId, session.getSessionName()));
             }
         }
     }
