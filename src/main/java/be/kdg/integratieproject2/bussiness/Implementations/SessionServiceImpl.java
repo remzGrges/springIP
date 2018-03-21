@@ -54,14 +54,19 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public Session addSuggestion(Card card,String sessionId, String userId) throws UserNotAuthorizedException, ObjectNotFoundException {
+        Session session = getSession(sessionId, userId);
+        List<Card> suggestions = session.getCards() == null ? new ArrayList<>() : session.getCards();
+        suggestions.add(card);
+        session.setSuggestedCards(suggestions);
+        return sessionRepository.save(session);
+    }
+
+    @Override
     public Session getSession(String sessionId, String userId) throws ObjectNotFoundException, UserNotAuthorizedException {
         Session session = sessionRepository.findOne(sessionId);
         if(session == null) throw new ObjectNotFoundException(sessionId);
-        for (String s : session.getPlayers()) {
-            if (s.equals(userId)){
-                return session;
-            }
-        }
+        if(session.getPlayers().stream().anyMatch(x -> x.equalsIgnoreCase(userId))) return session;
         throw new UserNotAuthorizedException("User not authorized to view this session");
     }
 
@@ -106,7 +111,7 @@ public class SessionServiceImpl implements SessionService {
 
         if (userId.toLowerCase().equals(currentUser.toLowerCase())) {
             if (users.stream().noneMatch(s -> s.equalsIgnoreCase(userId))) {
-                users.add(userId);
+                users.add(userId.toLowerCase());
                 session.setPlayers(users);
                 sessionRepository.save(session);
             }

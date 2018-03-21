@@ -1,8 +1,10 @@
 package be.kdg.integratieproject2.api.controllers;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.Card;
 import be.kdg.integratieproject2.Domain.Session;
 import be.kdg.integratieproject2.Domain.Turn;
+import be.kdg.integratieproject2.api.dto.CardDto;
 import be.kdg.integratieproject2.api.dto.SessionDto;
 import be.kdg.integratieproject2.api.dto.SessionStateDto;
 import be.kdg.integratieproject2.api.dto.TurnDto;
@@ -48,6 +50,14 @@ public class SessionController {
         Session session = modelMapper.map(dto, Session.class);
         SessionDto mappedSession;
         mappedSession = modelMapper.map(sessionService.updateSession(session, authentication.getName()), SessionDto.class);
+        return new ResponseEntity<>(mappedSession, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/addSuggestion/{sessionId}", method = RequestMethod.POST)
+    public ResponseEntity<SessionDto> addSuggestion(Authentication authentication, @Valid @RequestBody CardDto dto, @PathVariable String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException {
+        Card card = modelMapper.map(dto, Card.class);
+        SessionDto mappedSession;
+        mappedSession = modelMapper.map(sessionService.addSuggestion(card, sessionId,authentication.getName()), SessionDto.class);
         return new ResponseEntity<>(mappedSession, HttpStatus.OK);
     }
 

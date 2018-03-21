@@ -1,10 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
-import be.kdg.integratieproject2.Domain.InputMessage;
-import be.kdg.integratieproject2.Domain.OutputMessage;
-import be.kdg.integratieproject2.Domain.Session;
-import be.kdg.integratieproject2.Domain.SessionState;
-import be.kdg.integratieproject2.Domain.Turn;
+import be.kdg.integratieproject2.Domain.*;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
@@ -19,6 +15,8 @@ public interface SessionService {
     Session addSession(Session session, String userId) throws ObjectNotFoundException;
 
     Session updateSession(Session session, String userId) throws ObjectNotFoundException, UserNotAuthorizedException;
+
+    Session addSuggestion(Card card, String sessionId, String userId) throws UserNotAuthorizedException, ObjectNotFoundException;
 
     Session getSession(String sessionId, String userId) throws ObjectNotFoundException, UserNotAuthorizedException;
 
