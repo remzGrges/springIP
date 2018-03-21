@@ -25,4 +25,6 @@ public class WebSocketController {
     public OutputMessage send(@DestinationVariable String sessionId, InputMessage msg) {
         return sessionService.addMessageToSession(sessionId, msg);
     }
+
+
 }
