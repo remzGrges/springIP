@@ -1,12 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.Application;
-import be.kdg.integratieproject2.Domain.ApplicationUser;
-import be.kdg.integratieproject2.Domain.InputMessage;
-import be.kdg.integratieproject2.Domain.OutputMessage;
-import be.kdg.integratieproject2.Domain.Session;
-import be.kdg.integratieproject2.Domain.SessionState;
-import be.kdg.integratieproject2.Domain.Turn;
+import be.kdg.integratieproject2.Domain.*;
 import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
 import be.kdg.integratieproject2.api.sessionInvitation.OnSessionInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
@@ -17,34 +11,28 @@ import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.data.implementations.SessionRepository;
-import be.kdg.integratieproject2.data.implementations.TokenRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SessionServiceImpl implements SessionService {
 
+    @Autowired
     ThemeService themeService;
+    @Autowired
     UserService userService;
+    @Autowired
     TokenService tokenService;
     SessionRepository sessionRepository;
+    @Autowired
     ApplicationEventPublisher eventPublisher;
 
-    public SessionServiceImpl(ThemeService themeService, UserService userService, SessionRepository sessionRepository, TokenService tokenService, ApplicationEventPublisher eventPublisher) {
-        this.themeService = themeService;
-        this.userService = userService;
-        this.sessionRepository = sessionRepository;
-        this.tokenService = tokenService;
-        this.eventPublisher = eventPublisher;
-    }
 
     @Override
     public Session addSession(Session session, String userId)  {
@@ -121,6 +109,14 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException {
         return new SessionState(getSession(sessionId,username));
+    }
+
+    @Override
+    public SessionState getSessionStateByDate(String username, String sessionId, Date date) throws ObjectNotFoundException, UserNotAuthorizedException {
+        Session session = getSession(sessionId, username);
+        List<Turn> newTurns = session.getTurns().stream().filter(x -> x.getTimestamp().after(date)).collect(Collectors.toList());
+        session.setTurns(newTurns);
+        return new SessionState(session);
     }
 
     @Override

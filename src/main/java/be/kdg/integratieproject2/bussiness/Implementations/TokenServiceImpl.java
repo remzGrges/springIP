@@ -8,6 +8,7 @@ import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
 import be.kdg.integratieproject2.bussiness.exceptions.InvalidTokenException;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -15,12 +16,8 @@ import java.util.Calendar;
 @Service
 public class TokenServiceImpl implements TokenService {
 
+    @Autowired
     TokenRepository tokenRepository;
-
-
-    public TokenServiceImpl(TokenRepository repository) {
-        this.tokenRepository = repository;
-    }
 
     @Override
     public String getTokenKind(String token) {

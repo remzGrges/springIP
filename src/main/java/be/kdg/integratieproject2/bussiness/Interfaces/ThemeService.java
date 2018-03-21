@@ -1,7 +1,6 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
 import be.kdg.integratieproject2.Domain.Theme;
-import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.bussiness.exceptions.InvalidTokenException;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
@@ -26,9 +25,9 @@ public interface ThemeService {
 
     void deleteTheme(String id, String username) throws ObjectNotFoundException, UserNotAuthorizedException;
 
-    Theme updateTheme(Theme theme);
-
     void addOrganiser(String ingelogdeGebruiker, String token) throws ObjectNotFoundException, UserAlreadyExistsException, UserNotAuthorizedException, InvalidTokenException;
+
+    Theme updateTheme(Theme theme, String username) throws UserNotAuthorizedException, ObjectNotFoundException;
 
     Boolean isOrganiser(String loggedInUser, String themeId) throws ObjectNotFoundException, UserNotAuthorizedException;
 

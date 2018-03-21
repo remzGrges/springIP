@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -112,6 +114,11 @@ public class SessionController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @RequestMapping(value ="/getSessionState/{sessionId}/{date}", method = RequestMethod.POST)
+    public ResponseEntity<SessionStateDto> getSessionStateByDate(@PathVariable String sessionId, @RequestBody Date date, Authentication authentication) throws UserNotAuthorizedException, ObjectNotFoundException {
+        SessionStateDto dto = modelMapper.map(sessionService.getSessionStateByDate(authentication.getName(), sessionId, date), SessionStateDto.class);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
     @RequestMapping(value="/addTurn/{sessionId}", method = RequestMethod.POST)
     public ResponseEntity<SessionDto> addTurnToSession(@Valid @RequestBody TurnDto dto, @PathVariable String sessionId, Authentication authentication) throws UserNotAuthorizedException, ObjectNotFoundException {
         Turn turn = modelMapper.map(dto, Turn.class);
