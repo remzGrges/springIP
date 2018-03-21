@@ -5,6 +5,7 @@ import be.kdg.integratieproject2.Domain.SessionState;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.PlayersNotReadyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public interface SessionService {
     void addPlayer(String sessionId, String themeId) throws ObjectNotFoundException;
 
     void createSessionInvitationToken(String email, String sessionId, String token, String organiser);
+    void setPlayerReady(String email, String sessionId) throws ObjectNotFoundException;
+
+    void nextState(String username, String session) throws PlayersNotReadyException, ObjectNotFoundException;
     SessionInvitationToken getSessionInvitationToken(String token);
 
     SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException;

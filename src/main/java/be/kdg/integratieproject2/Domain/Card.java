@@ -11,12 +11,22 @@ public class Card {
     private String text;
     private String pictureId;
     private List<Review> reviews;
+    private boolean chosen;
 
     public Card() {
     }
 
     public String getPictureId() {
         return pictureId;
+    }
+
+
+    public boolean isChosen() {
+        return chosen;
+    }
+
+    public void setChosen(boolean chosen) {
+        this.chosen = chosen;
     }
 
     public void setPictureId(String pictureId) {
