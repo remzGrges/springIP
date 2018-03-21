@@ -51,6 +51,25 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
+    public boolean checkThemeExist(String themeID, String username) {
+
+        try {
+
+            if (themeID == null) {
+                return false;
+            }
+
+            getTheme(themeID, username);
+            return true;
+        } catch (ObjectNotFoundException | UserNotAuthorizedException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+
+    }
+
+    @Override
     public Boolean isOrganiser(String username, String themeId) throws ObjectNotFoundException {
         Theme theme = getThemeNoAuth(themeId);
         return theme.getOrganisers().stream().anyMatch(s -> s.equalsIgnoreCase(username));

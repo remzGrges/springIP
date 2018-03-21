@@ -132,7 +132,7 @@ public class ThemeControllerTest {
 
         themeDto.setName("Updated test");
         String json2 = gson.toJson(themeDto, ThemeDto.class);
-        mvc.perform(post("/themes/update")
+        mvc.perform(post("/themes/update/" + themeDto.getId())
                 .headers(httpHeaders)
                 .accept("application/json;charset=UTF-8")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)

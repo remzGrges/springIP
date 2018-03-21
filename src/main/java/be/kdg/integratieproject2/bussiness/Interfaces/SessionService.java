@@ -26,6 +26,8 @@ public interface SessionService {
 
     List<Session> getAllSessionsByUser(String userId) throws ObjectNotFoundException;
 
+    List<Session> getAllSessionsByUserAndTheme(String userId,String themeId) throws ObjectNotFoundException;
+
     void addPlayerByToken(String sessionId, String themeId) throws ObjectNotFoundException, UserNotAuthorizedException, UserAlreadyExistsException;
 
     SessionState getSessionState(String username, String sessionId) throws ObjectNotFoundException, UserNotAuthorizedException;

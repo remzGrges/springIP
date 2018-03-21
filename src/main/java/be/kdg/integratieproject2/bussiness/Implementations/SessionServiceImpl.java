@@ -86,6 +86,15 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public List<Session> getAllSessionsByUserAndTheme(String userId,String themeId) throws ObjectNotFoundException {
+        List<Session> sessions = sessionRepository.findSessionsByPlayersContainingAndThemeId(userId,themeId);
+        if (sessions == null || sessions.size() == 0) {
+            return new LinkedList<>();
+        }
+        return sessions;
+    }
+
+    @Override
     public void addPlayerByToken(String currentUser, String token) throws ObjectNotFoundException, UserNotAuthorizedException, UserAlreadyExistsException {
         SessionInvitationToken invitationToken = tokenService.getSessionInvitationToken(token);
         String sessionId = invitationToken.getSessionId();

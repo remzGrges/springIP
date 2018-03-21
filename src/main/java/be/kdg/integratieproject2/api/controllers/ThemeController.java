@@ -5,8 +5,10 @@ import be.kdg.integratieproject2.api.dto.ThemeDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.InvalidTokenException;
+import be.kdg.integratieproject2.bussiness.exceptions.InvalidTokenException;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -52,10 +54,16 @@ public class ThemeController {
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ResponseEntity<ThemeDto> updateTheme(@RequestBody ThemeDto dto, Authentication authentication) throws UserNotAuthorizedException, ObjectNotFoundException {
+    @RequestMapping(value = "/update/{themeId}", method = RequestMethod.POST)
+    public ResponseEntity<ThemeDto> updateTheme(@RequestBody ThemeDto dto, @PathVariable("themeId") String themeId, Authentication authentication) throws UserNotAuthorizedException, ObjectNotFoundException
+    {
+
         Theme theme = modelMapper.map(dto, Theme.class);
-        ThemeDto mappedTheme = modelMapper.map(themeService.updateTheme(theme, authentication.getName()), ThemeDto.class);
+        ThemeDto mappedTheme = null;
+
+        if (themeService.checkThemeExist(themeId, authentication.getName())) {
+             mappedTheme = modelMapper.map(themeService.updateTheme(theme, authentication.getName()), ThemeDto.class);
+        }
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
 

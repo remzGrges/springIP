@@ -6,10 +6,10 @@ import be.kdg.integratieproject2.Domain.Turn;
 import be.kdg.integratieproject2.api.dto.SessionDto;
 import be.kdg.integratieproject2.api.dto.SessionStateDto;
 import be.kdg.integratieproject2.api.dto.TurnDto;
-import be.kdg.integratieproject2.api.sessionInvitation.OnSessionInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.SessionService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.PlayersNotReadyException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import org.modelmapper.ModelMapper;
@@ -17,13 +17,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,8 +76,19 @@ public class SessionController {
     @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<SessionDto>> getAllSessionsByUser(Authentication authentication) throws ObjectNotFoundException {
         List<Session> sessions;
-
         sessions = sessionService.getAllSessionsByUser(authentication.getName());
+        List<SessionDto> sessionDtos = new LinkedList<>();
+        for (Session session : sessions) {
+            sessionDtos.add(modelMapper.map(session, SessionDto.class));
+        }
+        return new ResponseEntity<>(sessionDtos, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getAllByTheme/{themeId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<SessionDto>> getAllSessionsByUserAndTheme(@PathVariable("themeId") String themeId, Authentication authentication) throws ObjectNotFoundException {
+        List<Session> sessions;
+
+        sessions = sessionService.getAllSessionsByUserAndTheme(authentication.getName(),themeId);
         List<SessionDto> sessionDtos = new LinkedList<>();
         for (Session session : sessions) {
             sessionDtos.add(modelMapper.map(session, SessionDto.class));

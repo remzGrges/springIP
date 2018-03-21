@@ -21,11 +21,30 @@ public class Session {
     private List<SubTheme> subThemes;
     private List<Card> cards;
     private List<Card> suggestedCards;
+    private List<String> readyPlayers;
     private boolean active;
     private List<Turn> turns;
+    private int state;
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public String getSessionName() {
         return sessionName;
+    }
+
+    public List<String> getReadyPlayers() {
+        return readyPlayers;
+    }
+
+
+    public void setReadyPlayers(List<String> readyPlayers) {
+        this.readyPlayers = readyPlayers;
     }
 
     public void setSessionName(String sessionName) {

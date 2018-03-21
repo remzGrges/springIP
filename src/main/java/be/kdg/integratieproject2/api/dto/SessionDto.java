@@ -55,6 +55,8 @@ public class SessionDto {
         this.sessionName = sessionName;
     }
 
+
+
     public String getSessionId() {
         return sessionId;
     }
