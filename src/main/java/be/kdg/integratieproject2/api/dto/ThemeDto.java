@@ -20,10 +20,7 @@ public class ThemeDto {
     @NotNull
     @NotEmpty
     private String description;
-    @NotNull
-    @NotEmpty
     private List<String> organisers;
-
     private List<String> tags;
     private List<Card> cards;
     private List<SubTheme> subThemes;
@@ -86,7 +83,4 @@ public class ThemeDto {
     public void setSubThemes(List<SubTheme> subThemes) {
         this.subThemes = subThemes;
     }
-
-
-
 }

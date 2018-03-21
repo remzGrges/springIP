@@ -1,9 +1,9 @@
 package be.kdg.integratieproject2.integration.service;
 
 import be.kdg.integratieproject2.Domain.Theme;
-import be.kdg.integratieproject2.api.controllers.ThemeController;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
+import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -76,46 +75,43 @@ public class ThemeServicesTest {
     }
 
     @Test
-    public void getTheme() throws ObjectNotFoundException {
+    public void getTheme() throws ObjectNotFoundException, UserNotAuthorizedException {
         this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
-        Theme theme = themeService.getTheme(postedTheme1.getId());
+        Theme theme = null;
+        theme = themeService.getTheme(postedTheme1.getId(), organiser1);
         Assert.assertTrue(theme.getName().equals("testTheme1"));
     }
 
     @Test(expected = ObjectNotFoundException.class)
-    public void getThemeBadId() throws ObjectNotFoundException {
+    public void getThemeBadId() throws ObjectNotFoundException, UserNotAuthorizedException {
         this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
-        Theme theme = themeService.getTheme("WAHt");
+        Theme theme = themeService.getTheme("WAHt", organiser1);
     }
 
     @Test
-    public void testCreateTheme() throws ObjectNotFoundException {
+    public void testCreateTheme() throws ObjectNotFoundException, UserNotAuthorizedException {
         Theme postedTheme = this.themeService.addTheme(testTheme1, organiser1);
         Assert.assertTrue(postedTheme.getName().equals(testTheme1.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme1.getDescription()));
         this.postedTheme1 = postedTheme;
 
-        Theme postedTheme1 = this.themeService.getTheme(this.postedTheme1.getId());
+        Theme postedTheme1 = this.themeService.getTheme(this.postedTheme1.getId(), organiser1);
         Assert.assertTrue(postedTheme1.getName().equals(this.postedTheme1.getName()));
         Assert.assertTrue(postedTheme1.getDescription().equals(this.postedTheme1.getDescription()));
         for (String o : postedTheme1.getOrganisers()) {
-
-
             Assert.assertTrue(o.equals(organiser1));
-
-
         }
     }
 
     @Test
-    public void testCreateSecondTheme() throws ObjectNotFoundException {
+    public void testCreateSecondTheme() throws ObjectNotFoundException, UserNotAuthorizedException {
         Theme postedTheme = this.themeService.addTheme(testTheme2, organiser1);
         Assert.assertTrue(postedTheme.getName().equals(testTheme2.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme2.getDescription()));
         this.postedTheme2 = postedTheme;
 
 
-        Theme postedTheme2 = this.themeService.getTheme(this.postedTheme2.getId());
+        Theme postedTheme2 = this.themeService.getTheme(this.postedTheme2.getId(), organiser1);
         Assert.assertTrue(postedTheme2.getName().equals(this.postedTheme2.getName()));
         Assert.assertTrue(postedTheme2.getDescription().equals(this.postedTheme2.getDescription()));
         // Assert.assertTrue(postedTheme2.getOrganisers().contains(new Organiser(true , "tim.vanaelst@student.kdg.be", testTheme3.getId())));
@@ -128,28 +124,28 @@ public class ThemeServicesTest {
     }
 
     @Test()
-    public void testCreateThemeNoOrganisers() throws ObjectNotFoundException {
+    public void testCreateThemeNoOrganisers() throws ObjectNotFoundException, UserNotAuthorizedException {
         testTheme1.setOrganisers(new LinkedList<>());
         Theme postedTheme = this.themeService.addTheme(testTheme1, organiser1);
         Assert.assertTrue(postedTheme.getName().equals(testTheme1.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme1.getDescription()));
         this.postedTheme1 = postedTheme;
 
-        Theme postedTheme1 = this.themeService.getTheme(this.postedTheme1.getId());
+        Theme postedTheme1 = this.themeService.getTheme(this.postedTheme1.getId(), organiser1);
         Assert.assertTrue(postedTheme1.getName().equals(this.postedTheme1.getName()));
         Assert.assertTrue(postedTheme1.getDescription().equals(this.postedTheme1.getDescription()));
         //Assert.assertTrue(postedTheme1.getOrganisers().contains(organiser1));
     }
 
     @Test
-    public void testSeperateUser() throws ObjectNotFoundException {
+    public void testSeperateUser() throws ObjectNotFoundException, UserNotAuthorizedException {
         Theme postedTheme = this.themeService.addTheme(testTheme3, organiser2);
         Assert.assertTrue(postedTheme.getName().equals(testTheme3.getName()));
         Assert.assertTrue(postedTheme.getDescription().equals(testTheme3.getDescription()));
         this.postedTheme3 = postedTheme;
 
 
-        Theme postedTheme3 = this.themeService.getTheme(this.postedTheme3.getId());
+        Theme postedTheme3 = this.themeService.getTheme(this.postedTheme3.getId(), organiser2);
         Assert.assertTrue(postedTheme3.getName().equals(this.postedTheme3.getName()));
         Assert.assertTrue(postedTheme3.getDescription().equals(this.postedTheme3.getDescription()));
 
@@ -170,66 +166,25 @@ public class ThemeServicesTest {
     }
 
     @Test
-    public void getOrganisersByThemeId() {
-        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
-        List<String> organisers = themeService.getOrganisersByThemeId(postedTheme1.getId());
-        Assert.assertTrue(organisers.size() == 1);
-    }
-
-    @Test
-    public void getOrganisersByThemeIdBadId() {
-        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
-        List<String> organisers = themeService.getOrganisersByThemeId("no");
-        Assert.assertTrue(organisers == null);
-    }
-
-    @Test
-    public void isOrganiser() throws ObjectNotFoundException {
+    public void isOrganiser() throws ObjectNotFoundException, UserNotAuthorizedException {
         this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
         boolean isOrg = themeService.isOrganiser("tim.vanaelst@student.kdg.be", this.postedTheme1.getId());
         Assert.assertTrue(isOrg);
     }
 
     @Test
-    public void isNotOrganiser() throws ObjectNotFoundException {
+    public void isNotOrganiser() throws ObjectNotFoundException, UserNotAuthorizedException {
         this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
         boolean isOrg = themeService.isOrganiser("leander.coevoet@student.kdg.be", this.postedTheme1.getId());
         Assert.assertFalse(isOrg);
     }
 
-    @Test
-    public void getOrganiser() throws ObjectNotFoundException {
-        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
-        String organiser = themeService.getOrganiser(postedTheme1.getId(), organiser1);
-        Assert.assertTrue(organiser.equals(organiser1));
-    }
-
-    @Test(expected = ObjectNotFoundException.class)
-    public void getOrganiserBadTheme() throws ObjectNotFoundException {
-        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
-        String organiser = themeService.getOrganiser("555", organiser1);
-    }
-
-    @Test
-    public void updateExistingOrganiser() throws ObjectNotFoundException {
-        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
-        String organiser = themeService.updateExistingOrganiser( organiser1, postedTheme1.getId());
-        Assert.assertTrue(organiser.equals(organiser1));
-    }
-
-    @Test
-    public void deleteOrganiser() throws ObjectNotFoundException {
-        this.postedTheme1 = this.themeService.addTheme(testTheme1, organiser1);
-        String organiser = themeService.deleteOrganiser(postedTheme1.getId(),organiser1);
-        Assert.assertTrue(organiser.equals(organiser1));
-    }
-
 
     @After
-    public void deleteThemes() throws ObjectNotFoundException {
-        if (this.postedTheme1 != null) themeService.deleteTheme(this.postedTheme1.getId());
-        if (this.postedTheme2 != null) themeService.deleteTheme(this.postedTheme2.getId());
-        if (this.postedTheme3 != null) themeService.deleteTheme(this.postedTheme3.getId());
+    public void deleteThemes() throws ObjectNotFoundException, UserNotAuthorizedException {
+        if (this.postedTheme1 != null) themeService.deleteTheme(this.postedTheme1.getId(), organiser1);
+        if (this.postedTheme2 != null) themeService.deleteTheme(this.postedTheme2.getId(), organiser1);
+        if (this.postedTheme3 != null) themeService.deleteTheme(this.postedTheme3.getId(), organiser2);
 
         if (this.postedTheme1 != null && this.postedTheme2 != null && this.postedTheme3 != null) {
             List<Theme> themes = this.themeService.getThemesByUser("tim.vanaelst@student.kdg.be");
