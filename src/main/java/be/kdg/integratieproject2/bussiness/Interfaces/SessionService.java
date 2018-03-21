@@ -1,5 +1,7 @@
 package be.kdg.integratieproject2.bussiness.Interfaces;
 
+import be.kdg.integratieproject2.Domain.InputMessage;
+import be.kdg.integratieproject2.Domain.OutputMessage;
 import be.kdg.integratieproject2.Domain.Session;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
@@ -24,4 +26,6 @@ public interface SessionService {
 
     void createSessionInvitationToken(String email, String sessionId, String token, String organiser);
     SessionInvitationToken getSessionInvitationToken(String token);
+
+    OutputMessage addMessageToSession(String sessionId, InputMessage message);
 }

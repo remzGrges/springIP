@@ -1,6 +1,8 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.InputMessage;
+import be.kdg.integratieproject2.Domain.OutputMessage;
 import be.kdg.integratieproject2.Domain.Session;
 import be.kdg.integratieproject2.Domain.verification.SessionInvitationToken;
 import be.kdg.integratieproject2.bussiness.Interfaces.*;
@@ -12,6 +14,8 @@ import be.kdg.integratieproject2.data.implementations.SessionRepository;
 import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -97,6 +101,20 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionInvitationToken getSessionInvitationToken(String token) {
         return (SessionInvitationToken) tokenRepository.findByToken(token);
+    }
+
+    @Override
+    public OutputMessage addMessageToSession(String sessionId, InputMessage message) {
+        OutputMessage oMessage = new OutputMessage(
+                message.getFrom(),
+                message.getText(),
+                new SimpleDateFormat("dd-MM HH:mm").format(new Date()));
+        Session session = sessionRepository.findOne(sessionId);
+        List<OutputMessage> messages = session.getMessages();
+        messages.add(oMessage);
+        session.setMessages(messages);
+        sessionRepository.save(session);
+        return oMessage;
     }
 
 
