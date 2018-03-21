@@ -21,9 +21,17 @@ public class Session {
     private List<Card> cards;
     private List<Card> suggestedCards;
     private List<String> readyPlayers;
-    private int fase;
     private boolean active;
     private List<Turn> turns;
+    private int state;
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public String getSessionName() {
         return sessionName;
@@ -33,14 +41,6 @@ public class Session {
         return readyPlayers;
     }
 
-    public int getFase() {
-        return fase;
-
-    }
-
-    public void setFase(int fase) {
-        this.fase = fase;
-    }
 
     public void setReadyPlayers(List<String> readyPlayers) {
         this.readyPlayers = readyPlayers;
