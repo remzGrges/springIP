@@ -1,9 +1,12 @@
 package be.kdg.integratieproject2.integration.service;
 
 import be.kdg.integratieproject2.Domain.ApplicationUser;
+import be.kdg.integratieproject2.Domain.SubTheme;
 import be.kdg.integratieproject2.Domain.Theme;
+import be.kdg.integratieproject2.Domain.verification.InvitationToken;
 import be.kdg.integratieproject2.bussiness.Implementations.ThemeServiceImpl;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
+import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
@@ -40,6 +43,8 @@ public class ThemeServicesTest {
     private ThemeRepository themeRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private TokenService tokenService;
     @InjectMocks
     private ThemeService themeService = new ThemeServiceImpl();
 
@@ -50,6 +55,7 @@ public class ThemeServicesTest {
     private String organiser2;
     private ApplicationUser user1;
     private ApplicationUser user2;
+
 
 
     @Before
@@ -96,6 +102,19 @@ public class ThemeServicesTest {
         Mockito.when(themeRepository.findOne(this.themeToGet.getId())).thenReturn(themeToGet);
 
         Mockito.when(themeRepository.save(this.themeWithoutId)).then(new AddThemeAnswer());
+        Mockito.when(themeRepository.save(this.testTheme2)).then(new AddThemeAnswer());
+        List<Theme> organiser1Themes = new ArrayList<>();
+        organiser1Themes.add(themeToGet);
+        organiser1Themes.add(testTheme2);
+        Mockito.when(themeRepository.getAllByOrganisersContaining(organiser1)).thenReturn(organiser1Themes);
+
+        InvitationToken token = new InvitationToken("test", organiser1, testTheme2.getId());
+
+        try {
+            Mockito.when(tokenService.getInvitationToken("test")).thenReturn(token);
+        } catch (ObjectNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -117,6 +136,26 @@ public class ThemeServicesTest {
         Assert.assertTrue(theme.getName().equals(themeWithoutId.getName()));
         Assert.assertTrue(theme.getId() != null);
         Assert.assertTrue(theme.getDescription().equals(themeWithoutId.getDescription()));
+        Assert.assertTrue(theme.getOrganisers().contains(organiser2) && theme.getOrganisers().size() == 1);
+    }
+
+    @Test
+    public void testUpdateTheme() throws UserNotAuthorizedException, ObjectNotFoundException {
+        SubTheme subTheme = new SubTheme();
+        subTheme.setText("new subtheme");
+        List<SubTheme> subThemes = new ArrayList<>();
+        subThemes.add(subTheme);
+        testTheme2.setSubThemes(subThemes);
+        Theme theme = themeService.updateTheme(testTheme2, organiser1);
+        Assert.assertTrue(theme.getName().equals(testTheme2.getName()));
+        Assert.assertTrue(theme.getDescription().equals(testTheme2.getDescription()));
+        Assert.assertTrue(theme.getSubThemes() != null && theme.getSubThemes().get(0).getText().equals(subTheme.getText()));
+        Assert.assertTrue(theme.getSubThemes().get(0).getId() != null);
+    }
+
+    @Test(expected = UserNotAuthorizedException.class)
+    public void testUpdateThemeWrongOrganiser() throws UserNotAuthorizedException, ObjectNotFoundException {
+        themeService.updateTheme(testTheme2, organiser2);
     }
 
     @Test
@@ -129,6 +168,16 @@ public class ThemeServicesTest {
     public void isNotOrganiser() throws ObjectNotFoundException, UserNotAuthorizedException {
         boolean isOrg = themeService.isOrganiser(organiser2, themeToGet.getId());
         Assert.assertFalse(isOrg);
+    }
+
+    @Test
+    public void testGetThemesByUser()
+    {
+        List<Theme> themes = themeService.getThemesByUser(organiser1);
+        Assert.assertTrue(themes.size() == 2);
+        Assert.assertTrue(themes.get(0).getId().equals(themeToGet.getId()));
+        Assert.assertTrue(themes.get(1).getId().equals(testTheme2.getId()));
+
     }
 
     class AddThemeAnswer implements Answer<Theme> {

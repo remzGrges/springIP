@@ -1,10 +1,7 @@
 package be.kdg.integratieproject2.api.controllers;
 
-import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
-import be.kdg.integratieproject2.Domain.verification.InvitationToken;
-import be.kdg.integratieproject2.api.dto.*;
-import be.kdg.integratieproject2.api.themeInvitation.OnInvitationCompleteEvent;
+import be.kdg.integratieproject2.api.dto.ThemeDto;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.UserService;
 import be.kdg.integratieproject2.bussiness.exceptions.InvalidTokenException;
@@ -12,12 +9,9 @@ import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
@@ -59,10 +53,9 @@ public class ThemeController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ResponseEntity<ThemeDto> updateTheme(@RequestBody ThemeDto dto)
-    {
+    public ResponseEntity<ThemeDto> updateTheme(@RequestBody ThemeDto dto, Authentication authentication) throws UserNotAuthorizedException, ObjectNotFoundException {
         Theme theme = modelMapper.map(dto, Theme.class);
-        ThemeDto mappedTheme = modelMapper.map(themeService.updateTheme(theme), ThemeDto.class);
+        ThemeDto mappedTheme = modelMapper.map(themeService.updateTheme(theme, authentication.getName()), ThemeDto.class);
         return new ResponseEntity<ThemeDto>(mappedTheme, HttpStatus.OK);
     }
 

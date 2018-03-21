@@ -1,10 +1,8 @@
 package be.kdg.integratieproject2.bussiness.Implementations;
 
-import be.kdg.integratieproject2.Application;
 import be.kdg.integratieproject2.Domain.ApplicationUser;
 import be.kdg.integratieproject2.Domain.Theme;
 import be.kdg.integratieproject2.Domain.verification.InvitationToken;
-import be.kdg.integratieproject2.Domain.verification.VerificationToken;
 import be.kdg.integratieproject2.api.themeInvitation.OnInvitationCompleteEvent;
 import be.kdg.integratieproject2.bussiness.Interfaces.ThemeService;
 import be.kdg.integratieproject2.bussiness.Interfaces.TokenService;
@@ -14,15 +12,16 @@ import be.kdg.integratieproject2.bussiness.exceptions.ObjectNotFoundException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserAlreadyExistsException;
 import be.kdg.integratieproject2.bussiness.exceptions.UserNotAuthorizedException;
 import be.kdg.integratieproject2.data.implementations.ThemeRepository;
-import be.kdg.integratieproject2.data.implementations.TokenRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Tim on 08/02/2018.
@@ -43,14 +42,13 @@ public class ThemeServiceImpl implements ThemeService {
     public ThemeServiceImpl() { }
 
     @Override
-    public Theme updateTheme(Theme theme) {
-
+    public Theme updateTheme(Theme theme, String username) throws UserNotAuthorizedException, ObjectNotFoundException {
+        getTheme(theme.getId(), username); //throws exceptions if not organiser
         if (theme.getSubThemes() != null && theme.getSubThemes().stream().anyMatch(s -> s.getId() == null)) {
             theme.getSubThemes().stream().filter(s -> s.getId() == null).forEach(s -> s.setId(new ObjectId().toString()));
         }
         return themeRepository.save(theme);
     }
-
 
     @Override
     public Boolean isOrganiser(String username, String themeId) throws ObjectNotFoundException {
@@ -111,7 +109,7 @@ public class ThemeServiceImpl implements ThemeService {
 
         organisers.add(organiserToAdd);
         theme.setOrganisers(organisers);
-        updateTheme(theme);
+        themeRepository.save(theme);
     }
 
     @Override
