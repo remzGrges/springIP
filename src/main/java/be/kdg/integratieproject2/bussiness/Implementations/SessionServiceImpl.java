@@ -56,7 +56,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public Session addSuggestion(Card card,String sessionId, String userId) throws UserNotAuthorizedException, ObjectNotFoundException {
         Session session = getSession(sessionId, userId);
-        List<Card> suggestions = session.getCards() == null ? new ArrayList<>() : session.getCards();
+        List<Card> suggestions = session.getSuggestedCards() == null ? new ArrayList<>() : session.getSuggestedCards();
         suggestions.add(card);
         session.setSuggestedCards(suggestions);
         return sessionRepository.save(session);
